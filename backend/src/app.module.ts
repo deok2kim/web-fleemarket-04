@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ErrorsInterceptor } from './common/interceptor/errors.interceptor';
+
+import { ResponseTransformInterceptor } from './common/interceptor/response-transform.interceptor';
 import { config } from './config/config';
 import { MySqlConfigModule } from './config/mysql-config.module';
 import { MySqlConfigService } from './config/mysql-config.service';
@@ -17,6 +21,16 @@ import { MySqlConfigService } from './config/mysql-config.service';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseTransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorsInterceptor,
+    },
+  ],
 })
 export class AppModule {}
