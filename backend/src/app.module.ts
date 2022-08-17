@@ -1,15 +1,15 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ErrorsInterceptor } from './common/interceptor/errors.interceptor';
-
 import { ResponseTransformInterceptor } from './common/interceptor/response-transform.interceptor';
 import { config } from './config/config';
 import { MySqlConfigModule } from './config/mysql-config.module';
 import { MySqlConfigService } from './config/mysql-config.service';
+import { LoggerMiddleware } from './middleware/logger-middleware';
 
 @Module({
   imports: [
@@ -33,4 +33,8 @@ import { MySqlConfigService } from './config/mysql-config.service';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
