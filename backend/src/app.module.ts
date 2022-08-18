@@ -12,6 +12,8 @@ import { MySqlConfigService } from './config/mysql-config.service';
 import { LoggerMiddleware } from './middleware/logger-middleware';
 import { RegionsModule } from './regions/regions.module';
 import { ProductsModule } from './products/products.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { ProductsModule } from './products/products.module';
     }),
     ProductsModule,
     RegionsModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [
