@@ -10,6 +10,7 @@ import { config } from './config/config';
 import { MySqlConfigModule } from './config/mysql-config.module';
 import { MySqlConfigService } from './config/mysql-config.service';
 import { LoggerMiddleware } from './middleware/logger-middleware';
+import { RegionsModule } from './regions/regions.module';
 import { ProductsModule } from './products/products.module';
 
 @Module({
@@ -21,6 +22,7 @@ import { ProductsModule } from './products/products.module';
       inject: [MySqlConfigService],
     }),
     ProductsModule,
+    RegionsModule,
   ],
   controllers: [AppController],
   providers: [
