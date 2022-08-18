@@ -8,11 +8,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { CoreEntity } from 'src/common/entity/core.entity';
-import Category from './category.entity';
 import ProductStatus from './product-status.entity';
 import Image from './image.entity';
 import User from './user.entity';
 import ChatRoom from './chat-room.entity';
+import { Category } from 'src/products/entities/category.entity';
 
 @Entity()
 export default class Product extends CoreEntity {

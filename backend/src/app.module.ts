@@ -10,6 +10,7 @@ import { config } from './config/config';
 import { MySqlConfigModule } from './config/mysql-config.module';
 import { MySqlConfigService } from './config/mysql-config.service';
 import { LoggerMiddleware } from './middleware/logger-middleware';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { LoggerMiddleware } from './middleware/logger-middleware';
       useClass: MySqlConfigService,
       inject: [MySqlConfigService],
     }),
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [
