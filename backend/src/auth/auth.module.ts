@@ -9,9 +9,10 @@ import { AuthController } from './auth.controller';
 import { KakaoStrategy } from 'src/auth/strategy/kakao.strategy';
 import { GoogleStrategy } from 'src/auth/strategy/google.strategy';
 import { GithubStrategy } from 'src/auth/strategy/github.strategy';
+import { UserRegion } from 'src/entities/user-region.entity';
 
 @Module({
-  imports: [TypeOrmModule, TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule, TypeOrmModule.forFeature([User, UserRegion])],
   exports: [TypeOrmModule, JwtService, AuthService],
   controllers: [AuthController],
   providers: [

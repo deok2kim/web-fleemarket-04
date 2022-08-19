@@ -1,10 +1,16 @@
 import { CoreEntity } from 'src/common/entity/core.entity';
 import { Region } from 'src/regions/entities/region.entity';
 import User from 'src/users/entities/user.entity';
-import { Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity('user_regions')
 export class UserRegion extends CoreEntity {
+  @Column()
+  userId: number;
+
+  @Column()
+  regionId: number;
+
   @ManyToOne(() => User, (user) => user.userRegions)
   user: User;
 
