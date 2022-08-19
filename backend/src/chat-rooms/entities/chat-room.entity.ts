@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CoreEntity } from 'src/common/entity/core.entity';
 import Message from './message.entity';
-import Product from './product.entity';
+import Product from '../../products/entities/product.entity';
 
 @Entity()
 export default class ChatRoom extends CoreEntity {
