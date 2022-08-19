@@ -4,10 +4,11 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import User from 'src/users/entities/user.entity';
-import { KakaoStrategy } from './strategy/kakao.strategy';
 import { AuthController } from './auth.controller';
-import { NaverStrategy } from './strategy/naver.strategy';
-import { GoogleStrategy } from './strategy/google.strategy';
+
+import { KakaoStrategy } from 'src/auth/strategy/kakao.strategy';
+import { GoogleStrategy } from 'src/auth/strategy/google.strategy';
+import { GithubStrategy } from 'src/auth/strategy/github.strategy';
 
 @Module({
   imports: [TypeOrmModule, TypeOrmModule.forFeature([User])],
@@ -18,8 +19,8 @@ import { GoogleStrategy } from './strategy/google.strategy';
     UsersService,
     JwtService,
     KakaoStrategy,
-    NaverStrategy,
     GoogleStrategy,
+    GithubStrategy,
   ],
 })
 export class AuthModule {}

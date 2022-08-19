@@ -1,15 +1,15 @@
-import { Strategy } from 'passport-naver';
+import { Strategy } from 'passport-github2';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class NaverStrategy extends PassportStrategy(Strategy) {
+export class GithubStrategy extends PassportStrategy(Strategy) {
   constructor(protected configService: ConfigService) {
     super({
-      clientID: configService.get('NAVER_CLIENT_ID'),
-      clientSecret: configService.get('NAVER_CLIENT_SECRET'),
-      callbackURL: configService.get('NAVER_CALLBACK_URL'),
+      clientID: configService.get('GITHUB_CLIENT_ID'),
+      clientSecret: configService.get('GITHUB_CLIENT_SECRET'),
+      callbackURL: configService.get('GITHUB_CALLBACK_URL'),
     });
   }
 

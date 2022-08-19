@@ -13,6 +13,8 @@ interface IAuth {
 interface IReqUser {
   user: IAuth;
 }
+
+const CLIENT_URL = 'http://localhost:3000';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -30,7 +32,7 @@ export class AuthController {
 
   @Get('/login/kakao')
   @UseGuards(AuthGuard('kakao'))
-  loginKakao(@Req() req) {}
+  loginKakao() {}
 
   @Get('/login/kakao/callback')
   @UseGuards(AuthGuard('kakao'))
@@ -45,32 +47,12 @@ export class AuthController {
     );
 
     this.setAccessToken(res, accessToken, refreshToken);
-    res.redirect('http://localhost:3000');
-  }
-
-  @Get('/login/naver')
-  @UseGuards(AuthGuard('naver'))
-  loginNaver(@Req() req) {}
-
-  @Get('/login/naver/callback')
-  @UseGuards(AuthGuard('naver'))
-  async loginNaverCallback(
-    @Req() req: Request & IReqUser,
-    @Res() res: Response,
-  ) {
-    const { provider, snsId } = req.user;
-    const { accessToken, refreshToken } = await this.authService.login(
-      provider,
-      snsId,
-    );
-
-    this.setAccessToken(res, accessToken, refreshToken);
-    res.redirect('http://localhost:3000');
+    res.redirect(CLIENT_URL);
   }
 
   @Get('/login/google')
   @UseGuards(AuthGuard('google'))
-  loginGoogle(@Req() req) {}
+  loginGoogle() {}
 
   @Get('/login/google/callback')
   @UseGuards(AuthGuard('google'))
@@ -85,6 +67,26 @@ export class AuthController {
     );
 
     this.setAccessToken(res, accessToken, refreshToken);
-    res.redirect('http://localhost:3000');
+    res.redirect(CLIENT_URL);
+  }
+
+  @Get('/login/github')
+  @UseGuards(AuthGuard('github'))
+  loginGithub() {}
+
+  @Get('/login/github/callback')
+  @UseGuards(AuthGuard('github'))
+  async loginGithubCallback(
+    @Req() req: Request & IReqUser,
+    @Res() res: Response,
+  ) {
+    const { provider, snsId } = req.user;
+    const { accessToken, refreshToken } = await this.authService.login(
+      provider,
+      snsId,
+    );
+
+    this.setAccessToken(res, accessToken, refreshToken);
+    res.redirect(CLIENT_URL);
   }
 }
