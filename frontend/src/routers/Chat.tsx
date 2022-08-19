@@ -1,11 +1,12 @@
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
 
-function Home() {
+function Chat() {
   return (
-    <>
+    <div>
+      Chat
       <BottomNavigation />
-    </>
+    </div>
   );
 }
 
-export default Home;
+export default Chat;

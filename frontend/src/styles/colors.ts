@@ -3,7 +3,7 @@ export const colors = {
   titleActive: '#222222',
   grey100: '#888888',
   grey200: '#bbbbbb',
-  grey3000: '#d7d7d7',
+  grey300: '#d7d7d7',
   offWhite: '#f6f6f6',
   white: '#ffffff',
   primary100: 'A0E1E0',

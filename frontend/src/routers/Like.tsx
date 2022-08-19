@@ -1,11 +1,12 @@
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
 
-function Home() {
+function Like() {
   return (
-    <>
+    <div>
+      Like
       <BottomNavigation />
-    </>
+    </div>
   );
 }
 
-export default Home;
+export default Like;

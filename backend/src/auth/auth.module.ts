@@ -8,11 +8,10 @@ import { KakaoStrategy } from './strategy/kakao.strategy';
 import { AuthController } from './auth.controller';
 import { NaverStrategy } from './strategy/naver.strategy';
 import { GoogleStrategy } from './strategy/google.strategy';
-// import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [TypeOrmModule, TypeOrmModule.forFeature([User])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, JwtService, AuthService],
   controllers: [AuthController],
   providers: [
     AuthService,

@@ -1,11 +1,12 @@
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
 
-function Home() {
+function Sold() {
   return (
-    <>
+    <div>
+      Sold
       <BottomNavigation />
-    </>
+    </div>
   );
 }
 
-export default Home;
+export default Sold;
