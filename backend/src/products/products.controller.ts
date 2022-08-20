@@ -8,4 +8,9 @@ export class ProductsController {
   findAllCategory() {
     return this.productsService.findAllCategory();
   }
+
+  @Get()
+  findAllPorudcts() {
+    return this.productsService.findAllProducts();
+  }
 }

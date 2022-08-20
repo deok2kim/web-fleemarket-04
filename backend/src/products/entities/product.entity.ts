@@ -48,8 +48,8 @@ export default class Product extends CoreEntity {
   user: User;
 
   @OneToMany(() => Like, (like) => like.product)
-  likes: Promise<Like[]>;
+  likes: Like[];
 
   @OneToMany(() => View, (view) => view.product)
-  views: Promise<View[]>;
+  views: View[];
 }
