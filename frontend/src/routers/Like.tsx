@@ -1,4 +1,5 @@
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
+import withAuth from 'src/hocs/withAuth';
 
 function Like() {
   return (
@@ -9,4 +10,4 @@ function Like() {
   );
 }
 
-export default Like;
+export default withAuth(Like);

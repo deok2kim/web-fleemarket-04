@@ -19,7 +19,7 @@ export class UsersController {
   @Get('/me')
   @UseGuards(JwtAuthGuard)
   getUserInfo(@Req() req) {
-    return { user: req.user };
+    return this.usersService.findUserInfoById(req.user.id);
   }
 
   @Post('/region')

@@ -1,4 +1,5 @@
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
+import withAuth from 'src/hocs/withAuth';
 
 function Chat() {
   return (
@@ -9,4 +10,4 @@ function Chat() {
   );
 }
 
-export default Chat;
+export default withAuth(Chat);

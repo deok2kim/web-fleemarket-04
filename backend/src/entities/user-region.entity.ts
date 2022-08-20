@@ -14,6 +14,6 @@ export class UserRegion extends CoreEntity {
   @ManyToOne(() => User, (user) => user.userRegions)
   user: User;
 
-  @ManyToOne(() => Region, (region) => region.userRegions)
+  @ManyToOne(() => Region, (region) => region.userRegions, { eager: true })
   region: Region;
 }

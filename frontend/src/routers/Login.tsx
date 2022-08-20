@@ -12,7 +12,7 @@ function Login() {
           <Icon className="icon" name="iconKakao" />
           카카오로 계속하기
         </SocialButton>
-        <SocialButton className="github">
+        <SocialButton className="github" href="http://localhost:4000/api/v1/auth/login/github">
           <Icon className="icon" name="iconGithub" />
           깃허브로 계속하기
         </SocialButton>

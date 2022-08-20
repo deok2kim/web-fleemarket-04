@@ -1,4 +1,5 @@
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
+import withAuth from 'src/hocs/withAuth';
 
 function My() {
   return (
@@ -9,4 +10,4 @@ function My() {
   );
 }
 
-export default My;
+export default withAuth(My);

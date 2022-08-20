@@ -20,11 +20,32 @@ export class UsersService {
 
   async findUserById(id: number) {
     return this.userRepository.findOne({
-      select: ['id', 'nickname', 'regions'],
+      relations: ['userRegions'],
       where: {
         id,
       },
     });
+  }
+
+  async findUserInfoById(id: number) {
+    const userInfo: any = await this.userRepository
+      .createQueryBuilder('user')
+      .select(['user.nickname', 'regions.id', 'regionNames'])
+      .leftJoin('user.userRegions', 'regions')
+      .leftJoin('regions.region', 'regionNames')
+      .where('user.id = :userId', { userId: id })
+      .getOne();
+
+    const newRegions = userInfo.userRegions.map(
+      (userRegion) => userRegion.region,
+    );
+
+    const result = {
+      nickname: userInfo.nickname,
+      regions: newRegions,
+    };
+
+    return result;
   }
 
   async findUserByNickname(nickname: string) {
