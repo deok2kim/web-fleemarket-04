@@ -12,3 +12,5 @@ export { ReactComponent as iconChatLine } from 'src/assets/icons/chat-line.svg';
 export { ReactComponent as iconChatFill } from 'src/assets/icons/chat-fill.svg';
 export { ReactComponent as iconUserLine } from 'src/assets/icons/user-line.svg';
 export { ReactComponent as iconUserFill } from 'src/assets/icons/user-fill.svg';
+
+export { ReactComponent as iconAdd } from 'src/assets/icons/add.svg';

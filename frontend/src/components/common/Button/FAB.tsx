@@ -1,45 +1,46 @@
 import styled from 'styled-components';
+import Icon from '../Icon/Icon';
 
 interface Props {
-  title: string;
-  size: TSize;
   disabled?: boolean;
   className?: string;
   onClick: () => void;
 }
 
-type TSize = 'md' | 'lg';
-type TSizeDetail = 'width' | 'height';
+type TSize = 'md';
+type TSizeDetail = 'width' | 'height' | 'borderRadius';
 
 const sizes: Record<TSize, Record<TSizeDetail, string>> = {
-  lg: {
-    width: '136px',
-    height: '36px',
-  },
   md: {
-    width: '290px',
-    height: '42px',
+    width: '56px',
+    height: '56px',
+    borderRadius: '28px',
   },
 };
 
-function Button({ title, size, disabled, className, onClick }: Props) {
+function FAB({ disabled, onClick, className }: Props) {
   return (
-    <ButtonElement onClick={onClick} size={size} disabled={disabled} className={className}>
-      {title}
+    <ButtonElement onClick={onClick} disabled={disabled}>
+      <Icon name={'iconAdd'} strokeColor={'white'} className={className} />
     </ButtonElement>
   );
 }
 
-export default Button;
+export default FAB;
 
-const ButtonElement = styled.button<Pick<Props, 'size'>>`
+const ButtonElement = styled.button`
+  position: fixed;
+  bottom: 90px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background: ${(props) => props.theme.color.primary200};
-  border-radius: 8px;
   color: ${(props) => props.theme.color.white};
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
   &:hover {
     background: ${(props) => props.theme.color.primary300};
-    border: none;
   }
   &:active {
     border: 2px solid ${(props) => props.theme.color.primary100};
@@ -47,10 +48,9 @@ const ButtonElement = styled.button<Pick<Props, 'size'>>`
   }
   &:disabled {
     background: ${(props) => props.theme.color.primary100};
-    border-radius: 8px;
-    border: none;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 
-  ${(props) => sizes[props.size]}
+  ${sizes.md}
   cursor: pointer;
 `;
