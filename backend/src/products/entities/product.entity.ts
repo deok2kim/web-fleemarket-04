@@ -13,12 +13,15 @@ import { Category } from 'src/products/entities/category.entity';
 import User from 'src/users/entities/user.entity';
 import { Like } from '../../entities/like.entity';
 import { View } from '../../entities/view.entity';
+import { Max } from 'class-validator';
 
+const MAX_PRICE = 10 ** 8;
 @Entity()
 export default class Product extends CoreEntity {
   @Column({ type: 'varchar', length: 100 })
   title: string;
 
+  @Max(MAX_PRICE)
   @Column({ type: 'int' })
   price: number;
 
@@ -28,11 +31,18 @@ export default class Product extends CoreEntity {
   @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
+  @Column()
+  categoryId: number;
+
   @ManyToOne(() => Category)
-  category: Promise<Category>;
+  category: Category;
+
+  @Column()
+  productStatusId: number;
 
   @ManyToOne(() => ProductStatus, {
     eager: true,
+    nullable: false,
   })
   productStatus: ProductStatus;
 
@@ -43,6 +53,9 @@ export default class Product extends CoreEntity {
 
   @OneToMany(() => ChatRoom, (chatRoom) => chatRoom.product, { eager: true })
   chatRoom: ChatRoom[];
+
+  @Column()
+  userId: number;
 
   @ManyToOne(() => User, (user) => user.products)
   user: User;

@@ -1,14 +1,20 @@
+import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Product from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
-import { Category } from './entities/category.entity';
+import { Category } from 'src/products/entities/category.entity';
+import Image from 'src/products/entities/image.entity';
 
+const DEFAULT_PRODUCT_STATUS_ID = 1; /* 1: 'sale' */
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
+
+    @InjectRepository(Image)
+    private ImageRepository: Repository<Image>,
 
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
@@ -63,5 +69,28 @@ export class ProductsService {
         isLike: !!isLike[index].likes.length,
       })),
     };
+  }
+
+  async createProduct(userId: number, productData: CreateProductDto) {
+    const { title, price, content, categoryId, images } = productData;
+
+    const newProduct = await this.productRepository.save({
+      title,
+      price,
+      content,
+      categoryId,
+      userId,
+      productStatusId: DEFAULT_PRODUCT_STATUS_ID,
+    });
+
+    const promiseImages = images.map(async (image) => {
+      return await this.ImageRepository.save({
+        productId: newProduct.id,
+        url: image,
+      });
+    });
+    await Promise.all(promiseImages);
+
+    return;
   }
 }

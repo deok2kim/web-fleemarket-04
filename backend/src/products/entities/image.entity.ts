@@ -7,6 +7,9 @@ export default class Image extends CoreEntity {
   @Column({ type: 'varchar' })
   url: string;
 
+  @Column()
+  productId: number;
+
   @ManyToOne(() => Product, (product) => product.images)
   product: Product;
 }
