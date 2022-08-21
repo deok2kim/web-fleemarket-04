@@ -34,6 +34,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  animation: ${({ theme }) => theme.animation.fadeIn} 0.3s ease-in-out;
 `;
 
 const ButtonWrapper = styled.div`

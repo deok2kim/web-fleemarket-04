@@ -1,3 +1,4 @@
+import { animations } from './animations';
 import { colors } from './colors';
 import { fonts } from './fonts';
 
@@ -14,9 +15,16 @@ export type TFontTheme = {
   fonts: TFontScheme;
 };
 
-export const theme: TColorTheme & TFontTheme = {
+export type TAnimationScheme = typeof animations;
+
+export type TAnimationTheme = {
+  animation: TAnimationScheme;
+};
+
+export const theme: TColorTheme & TFontTheme & TAnimationTheme = {
   color: colors,
   fonts: fonts,
+  animation: animations,
 };
 
 export type TStyledTheme = typeof theme;

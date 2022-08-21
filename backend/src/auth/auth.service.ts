@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { ERROR_MESSAGE } from 'src/common/constant/error-message';
 import { OAuthProviderEnum } from 'src/common/enum/oauth-provider.enum';
+import { ErrorException } from 'src/common/exception/error.exception';
 import User from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { generateRandomNickname } from './util/auth.util';
@@ -17,14 +19,17 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async validateUser(provider: OAuthProviderEnum, snsId: string): Promise<any> {
+  async validateUser(
+    provider: OAuthProviderEnum,
+    snsId: string,
+  ): Promise<User> {
     return this.usersService.findUserBySnsIdAndProvider(provider, snsId);
   }
 
-  createLoginToken(user: User) {
+  createAccessToken(user: User) {
     const payload = {
       id: user.id,
-      userToken: 'loginToken',
+      userToken: 'accessToken',
     };
 
     return this.jwtService.sign(payload, {
@@ -40,7 +45,7 @@ export class AuthService {
     };
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_SECRET'),
+      secret: this.configService.get('JWT_REFRESH_SECRET'),
       expiresIn: REFRESH_TOKEN_EXPIRED_TIME,
     });
 
@@ -49,10 +54,32 @@ export class AuthService {
 
   async validateToken(
     token: string,
+    isRefresh = false,
   ): Promise<{ id: number; userToken: string }> {
     return await this.jwtService.verify(token, {
-      secret: this.configService.get('JWT_SECRET'),
+      secret: isRefresh
+        ? this.configService.get('JWT_REFRESH_SECRET')
+        : this.configService.get('JWT_SECRET'),
     });
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    const userPayload = await this.validateToken(refreshToken, true);
+
+    if (!userPayload) {
+      throw new ErrorException(
+        ERROR_MESSAGE.INVALID_TOKEN,
+        HttpStatus.UNAUTHORIZED,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const user = await this.usersService.findUserById(userPayload.id);
+
+    const accessToken = this.createAccessToken(user);
+    const newRefreshToken = this.createRefreshToken(user);
+
+    return { accessToken, refreshToken: newRefreshToken };
   }
 
   async login(provider: OAuthProviderEnum, snsId: string) {
@@ -79,7 +106,7 @@ export class AuthService {
       });
     }
 
-    const accessToken = this.createLoginToken(user);
+    const accessToken = this.createAccessToken(user);
     const refreshToken = this.createRefreshToken(user);
 
     return { accessToken, refreshToken };

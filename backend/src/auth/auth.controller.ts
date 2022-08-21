@@ -1,9 +1,19 @@
 import { Request, Response } from 'express';
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/auth/auth.service';
 import { OAuthProviderEnum } from 'src/common/enum/oauth-provider.enum';
 import { DAY_SECONDS, MINUTE_SECONDS } from 'src/common/constant/time';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 interface IAuth {
   provider: OAuthProviderEnum;
@@ -21,13 +31,24 @@ export class AuthController {
 
   setAccessToken(res: Response, accessToken: string, refreshToken: string) {
     res.cookie('accessToken', `Bearer ${accessToken}`, {
-      httpOnly: true,
       maxAge: 30 * MINUTE_SECONDS,
     });
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
       maxAge: 7 * DAY_SECONDS,
     });
+  }
+
+  @Post('/refresh/access-token')
+  async refreshAccessToken(
+    @Res() res: Response,
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ) {
+    const { accessToken, refreshToken } =
+      await this.authService.refreshAccessToken(refreshTokenDto.refreshToken);
+
+    this.setAccessToken(res, accessToken, refreshToken);
+
+    res.status(HttpStatus.OK).send();
   }
 
   @Get('/login/kakao')
