@@ -14,3 +14,5 @@ export { ReactComponent as iconUserLine } from 'src/assets/icons/user-line.svg';
 export { ReactComponent as iconUserFill } from 'src/assets/icons/user-fill.svg';
 
 export { ReactComponent as iconAdd } from 'src/assets/icons/add.svg';
+export { ReactComponent as iconSearch } from 'src/assets/icons/search.svg';
+export { ReactComponent as iconMapPin } from 'src/assets/icons/map-pin.svg';

@@ -10,4 +10,5 @@ export const colors = {
   primary200: '#2AC1BC',
   primary300: '#219A95',
   red: '#F45452',
+  transparent: 'transparent',
 };

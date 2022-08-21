@@ -21,7 +21,7 @@ const sizes: Record<TSize, Record<TSizeDetail, string>> = {
 function FAB({ disabled, onClick, className }: Props) {
   return (
     <ButtonElement onClick={onClick} disabled={disabled}>
-      <Icon name={'iconAdd'} strokeColor={'white'} className={className} />
+      <Icon name="iconAdd" strokeColor="white" className={className} />
     </ButtonElement>
   );
 }
