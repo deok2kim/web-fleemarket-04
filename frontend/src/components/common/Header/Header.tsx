@@ -70,6 +70,7 @@ const Container = styled.div<Props>`
   align-items: center;
   justify-content: space-between;
   padding: 16px;
+  ${({ theme }) => theme.fonts.linkSmall}
   ${(props) => {
     const { backgroundColor, color, opacity = 1 } = setHeaderThemeColor(props.headerTheme);
     return css`
