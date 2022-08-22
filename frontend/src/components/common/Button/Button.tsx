@@ -40,7 +40,6 @@ const ButtonElement = styled.button<Pick<Props, 'size'>>`
   background: ${({ theme }) => theme.color.primary200};
   border-radius: 8px;
   color: ${({ theme }) => theme.color.white};
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   &:hover {
     background: ${({ theme }) => theme.color.primary300};
     border: none;

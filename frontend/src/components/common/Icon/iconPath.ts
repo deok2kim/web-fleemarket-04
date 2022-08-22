@@ -15,7 +15,10 @@ export { ReactComponent as iconUserFill } from 'src/assets/icons/user-fill.svg';
 
 export { ReactComponent as iconAdd } from 'src/assets/icons/add.svg';
 export { ReactComponent as iconSearch } from 'src/assets/icons/search.svg';
+export { ReactComponent as iconSearchMini } from 'src/assets/icons/search-mini.svg';
 export { ReactComponent as iconMapPin } from 'src/assets/icons/map-pin.svg';
 export { ReactComponent as iconHeart } from 'src/assets/icons/heart.svg';
 export { ReactComponent as iconHeartMini } from 'src/assets/icons/heart-mini.svg';
 export { ReactComponent as iconSpeechBubbleMini } from 'src/assets/icons/speech-bubble-mini.svg';
+export { ReactComponent as iconClose } from 'src/assets/icons/close.svg';
+export { ReactComponent as iconChevronLeft } from 'src/assets/icons/chevron-left.svg';
