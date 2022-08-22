@@ -14,7 +14,7 @@ function Product({ product }: Props) {
   return (
     <Container key={product.id}>
       <InfoWrapper>
-        <Image src={product.images[0].url} width={106} height={106} borderRadius={5} alt="product thumbnail image" />
+        <Image src={product.images[0].url} box="lg" alt="product thumbnail image" />
         <InfoText>
           <Title>{product.title}</Title>
           <LocationAndTime>{timeForToday(product.createdAt)}</LocationAndTime>
@@ -61,10 +61,6 @@ const Container = styled.li`
   justify-content: space-between;
 
   padding: 0 16px;
-`;
-
-const Left = styled.div`
-  display: flex;
 `;
 
 const InfoWrapper = styled.div`
