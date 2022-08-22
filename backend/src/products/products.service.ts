@@ -5,8 +5,15 @@ import Product from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/products/entities/category.entity';
 import Image from 'src/products/entities/image.entity';
+import { Like } from 'src/entities/like.entity';
+import { View } from 'src/entities/view.entity';
+import { ProductPaginationDto } from './dto/product-pagination.dto';
+import { Pagination } from 'src/common/pagination/pagination';
 
 const DEFAULT_PRODUCT_STATUS_ID = 1; /* 1: 'sale' */
+
+const DEFAULT_LIMIT = 10;
+
 @Injectable()
 export class ProductsService {
   constructor(
@@ -18,6 +25,12 @@ export class ProductsService {
 
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+
+    @InjectRepository(Like)
+    private likeRepository: Repository<Like>,
+
+    @InjectRepository(View)
+    private viewRepository: Repository<View>,
   ) {}
 
   async findAllCategory() {
@@ -25,8 +38,13 @@ export class ProductsService {
     return { categories };
   }
 
-  async findAllProducts() {
-    const products = await this.productRepository
+  async findAllProducts(options: ProductPaginationDto, userId: number) {
+    const { limit, page, categoryId } = options;
+    const take = limit || DEFAULT_LIMIT;
+    const skip = (page - 1) * take;
+
+
+    const [result, total] = await this.productRepository
       .createQueryBuilder('product')
       .select([
         'product.id',
@@ -36,9 +54,86 @@ export class ProductsService {
         'user.id',
         'regions.id',
         'regionNames.name',
-        'isView',
       ])
       .leftJoinAndSelect('product.images', 'image')
+      .loadRelationCountAndMap('product.chatRoom', 'product.chatRoom')
+      .leftJoinAndSelect('product.views', 'product.views')
+      .leftJoinAndSelect('product.likes', 'product.likes')
+      .leftJoin('product.user', 'user')
+      .leftJoin('user.userRegions', 'regions')
+      .leftJoin('regions.region', 'regionNames')
+      .where(isNaN(categoryId) ? '' : 'product.categoryId = :categoryId', {
+        categoryId,
+      })
+      .take(take)
+      .skip(skip)
+      .getManyAndCount();
+
+    const next = skip + take <= total;
+
+    return new Pagination({
+      paginationResult: result.map((product) => {
+        return {
+          ...product,
+          hasView: !!product.views.length,
+          views: product.views.length,
+          isViewed: !!product.views.find(
+            (viewInfo) => viewInfo.userId === userId,
+          ),
+          hasLike: !!product.likes.length,
+          likes: product.likes.length,
+          isLiked: !!product.likes.find(
+            (likeInfo) => likeInfo.userId === userId,
+          ),
+        };
+      }),
+      total,
+      next,
+    });
+  }
+
+  async findProductById(productId: number, userId?: number) {
+    let isLiked;
+    if (!userId) {
+      isLiked = false;
+    } else {
+      isLiked = await this.likeRepository.findOne({
+        where: {
+          userId,
+          productId,
+        },
+      });
+
+      const isViewed = await this.viewRepository.findOne({
+        where: {
+          productId,
+          userId,
+        },
+      });
+
+      if (!isViewed) {
+        await this.viewRepository.save({
+          productId,
+          userId,
+        });
+      }
+    }
+
+    const product = await this.productRepository
+      .createQueryBuilder('product')
+      .select([
+        'product.id',
+        'product.title',
+        'product.price',
+        'product.content',
+        'product.categoryId',
+        'productStatus.name',
+        'user.id',
+        'regions.id',
+        'regionNames.name',
+        'isView',
+      ])
+      .leftJoinAndSelect('product.images', 'images')
       .loadRelationCountAndMap('product.views', 'product.views')
       .loadRelationCountAndMap('product.likes', 'product.likes')
       .loadRelationCountAndMap('product.chatRoom', 'product.chatRoom')
@@ -46,28 +141,16 @@ export class ProductsService {
       .leftJoin('product.views', 'isView', 'user.id = isView.user_id')
       .leftJoin('user.userRegions', 'regions')
       .leftJoin('regions.region', 'regionNames')
-      .getMany();
-
-    const isView = await this.productRepository
-      .createQueryBuilder('product')
-      .select(['product.id', 'views'])
-      .leftJoin('product.user', 'user')
-      .leftJoin('product.views', 'views', 'user.id = views.user_id')
-      .getMany();
-
-    const isLike = await this.productRepository
-      .createQueryBuilder('product')
-      .select(['product.id', 'likes'])
-      .leftJoin('product.user', 'user')
-      .leftJoin('product.likes', 'likes', 'user.id = likes.user_id')
-      .getMany();
+      .leftJoin('product.productStatus', 'productStatus')
+      .where('product.id = :productId', { productId })
+      .getOne();
 
     return {
-      products: products.map((product, index) => ({
+      product: {
         ...product,
-        isView: !!isView[index].views.length,
-        isLike: !!isLike[index].likes.length,
-      })),
+        productStatus: product.productStatus.name,
+      },
+      isLiked: !!isLiked,
     };
   }
 
