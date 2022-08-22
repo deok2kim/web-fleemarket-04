@@ -1,4 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ERROR_MESSAGE } from 'src/common/constant/error-message';
@@ -110,5 +111,10 @@ export class AuthService {
     const refreshToken = this.createRefreshToken(user);
 
     return { accessToken, refreshToken };
+  }
+
+  async logout(res: Response) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
   }
 }

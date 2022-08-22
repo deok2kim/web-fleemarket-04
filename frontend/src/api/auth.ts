@@ -17,3 +17,17 @@ export const refreshAccessToken = async () => {
     },
   );
 };
+
+/**
+ * 로그아웃 API
+ * @description 쿠키의 액세스토큰,리프레시토큰을 삭제한다.
+ **/
+export const logout = async () => {
+  await axios.post(
+    '/auth/logout',
+    {},
+    {
+      withCredentials: true,
+    },
+  );
+};

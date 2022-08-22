@@ -7,7 +7,7 @@ export const initAxiosConfig = () => {
   axios.defaults.timeout = 3000;
   const accessToken = getCookie('accessToken');
   if (accessToken) {
-    axios.defaults.headers.common['Authorization'] = accessToken;
+    setAuthorizationHeader(accessToken);
   }
 
   axios.interceptors.response.use(
@@ -35,4 +35,12 @@ export const initAxiosConfig = () => {
       return Promise.reject(error);
     },
   );
+};
+
+export const setAuthorizationHeader = (accessToken: string) => {
+  axios.defaults.headers.common['Authorization'] = accessToken;
+};
+
+export const removeAuthorizationHeader = () => {
+  axios.defaults.headers.common['Authorization'] = '';
 };

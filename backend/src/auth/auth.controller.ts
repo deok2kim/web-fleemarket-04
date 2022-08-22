@@ -14,6 +14,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { OAuthProviderEnum } from 'src/common/enum/oauth-provider.enum';
 import { DAY_SECONDS, MINUTE_SECONDS } from 'src/common/constant/time';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { JwtAuthGuard } from './guard/jwt.guard';
 
 interface IAuth {
   provider: OAuthProviderEnum;
@@ -109,5 +110,13 @@ export class AuthController {
 
     this.setAccessToken(res, accessToken, refreshToken);
     res.redirect(CLIENT_URL);
+  }
+
+  @Post('/logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Res() res: Response) {
+    await this.authService.logout(res);
+
+    res.status(HttpStatus.OK).send();
   }
 }

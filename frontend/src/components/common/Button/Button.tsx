@@ -8,16 +8,20 @@ interface Props {
   onClick: () => void;
 }
 
-type TSize = 'md' | 'lg';
+type TSize = 'md' | 'lg' | 'full';
 type TSizeDetail = 'width' | 'height';
 
 const sizes: Record<TSize, Record<TSizeDetail, string>> = {
-  lg: {
+  md: {
     width: '136px',
     height: '36px',
   },
-  md: {
+  lg: {
     width: '290px',
+    height: '42px',
+  },
+  full: {
+    width: '100%',
     height: '42px',
   },
 };

@@ -1,13 +1,29 @@
+import { useNavigate } from 'react-router-dom';
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
+import Button from 'src/components/common/Button/Button';
 import withAuth from 'src/hocs/withAuth';
+import { useLogout } from 'src/queries/user';
+import styled from 'styled-components';
 
 function My() {
+  const logoutMutation = useLogout();
+  const navigate = useNavigate();
+
+  const onClickLogoutButton = () => {
+    logoutMutation.mutate();
+    navigate('/');
+  };
+
   return (
-    <div>
-      My
+    <Container>
+      <Button title="로그아웃" size="full" onClick={onClickLogoutButton} />
       <BottomNavigation />
-    </div>
+    </Container>
   );
 }
 
 export default withAuth(My);
+
+const Container = styled.div`
+  padding: 0 16px;
+`;
