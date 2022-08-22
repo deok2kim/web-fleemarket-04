@@ -14,6 +14,7 @@ import { RegionsModule } from './regions/regions.module';
 import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { ImageModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
     RegionsModule,
     AuthModule,
     UsersModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [
