@@ -28,4 +28,10 @@ const Container = styled.ul`
   gap: 4px;
   width: 100%;
   overflow-x: scroll;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;

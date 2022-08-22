@@ -45,7 +45,7 @@ function BottomNavigation() {
 export default BottomNavigation;
 
 const Container = styled.div`
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -55,7 +55,8 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  border-top: 1px solid ${({ theme }) => theme.color.grey100};
+  border-top: 1px solid ${({ theme }) => theme.color.grey300};
+  background-color: ${({ theme }) => theme.color.white};
 `;
 
 const Menu = styled(Link)`
