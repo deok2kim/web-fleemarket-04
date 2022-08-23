@@ -31,7 +31,7 @@ function ButtonLocation({ title, className, status, onClick }: Props) {
   const isAdd = status === 'add';
   return (
     <ButtonElement onClick={onClick} status={status}>
-      {isAdd() ? (
+      {isAdd ? (
         <Icon name="iconAdd" strokeColor="primary100" className={className} />
       ) : (
         <>

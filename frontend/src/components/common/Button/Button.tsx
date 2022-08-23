@@ -5,7 +5,7 @@ interface Props {
   size: TSize;
   disabled?: boolean;
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 type TSize = 'md' | 'lg' | 'full';

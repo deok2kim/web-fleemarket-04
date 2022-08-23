@@ -43,6 +43,7 @@ export class ProductsService {
     const take = limit || DEFAULT_LIMIT;
     const skip = (page - 1) * take;
 
+    console.log(categoryId);
 
     const [result, total] = await this.productRepository
       .createQueryBuilder('product')
@@ -126,14 +127,17 @@ export class ProductsService {
         'product.title',
         'product.price',
         'product.content',
-        'product.categoryId',
-        'productStatus.name',
+        'product.createdAt',
         'user.id',
+        'user.nickname',
         'regions.id',
+        'regionNames.id',
         'regionNames.name',
         'isView',
       ])
       .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.productStatus', 'productStatus')
       .loadRelationCountAndMap('product.views', 'product.views')
       .loadRelationCountAndMap('product.likes', 'product.likes')
       .loadRelationCountAndMap('product.chatRoom', 'product.chatRoom')
@@ -141,16 +145,25 @@ export class ProductsService {
       .leftJoin('product.views', 'isView', 'user.id = isView.user_id')
       .leftJoin('user.userRegions', 'regions')
       .leftJoin('regions.region', 'regionNames')
-      .leftJoin('product.productStatus', 'productStatus')
       .where('product.id = :productId', { productId })
       .getOne();
 
     return {
       product: {
         ...product,
+        category: product.category.name,
         productStatus: product.productStatus.name,
+        user: {
+          id: product.user.id,
+          nickname: product.user.nickname,
+          regions: product.user.userRegions.map((userRegion) => ({
+            id: userRegion.region.id,
+            name: userRegion.region.name,
+          })),
+        },
       },
       isLiked: !!isLiked,
+      isSeller: product.user.id === userId,
     };
   }
 

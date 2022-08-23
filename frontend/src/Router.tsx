@@ -4,6 +4,7 @@ import Home from './routers/Home';
 import Like from './routers/Like';
 import Login from './routers/Login';
 import My from './routers/My';
+import ProductDetail from './routers/ProductDetail';
 import Sold from './routers/Sold';
 import Location from './routers/Location';
 import LocationSearch from './routers/LocationSearch';
@@ -21,6 +22,7 @@ function Router() {
 
         <Route path="/location" element={<Location />} />
         <Route path="/location/search" element={<LocationSearch />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
       </Routes>
     </BrowserRouter>
   );

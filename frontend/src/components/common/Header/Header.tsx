@@ -1,13 +1,12 @@
 import { TColorToken } from 'src/styles/theme';
 import styled, { css } from 'styled-components';
-import Icon from '../Icon/Icon';
 
 interface Props {
   headerTheme: THeaderTheme;
   className?: string;
-  left: React.ReactNode;
-  center: React.ReactNode;
-  right: React.ReactNode;
+  left?: React.ReactNode;
+  center?: React.ReactNode;
+  right?: React.ReactNode;
 }
 
 interface IHeaderThemeColor {
@@ -18,9 +17,9 @@ interface IHeaderThemeColor {
 
 type THeaderTheme = 'primary' | 'white' | 'offWhite' | 'transparent';
 
-function Header({ headerTheme, left, center, right }: Props) {
+function Header({ className, headerTheme, left, center, right }: Props) {
   return (
-    <Container headerTheme={headerTheme}>
+    <Container headerTheme={headerTheme} className={className}>
       <LeftWrapper>{left}</LeftWrapper>
       <CenterWrapper>{center}</CenterWrapper>
       <RightWrapper>{right}</RightWrapper>
@@ -30,10 +29,12 @@ function Header({ headerTheme, left, center, right }: Props) {
 
 export default Header;
 
-const LeftWrapper = styled.div``;
+const LeftWrapper = styled.div`
+  min-width: 24px;
+`;
 
 const RightWrapper = styled.div`
-  visibility: hidden;
+  min-width: 24px;
 `;
 
 const CenterWrapper = styled.button`
@@ -64,19 +65,23 @@ const setHeaderThemeColor = (headerTheme: THeaderTheme): IHeaderThemeColor => {
     return {
       backgroundColor: 'transparent',
       color: 'black',
-      opacity: 0.5,
     };
   }
 };
 
 const Container = styled.div<Pick<Props, 'headerTheme'>>`
+  padding: 16px;
+
   width: 100%;
   height: 56px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
-  ${({ theme }) => theme.fonts.linkSmall}
+
+  z-index: ${({ theme }) => theme.zIndex.header};
+
+  ${({ theme }) => theme.fonts.linkSmall};
   ${({ theme, headerTheme }) => {
     const { backgroundColor, color, opacity = 1 } = setHeaderThemeColor(headerTheme);
     return css`

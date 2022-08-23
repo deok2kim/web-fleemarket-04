@@ -3,8 +3,9 @@ import styled, { css } from 'styled-components';
 import * as images from 'src/components/common/Image/imagePath';
 import { TStyledTheme } from 'src/styles/theme';
 
+export type TImageToken = keyof typeof images;
 interface Props {
-  name?: keyof typeof images;
+  name?: TImageToken;
   src?: string;
   width?: number;
   height?: number;

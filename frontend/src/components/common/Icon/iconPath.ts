@@ -22,3 +22,5 @@ export { ReactComponent as iconHeartMini } from 'src/assets/icons/heart-mini.svg
 export { ReactComponent as iconSpeechBubbleMini } from 'src/assets/icons/speech-bubble-mini.svg';
 export { ReactComponent as iconClose } from 'src/assets/icons/close.svg';
 export { ReactComponent as iconChevronLeft } from 'src/assets/icons/chevron-left.svg';
+export { ReactComponent as iconChevronDown } from 'src/assets/icons/chevron-down.svg';
+export { ReactComponent as iconKebab } from 'src/assets/icons/kebab.svg';

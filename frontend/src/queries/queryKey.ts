@@ -5,3 +5,8 @@ export const USER = {
 export const CATEGORY = {
   CATEGORIES: ['categories'],
 } as const;
+
+export const PRODUCT = {
+  PRODUCT_CATEGORY_PAGE: (category: number, page: number) => ['products', category, page],
+  PRODUCT_DETAIL: (productId: number) => ['product', productId],
+};

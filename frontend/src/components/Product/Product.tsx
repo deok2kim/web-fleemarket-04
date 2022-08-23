@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IProduct } from 'src/types/product';
 import timeForToday from 'src/utils/ago';
 import { formatPrice } from 'src/utils/formatPrice';
@@ -11,39 +13,53 @@ interface Props {
 
 function Product({ product }: Props) {
   const isExistence = (count: number): boolean => count > 0;
-  return (
-    <Container key={product.id}>
-      <InfoWrapper>
-        <Image src={product.images[0].url} box="lg" alt="product thumbnail image" />
-        <InfoText>
-          <Title>{product.title}</Title>
-          <LocationAndTime>{timeForToday(product.createdAt)}</LocationAndTime>
-          <Price>{formatPrice(product.price)}원</Price>
-        </InfoText>
-      </InfoWrapper>
+  const navigate = useNavigate();
 
-      <InfoIconWrapper>
-        {isExistence(product.chatRoom) && (
-          <div>
-            <InfoIcon>
-              <Icon name="iconSpeechBubbleMini" strokeColor="grey100" />
-            </InfoIcon>
-            <InfoIconCount>{product.chatRoom}</InfoIconCount>
-          </div>
-        )}
-        {isExistence(product.likes) && (
-          <div>
-            <InfoIcon>
-              <Icon name="iconHeartMini" strokeColor="grey100" />
-            </InfoIcon>
-            <InfoIconCount>{product.likes}</InfoIconCount>
-          </div>
-        )}
-      </InfoIconWrapper>
-      <HeartIcon>
-        <Icon name="iconHeart" strokeColor="grey100" />
-      </HeartIcon>
-    </Container>
+  const onClickProduct = (e: React.MouseEvent<HTMLLIElement>) => {
+    navigate(`/products/${product.id}`);
+  };
+
+  const onClickHeart = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
+    console.log('heart');
+  };
+
+  return (
+    <>
+      <Container onClick={onClickProduct}>
+        <InfoWrapper>
+          <Image src={product.images[0].url} box="lg" alt="product thumbnail image" />
+          <InfoText>
+            <Title>{product.title}</Title>
+            <LocationAndTime>{timeForToday(product.createdAt)}</LocationAndTime>
+            <Price>{formatPrice(product.price)}원</Price>
+          </InfoText>
+        </InfoWrapper>
+
+        <InfoIconWrapper>
+          {isExistence(product.chatRoom) && (
+            <div>
+              <InfoIcon>
+                <Icon name="iconSpeechBubbleMini" strokeColor="grey100" />
+              </InfoIcon>
+              <InfoIconCount>{product.chatRoom}</InfoIconCount>
+            </div>
+          )}
+          {isExistence(product.likes) && (
+            <div>
+              <InfoIcon>
+                <Icon name="iconHeartMini" strokeColor="grey100" />
+              </InfoIcon>
+              <InfoIconCount>{product.likes}</InfoIconCount>
+            </div>
+          )}
+        </InfoIconWrapper>
+        <HeartIcon onClick={onClickHeart}>
+          <Icon name="iconHeart" strokeColor="grey100" />
+        </HeartIcon>
+      </Container>
+    </>
   );
 }
 
@@ -64,7 +80,7 @@ const Container = styled.li`
 `;
 
 const InfoWrapper = styled.div`
-  width: 236px;
+  width: 90%;
   height: 106px;
 
   display: flex;

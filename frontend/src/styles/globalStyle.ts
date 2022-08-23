@@ -3,14 +3,13 @@ import reset from 'styled-reset';
 
 const bodyStyle = css`
   body {
+    font-family: 'Noto Sans KR', sans-serif;
+
     position: relative;
     height: 100vh;
     max-width: 768px;
     margin: 0 auto;
 
-    outline: 1px solid ${({ theme }) => theme.color.grey300};
-
-    overflow: hidden;
     -ms-overflow-style: none;
     scrollbar-width: none;
     ::-webkit-scrollbar {
@@ -46,5 +45,10 @@ export const GlobalStyle = createGlobalStyle`
   button
   {
     font: inherit;
+  }
+
+  #root {
+    height: 100%;
+    overflow: hidden;
   }
 `;
