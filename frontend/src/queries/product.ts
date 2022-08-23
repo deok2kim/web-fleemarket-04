@@ -1,7 +1,8 @@
 import { AxiosError } from 'axios';
 import { useQuery, UseQueryOptions } from 'react-query';
-import { getProductById, IProductDetail } from 'src/api/product';
+import { getProductById } from 'src/api/product';
 import { IServerError, IServerResponse } from 'src/types/api';
+import { IProductDetail } from 'src/types/product.type';
 import { PRODUCT } from './queryKey';
 
 export const useProductDetail = (

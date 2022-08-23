@@ -1,4 +1,4 @@
-import { IProductDetail } from 'src/api/product';
+import { IProductDetail } from 'src/types/product.type';
 import timeForToday from 'src/utils/ago';
 import { getTownName } from 'src/utils/region';
 import styled from 'styled-components';

@@ -2,8 +2,9 @@ import { AxiosError } from 'axios';
 import { useInfiniteQuery } from 'react-query';
 import { IServerError, IServerResponse } from 'src/types/api';
 
-import { getRegions, IRegionResponse } from 'src/api/region';
+import { getRegions } from 'src/api/region';
 import { REGION } from './queryKey';
+import { IRegionResponse } from 'src/types/region.type';
 
 export const useRegions = (keyword: string) =>
   useInfiniteQuery<IServerResponse<IRegionResponse>, AxiosError<IServerError>>(

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IProductDetail } from 'src/api/product';
+import { IProductDetail } from 'src/types/product.type';
 import { formatPrice } from 'src/utils/formatPrice';
 
 import styled from 'styled-components';

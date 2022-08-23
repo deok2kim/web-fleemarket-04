@@ -1,14 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
+import { ROUTE } from 'src/constants/route';
 import styled from 'styled-components';
 import Icon from '../Icon/Icon';
-
-const ROUTE = {
-  HOME: '/',
-  LIKE: '/like',
-  SOLD: '/sold',
-  CHAT: '/chat',
-  MY: '/my',
-};
 
 function BottomNavigation() {
   const pathname = useLocation().pathname;

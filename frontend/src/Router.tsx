@@ -8,19 +8,20 @@ import ProductDetail from './routers/ProductDetail';
 import Sold from './routers/Sold';
 import Location from './routers/Location';
 import LocationSearch from './routers/LocationSearch';
+import { ROUTE } from './constants/route';
 
 function Router() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/like" element={<Like />} />
-      <Route path="/sold" element={<Sold />} />
-      <Route path="/chat" element={<Chat />} />
-      <Route path="/my" element={<My />} />
+      <Route path={ROUTE.HOME} element={<Home />} />
+      <Route path={ROUTE.LOGIN} element={<Login />} />
+      <Route path={ROUTE.LIKE} element={<Like />} />
+      <Route path={ROUTE.SOLD} element={<Sold />} />
+      <Route path={ROUTE.CHAT} element={<Chat />} />
+      <Route path={ROUTE.MY} element={<My />} />
 
-      <Route path="/location" element={<Location />} />
-      <Route path="/location/search" element={<LocationSearch />} />
+      <Route path={ROUTE.LOCATION} element={<Location />} />
+      <Route path={ROUTE.LIKE} element={<LocationSearch />} />
       <Route path="/products/:id" element={<ProductDetail />} />
     </Routes>
   );

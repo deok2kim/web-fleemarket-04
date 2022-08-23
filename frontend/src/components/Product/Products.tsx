@@ -1,5 +1,21 @@
+import { IImage } from 'src/types/product.type';
+import { IUser } from 'src/types/user.type';
 import styled from 'styled-components';
 import Product from './Product';
+
+interface IProduct {
+  id: number;
+  createdAt: string;
+  title: string;
+  price: number;
+  images: IImage[];
+  user: IUser;
+  views: number;
+  likes: number;
+  chatRoom: number;
+  isView: boolean;
+  isLike: boolean;
+}
 
 function Products() {
   const data = {
@@ -195,7 +211,7 @@ function Products() {
 
   return (
     <Container>
-      {data.data.products.map((product) => (
+      {data.data.products.map((product: IProduct) => (
         <Product key={product.id} product={product} />
       ))}
     </Container>

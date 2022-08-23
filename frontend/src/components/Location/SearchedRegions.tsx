@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRegions } from 'src/queries/region';
 import { useAddRegionMutation } from 'src/queries/user';
 import styled from 'styled-components';
+import { ROUTE } from 'src/constants/route';
 
 interface Props {
   keyword: string;
@@ -38,7 +39,7 @@ function SearchedRegions({ keyword }: Props) {
 
   const onClickRegion = (regionId: number) => {
     addUserRegionMutation.mutate(regionId);
-    navigate('/location');
+    navigate(ROUTE.LOCATION);
     return null;
   };
 

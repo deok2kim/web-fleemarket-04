@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IProduct } from 'src/types/product';
+import { IImage } from 'src/types/product.type';
+import { IUser } from 'src/types/user.type';
 import timeForToday from 'src/utils/ago';
 import { formatPrice } from 'src/utils/formatPrice';
 import styled from 'styled-components';
 import Icon from '../common/Icon/Icon';
 import Image from '../common/Image/Image';
+
+interface IProduct {
+  id: number;
+  createdAt: string;
+  title: string;
+  price: number;
+  images: IImage[];
+  user: IUser;
+  views: number;
+  likes: number;
+  chatRoom: number;
+  isView: boolean;
+  isLike: boolean;
+}
 
 interface Props {
   product: IProduct;

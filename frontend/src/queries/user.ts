@@ -2,8 +2,9 @@ import { AxiosError } from 'axios';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { removeAuthorizationHeader } from 'src/api';
 import { logout } from 'src/api/auth';
-import { addUserRegion, getUserInfo, IUserInfo, removeUserRegion } from 'src/api/user';
+import { addUserRegion, getUserInfo, removeUserRegion } from 'src/api/user';
 import { IServerError, IServerResponse } from 'src/types/api';
+import { IUserInfo } from 'src/types/user.type';
 import { USER } from './queryKey';
 
 export const useUserInfo = () =>

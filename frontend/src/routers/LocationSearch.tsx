@@ -6,6 +6,7 @@ import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
 import withAuth from 'src/hocs/withAuth';
 import styled from 'styled-components';
+import { ROUTE } from 'src/constants/route';
 
 function LocationSearch() {
   const [input, setInput] = useState('');
@@ -17,7 +18,7 @@ function LocationSearch() {
   };
 
   const onClickBack = () => {
-    navigate('/location');
+    navigate(ROUTE.LOCATION);
   };
   return (
     <Container>

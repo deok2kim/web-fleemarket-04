@@ -2,13 +2,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from 'src/queries/user';
+import { ROUTE } from 'src/constants/route';
 
 const withAuth = <P extends {}>(WrappedComponent: React.ComponentType<P>) => {
   const Component = (props: P) => {
     const { data: userInfo } = useUserInfo();
     const navigate = useNavigate();
     if (!userInfo) {
-      navigate('/login', {
+      navigate(ROUTE.LOGIN, {
         replace: true,
       });
     }

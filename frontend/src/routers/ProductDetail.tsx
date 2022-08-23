@@ -9,6 +9,7 @@ import Spacing from 'src/components/common/Spacing/Spacing';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
 import ProductEditDropdown from 'src/components/Product/ProductEditDropdown';
+import { ROUTE } from 'src/constants/route';
 
 function ProductDetail() {
   const productId = useParams<{ id: string }>().id as string;
@@ -20,7 +21,7 @@ function ProductDetail() {
   const navigate = useNavigate();
 
   const onClickBackIcon = () => {
-    navigate('/');
+    navigate(ROUTE.HOME);
   };
 
   return (

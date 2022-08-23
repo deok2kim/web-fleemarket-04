@@ -1,7 +1,8 @@
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { getCategories, ICategories } from 'src/api/category';
+import { getCategories } from 'src/api/category';
 import { IServerError, IServerResponse } from 'src/types/api';
+import { ICategories } from 'src/types/category.type';
 import { CATEGORY } from './queryKey';
 
 export const useCategories = () =>

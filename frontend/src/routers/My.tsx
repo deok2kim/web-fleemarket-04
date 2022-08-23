@@ -4,6 +4,7 @@ import Button from 'src/components/common/Button/Button';
 import withAuth from 'src/hocs/withAuth';
 import { useLogoutMutation } from 'src/queries/user';
 import styled from 'styled-components';
+import { ROUTE } from 'src/constants/route';
 
 function My() {
   const logoutMutation = useLogoutMutation();
@@ -11,7 +12,7 @@ function My() {
 
   const onClickLogoutButton = () => {
     logoutMutation.mutate();
-    navigate('/');
+    navigate(ROUTE.HOME);
   };
 
   return (
