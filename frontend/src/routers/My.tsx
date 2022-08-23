@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
 import Button from 'src/components/common/Button/Button';
 import withAuth from 'src/hocs/withAuth';
-import { useLogout } from 'src/queries/user';
+import { useLogoutMutation } from 'src/queries/user';
 import styled from 'styled-components';
 
 function My() {
-  const logoutMutation = useLogout();
+  const logoutMutation = useLogoutMutation();
   const navigate = useNavigate();
 
   const onClickLogoutButton = () => {

@@ -5,13 +5,9 @@ import Category from './Category';
 function Categories() {
   const { data, isLoading, isError } = useCategories();
 
-  if (isLoading) return <div>...Loading</div>;
-  if (isError) return <div>...Error</div>;
-  if (!data) return <div>...No Data</div>;
-
   return (
     <Container>
-      {data.data.categories.map((category) => (
+      {data?.data.categories.map((category) => (
         <Category key={category.id} category={category} />
       ))}
     </Container>

@@ -30,10 +30,12 @@ function Header({ className, headerTheme, left, center, right }: Props) {
 export default Header;
 
 const LeftWrapper = styled.div`
+  cursor: pointer;
   min-width: 24px;
 `;
 
 const RightWrapper = styled.div`
+  cursor: pointer;
   min-width: 24px;
 `;
 

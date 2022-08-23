@@ -32,6 +32,7 @@ export class RegionsService {
       paginationResult: result,
       total,
       next,
+      nextPage: next ? page + 1 : null,
     });
   }
 }

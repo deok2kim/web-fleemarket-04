@@ -59,6 +59,8 @@ const ButtonElement = styled.button<Pick<Props, 'status'>>`
   justify-content: center;
 
   ${({ status }) => statusList[status]}
+
+  cursor: pointer;
 `;
 
 const Title = styled.p`

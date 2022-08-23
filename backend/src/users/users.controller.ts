@@ -24,11 +24,12 @@ export class UsersController {
 
   @Post('/region')
   @UseGuards(JwtAuthGuard)
-  addUserRegion(@Req() req, @Body() addUserRegionDto: AddUserRegionDto) {
-    return this.usersService.addUserRegion(
+  async addUserRegion(@Req() req, @Body() addUserRegionDto: AddUserRegionDto) {
+    await this.usersService.addUserRegion(
       req.user.id,
       addUserRegionDto.regionId,
     );
+    return;
   }
 
   @Delete('/region/:id')

@@ -1,37 +1,52 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SearchedRegions from 'src/components/\bLocation/SearchedRegions';
 import Button from 'src/components/common/Button/Button';
-import ButtonLocation from 'src/components/common/Button/ButtonLocation';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
+import withAuth from 'src/hocs/withAuth';
 import styled from 'styled-components';
 
 function LocationSearch() {
+  const [input, setInput] = useState('');
+  const navigate = useNavigate();
+
+  // TODO: 디바운스 적용하기
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.currentTarget.value);
+  };
+
+  const onClickBack = () => {
+    navigate('/location');
+  };
   return (
     <Container>
       <Header
         headerTheme="offWhite"
-        left={<Icon name="iconChevronLeft" strokeColor="black" />}
+        left={<Icon onClick={onClickBack} name="iconChevronLeft" strokeColor="black" />}
         center={
           <Center>
             <Icon name="iconSearchMini" strokeColor="grey100" />
-            <Input placeholder="동명(읍,면)으로 검색 (ex. 방이동)" />
+            <Input placeholder="동명(읍,면)으로 검색 (ex. 방이동)" onChange={onChange} />
           </Center>
         }
-        right={<Icon name="iconClose" strokeColor="offWhite" />}
       />
-      <Info>
+      <SearchBUtton>
         <Button onClick={() => {}} size="full" title="현재 위치로 찾기" />
-      </Info>
-      <SearchedRegions />
+      </SearchBUtton>
+      <Title>검색 결과</Title>
+      <SearchedRegions keyword={input} />
     </Container>
   );
 }
 
-export default LocationSearch;
+export default withAuth(LocationSearch);
 
-const Container = styled.div``;
+const Container = styled.div`
+  animation: ${({ theme }) => theme.animation.fadeIn} 0.5s;
+`;
 
-const Info = styled.div`
+const SearchBUtton = styled.div`
   width: 100%;
 
   display: flex;
@@ -58,7 +73,7 @@ const Center = styled.div`
 `;
 
 const Input = styled.input`
-  width: 250px;
+  width: 260px;
 
   border: none;
 
@@ -67,4 +82,11 @@ const Input = styled.input`
   &:focus {
     outline: none;
   }
+`;
+
+const Title = styled.p`
+  margin-left: 18px;
+  padding: 0 10px 10px 10px;
+
+  ${({ theme }) => theme.fonts.linkMedium}
 `;

@@ -1,14 +1,34 @@
+import { useNavigate } from 'react-router-dom';
 import ButtonLocation from 'src/components/common/Button/ButtonLocation';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
+import withAuth from 'src/hocs/withAuth';
+import { useRemoveRegionMutation, useUserInfo } from 'src/queries/user';
+import { getTownName } from 'src/utils/region';
 import styled from 'styled-components';
 
 function Location() {
+  const { data, isLoading } = useUserInfo();
+  const removeRegionMutation = useRemoveRegionMutation();
+  const navigate = useNavigate();
+  const handleClickAddRegion = () => navigate('search');
+  const handleClickBack = () => navigate('/');
+
+  const countMyRegion = data?.data.regions.length;
+
+  if (isLoading) return null;
+  if (!data) return null;
+
+  const onClickMyRegion = (regionId: number) => {
+    // TODO: 모달 적용하기
+    if (countMyRegion === 1) return alert('최소 1개의 지역을 등록해야합니다.');
+    removeRegionMutation.mutate(regionId);
+  };
   return (
     <Container>
       <Header
         headerTheme="offWhite"
-        left={<Icon name="iconChevronLeft" strokeColor="black" />}
+        left={<Icon name="iconChevronLeft" strokeColor="black" onClick={handleClickBack} />}
         center={<p>내 동네 설정하기</p>}
         right={<Icon name="iconClose" strokeColor="offWhite" />}
       />
@@ -17,15 +37,22 @@ function Location() {
         <Content>최대 2개까지 설정 가능해요. </Content>
       </Info>
       <MyRegions>
-        <ButtonLocation title="역삼동" status="active" onClick={() => {}} />
-        <ButtonLocation status="add" onClick={() => {}} />
+        {data?.data.regions.map(({ id, name }, index) => (
+          <ButtonLocation
+            key={id}
+            title={getTownName(name)}
+            status={index === 0 ? 'active' : 'inactive'}
+            onClick={() => onClickMyRegion(id)}
+          />
+        ))}
+        {countMyRegion === 1 && <ButtonLocation status="add" onClick={handleClickAddRegion} />}
       </MyRegions>
       <MyRegionMap></MyRegionMap>
     </Container>
   );
 }
 
-export default Location;
+export default withAuth(Location);
 
 const Container = styled.div``;
 

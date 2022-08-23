@@ -21,8 +21,6 @@ function Product({ product }: Props) {
 
   const onClickHeart = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-
-    console.log('heart');
   };
 
   return (

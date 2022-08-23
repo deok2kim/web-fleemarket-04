@@ -1,29 +1,57 @@
+import { useCallback, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRegions } from 'src/queries/region';
+import { useAddRegionMutation } from 'src/queries/user';
 import styled from 'styled-components';
 
-function SearchedRegions() {
-  const searchedRegions = [
-    {
-      id: 1,
-      name: '서울 강남구 역삼동',
+interface Props {
+  keyword: string;
+}
+
+function SearchedRegions({ keyword }: Props) {
+  const { data, isFetching, fetchNextPage } = useRegions(keyword);
+  const addUserRegionMutation = useAddRegionMutation();
+  const navigate = useNavigate();
+  const observerTarget = useRef<HTMLLIElement>(null);
+
+  const onIntersect: IntersectionObserverCallback = useCallback(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          observer.unobserve(entry.target);
+          fetchNextPage();
+        }
+      });
     },
-    {
-      id: 2,
-      name: '서울 송파구 잠실동',
-    },
-    {
-      id: 3,
-      name: '서울 서초구 서초동',
-    },
-    {
-      id: 4,
-      name: '서울 관악구 관악동',
-    },
-  ];
+    [fetchNextPage],
+  );
+
+  useEffect(() => {
+    if (isFetching) return;
+    let observer: IntersectionObserver;
+    if (observerTarget.current) {
+      observer = new IntersectionObserver(onIntersect, { threshold: 0 });
+      observer.observe(observerTarget.current as Element);
+    }
+    return () => observer && observer.disconnect();
+  }, [isFetching, onIntersect]);
+
+  const onClickRegion = (regionId: number) => {
+    addUserRegionMutation.mutate(regionId);
+    navigate('/location');
+    return null;
+  };
+
   return (
     <Container>
-      {searchedRegions.map((region) => (
-        <Region key={region.id}>{region.name}</Region>
-      ))}
+      {data?.pages.map((pages) =>
+        pages.data.paginationResult.map(({ id, name }) => (
+          <Region key={id} ref={observerTarget} onClick={() => onClickRegion(id)}>
+            {name}
+          </Region>
+        )),
+      )}
+      {isFetching && <p>데이터 로딩중...</p>}
     </Container>
   );
 }
@@ -31,15 +59,25 @@ function SearchedRegions() {
 export default SearchedRegions;
 
 const Container = styled.ul`
+  height: 80vh;
+
   display: flex;
   flex-direction: column;
   gap: 4px;
 
   padding: 0 16px;
+
+  overflow-y: scroll;
 `;
 
 const Region = styled.li`
   padding: 10px;
 
   border-bottom: 1px solid ${({ theme }) => theme.color.grey300};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.color.offWhite};
+  }
+
+  cursor: pointer;
 `;

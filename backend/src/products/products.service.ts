@@ -43,8 +43,6 @@ export class ProductsService {
     const take = limit || DEFAULT_LIMIT;
     const skip = (page - 1) * take;
 
-    console.log(categoryId);
-
     const [result, total] = await this.productRepository
       .createQueryBuilder('product')
       .select([

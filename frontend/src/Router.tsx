@@ -11,20 +11,18 @@ import LocationSearch from './routers/LocationSearch';
 
 function Router() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/like" element={<Like />} />
-        <Route path="/sold" element={<Sold />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/my" element={<My />} />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/like" element={<Like />} />
+      <Route path="/sold" element={<Sold />} />
+      <Route path="/chat" element={<Chat />} />
+      <Route path="/my" element={<My />} />
 
-        <Route path="/location" element={<Location />} />
-        <Route path="/location/search" element={<LocationSearch />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
-      </Routes>
-    </BrowserRouter>
+      <Route path="/location" element={<Location />} />
+      <Route path="/location/search" element={<LocationSearch />} />
+      <Route path="/products/:id" element={<ProductDetail />} />
+    </Routes>
   );
 }
 
