@@ -21,7 +21,7 @@ function Router() {
       <Route path={ROUTE.MY} element={<My />} />
 
       <Route path={ROUTE.LOCATION} element={<Location />} />
-      <Route path={ROUTE.LIKE} element={<LocationSearch />} />
+      <Route path={ROUTE.LOCATION_SEARCH} element={<LocationSearch />} />
       <Route path="/products/:id" element={<ProductDetail />} />
     </Routes>
   );

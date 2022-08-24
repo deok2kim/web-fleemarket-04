@@ -4,38 +4,24 @@ import { useRegions } from 'src/queries/region';
 import { useAddRegionMutation } from 'src/queries/user';
 import styled from 'styled-components';
 import { ROUTE } from 'src/constants/route';
+import { useInfiniteScroll } from 'src/hooks/useInfiniteScroll';
 
 interface Props {
   keyword: string;
 }
 
 function SearchedRegions({ keyword }: Props) {
-  const { data, isFetching, fetchNextPage } = useRegions(keyword);
+  const { data, isFetching, fetchNextPage, hasNextPage } = useRegions(keyword);
   const addUserRegionMutation = useAddRegionMutation();
   const navigate = useNavigate();
   const observerTarget = useRef<HTMLLIElement>(null);
 
-  const onIntersect: IntersectionObserverCallback = useCallback(
-    (entries, observer) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          observer.unobserve(entry.target);
-          fetchNextPage();
-        }
-      });
-    },
-    [fetchNextPage],
-  );
-
-  useEffect(() => {
-    if (isFetching) return;
-    let observer: IntersectionObserver;
-    if (observerTarget.current) {
-      observer = new IntersectionObserver(onIntersect, { threshold: 0 });
-      observer.observe(observerTarget.current as Element);
-    }
-    return () => observer && observer.disconnect();
-  }, [isFetching, onIntersect]);
+  useInfiniteScroll({
+    targetRef: observerTarget,
+    loading: isFetching,
+    loadMore: fetchNextPage,
+    hasNextPage: hasNextPage ?? false,
+  });
 
   const onClickRegion = (regionId: number) => {
     addUserRegionMutation.mutate(regionId);
