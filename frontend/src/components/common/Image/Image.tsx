@@ -82,8 +82,13 @@ const Wrapper = styled.div<Pick<Props, 'width' | 'height' | 'borderRadius' | 'bo
   height: ${({ height }) => height && `${height}px`};
   border-radius: ${({ borderRadius }) => borderRadius && `${borderRadius}px`};
   ${({ theme, box }) => box && setImageBox(box, theme)};
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ImageComponent = styled.img<Pick<Props, 'borderRadius'>>`
+  z-index: -1;
   border-radius: ${({ borderRadius }) => `${borderRadius}px`};
 `;
