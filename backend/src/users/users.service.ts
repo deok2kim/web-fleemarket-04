@@ -7,6 +7,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserRegion } from 'src/entities/user-region.entity';
 import { ErrorException } from 'src/common/exception/error.exception';
 import { ERROR_CODE, ERROR_MESSAGE } from 'src/common/constant/error-message';
+import Product from 'src/products/entities/product.entity';
+import { PaginationOptionDto } from 'src/common/pagination/pagination-option.dto';
+import { DEFAULT_LIMIT } from 'src/common/constant/pagination';
+import { Pagination } from 'src/common/pagination/pagination';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +20,9 @@ export class UsersService {
 
     @InjectRepository(UserRegion)
     private userRegionRepository: Repository<UserRegion>,
+
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
   ) {}
 
   async findUserById(id: number) {
@@ -127,5 +134,57 @@ export class UsersService {
       ERROR_CODE.NOT_APPLIED_REGION,
       HttpStatus.BAD_REQUEST,
     );
+  }
+
+  async findUserLikeProducts(options: PaginationOptionDto, userId: number) {
+    const { limit, page } = options;
+    const take = limit || DEFAULT_LIMIT;
+    const skip = (page - 1) * take;
+
+    const [result, total] = await this.productRepository
+      .createQueryBuilder('product')
+      .select([
+        'product.id',
+        'product.title',
+        'product.price',
+        'product.createdAt',
+        'user.id',
+        'regions.id',
+        'regionNames.name',
+      ])
+      .leftJoinAndSelect('product.images', 'image')
+      .loadRelationCountAndMap('product.chatRoom', 'product.chatRoom')
+      .leftJoinAndSelect('product.views', 'product.views')
+      .leftJoinAndSelect('product.likes', 'product.likes')
+      .leftJoin('product.user', 'user')
+      .leftJoin('user.userRegions', 'regions')
+      .leftJoin('regions.region', 'regionNames')
+      .where('product.likes.userId = :userId', { userId })
+      .take(take)
+      .skip(skip)
+      .getManyAndCount();
+
+    const next = skip + take <= total;
+
+    return new Pagination({
+      paginationResult: result.map((product) => {
+        return {
+          ...product,
+          hasView: !!product.views.length,
+          views: product.views.length,
+          isViewed: !!product.views.find(
+            (viewInfo) => viewInfo.userId === userId,
+          ),
+          hasLike: !!product.likes.length,
+          likes: product.likes.length,
+          isLiked: !!product.likes.find(
+            (likeInfo) => likeInfo.userId === userId,
+          ),
+        };
+      }),
+      total,
+      next,
+      nextPage: next ? page + 1 : null,
+    });
   }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -13,6 +14,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { ProductsService } from 'src/products/products.service';
+import { LikeProductDto } from './dto/like-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -69,7 +71,25 @@ export class ProductsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  createProduct(@Req() req, @Body() createProductData: CreateProductDto) {
-    return this.productsService.createProduct(req.user.id, createProductData);
+  async createProduct(@Req() req, @Body() createProductData: CreateProductDto) {
+    await this.productsService.createProduct(req.user.id, createProductData);
+    return;
+  }
+
+  @Post('/like')
+  @UseGuards(JwtAuthGuard)
+  async likeProduct(@Req() req, @Body() LikeProductDto: LikeProductDto) {
+    await this.productsService.likeProduct(
+      req.user.id,
+      LikeProductDto.productId,
+    );
+    return;
+  }
+
+  @Delete('/dislike/:productId')
+  @UseGuards(JwtAuthGuard)
+  async dislikeProduct(@Req() req, @Param('productId') productId: number) {
+    await this.productsService.dislikeProduct(req.user.id, productId);
+    return;
   }
 }

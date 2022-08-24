@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -36,5 +37,18 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   removeUserRegion(@Req() req, @Param('id') id: number) {
     return this.usersService.removeUserRegion(req.user.id, id);
+  }
+
+  @Get('/likes')
+  @UseGuards(JwtAuthGuard)
+  findUserLikes(
+    @Req() req,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    return this.usersService.findUserLikeProducts(
+      { page: page || 1, limit },
+      req.user.id,
+    );
   }
 }

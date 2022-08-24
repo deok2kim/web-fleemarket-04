@@ -6,10 +6,12 @@ import User from 'src/users/entities/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserRegion } from 'src/entities/user-region.entity';
 
+import Product from 'src/products/entities/product.entity';
+
 @Module({
   imports: [
     TypeOrmModule,
-    TypeOrmModule.forFeature([User, UserRegion]),
+    TypeOrmModule.forFeature([User, UserRegion, Product]),
     AuthModule,
   ],
   exports: [TypeOrmModule],

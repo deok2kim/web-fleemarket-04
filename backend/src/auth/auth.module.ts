@@ -1,4 +1,3 @@
-import { ProductsService } from 'src/products/products.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -11,9 +10,13 @@ import { KakaoStrategy } from 'src/auth/strategy/kakao.strategy';
 import { GoogleStrategy } from 'src/auth/strategy/google.strategy';
 import { GithubStrategy } from 'src/auth/strategy/github.strategy';
 import { UserRegion } from 'src/entities/user-region.entity';
+import Product from 'src/products/entities/product.entity';
 
 @Module({
-  imports: [TypeOrmModule, TypeOrmModule.forFeature([User, UserRegion])],
+  imports: [
+    TypeOrmModule,
+    TypeOrmModule.forFeature([User, UserRegion, Product]),
+  ],
   exports: [TypeOrmModule, JwtService, AuthService],
   controllers: [AuthController],
   providers: [

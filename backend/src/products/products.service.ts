@@ -1,5 +1,5 @@
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Product from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
@@ -9,10 +9,11 @@ import { Like } from 'src/entities/like.entity';
 import { View } from 'src/entities/view.entity';
 import { ProductPaginationDto } from './dto/product-pagination.dto';
 import { Pagination } from 'src/common/pagination/pagination';
+import { ErrorException } from 'src/common/exception/error.exception';
+import { ERROR_CODE, ERROR_MESSAGE } from 'src/common/constant/error-message';
+import { DEFAULT_LIMIT } from 'src/common/constant/pagination';
 
 const DEFAULT_PRODUCT_STATUS_ID = 1; /* 1: 'sale' */
-
-const DEFAULT_LIMIT = 10;
 
 @Injectable()
 export class ProductsService {
@@ -88,11 +89,13 @@ export class ProductsService {
       }),
       total,
       next,
+      nextPage: next ? page + 1 : null,
     });
   }
 
   async findProductById(productId: number, userId?: number) {
     let isLiked;
+
     if (!userId) {
       isLiked = false;
     } else {
@@ -185,6 +188,52 @@ export class ProductsService {
     });
     await Promise.all(promiseImages);
 
+    return;
+  }
+
+  async likeProduct(userId: number, productId: number) {
+    const isLiked = this.likeRepository.findOne({
+      where: {
+        userId,
+        productId,
+      },
+    });
+
+    if (isLiked) {
+      throw new ErrorException(
+        ERROR_MESSAGE.ALREADY_LIKE,
+        ERROR_CODE.ALREADY_LIKE,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.likeRepository.save({
+      userId,
+      productId,
+    });
+    return;
+  }
+
+  async dislikeProduct(userId: number, productId: number) {
+    const isLiked = await this.likeRepository.findOne({
+      where: {
+        userId,
+        productId,
+      },
+    });
+
+    if (!isLiked) {
+      throw new ErrorException(
+        ERROR_MESSAGE.NOT_LIKED,
+        ERROR_CODE.NOT_LIKED,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.likeRepository.delete({
+      userId,
+      productId,
+    });
     return;
   }
 }
