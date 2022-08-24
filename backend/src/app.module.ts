@@ -15,6 +15,7 @@ import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ImageModule } from './images/images.module';
+import { ChatRoomsModule } from './chat-rooms/chat-rooms.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ImageModule } from './images/images.module';
     AuthModule,
     UsersModule,
     ImageModule,
+    ChatRoomsModule,
   ],
   controllers: [AppController],
   providers: [

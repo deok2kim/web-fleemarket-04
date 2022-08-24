@@ -2,7 +2,11 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 import { CoreEntity } from 'src/common/entity/core.entity';
 import ChatRoom from './chat-room.entity';
 
-@Entity()
+@Entity({
+  orderBy: {
+    id: 'DESC',
+  },
+})
 export default class Message extends CoreEntity {
   @Column({ type: 'int' })
   senderId: number;
@@ -15,4 +19,7 @@ export default class Message extends CoreEntity {
 
   @ManyToOne(() => ChatRoom, (chatRoom) => chatRoom.messages)
   chatRoom: ChatRoom;
+
+  @Column()
+  chatRoomId: string;
 }
