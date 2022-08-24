@@ -7,7 +7,7 @@ export const CATEGORY = {
 } as const;
 
 export const PRODUCT = {
-  PRODUCT_CATEGORY_PAGE: (category: number, page: number) => ['products', category, page],
+  PRODUCT_CATEGORY_PAGE: (category: number | undefined) => ['products', category],
   PRODUCT_DETAIL: (productId: number) => ['product', productId],
 };
 

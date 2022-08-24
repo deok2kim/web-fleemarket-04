@@ -1,8 +1,9 @@
 import { AxiosError } from 'axios';
-import { useQuery, UseQueryOptions } from 'react-query';
-import { getProductById } from 'src/api/product';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient, UseQueryOptions } from 'react-query';
+import { dislikeProduct, getProductById, getProductPagination, likeProduct } from 'src/api/product';
 import { IServerError, IServerResponse } from 'src/types/api';
-import { IProductDetail } from 'src/types/product.type';
+import { IPaginationResponse } from 'src/types/pagination.type';
+import { IProductPreview, IProductDetail } from 'src/types/product.type';
 import { PRODUCT } from './queryKey';
 
 export const useProductDetail = (
@@ -14,3 +15,38 @@ export const useProductDetail = (
     () => getProductById(productId),
     options,
   );
+
+export const useProductPagination = (category: number | undefined) =>
+  useInfiniteQuery<IServerResponse<IPaginationResponse<IProductPreview>>, AxiosError<IServerError>>(
+    PRODUCT.PRODUCT_CATEGORY_PAGE(category),
+    ({ pageParam = 1 }) => getProductPagination(category, pageParam),
+    {
+      getNextPageParam: (lastPage) => lastPage.data.nextPage || undefined,
+    },
+  );
+
+export const useLikeProduct = (productId: number, category?: number) => {
+  const queryClient = useQueryClient();
+  return useMutation(() => likeProduct(productId), {
+    onSuccess: () => {
+      if (category) {
+        queryClient.invalidateQueries(PRODUCT.PRODUCT_CATEGORY_PAGE(category));
+      } else {
+        queryClient.invalidateQueries(PRODUCT.PRODUCT_DETAIL(productId));
+      }
+    },
+  });
+};
+export const useDisLikeProduct = (productId: number, category?: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation(() => dislikeProduct(productId), {
+    onSuccess: () => {
+      if (category) {
+        queryClient.invalidateQueries(PRODUCT.PRODUCT_CATEGORY_PAGE(category));
+      } else {
+        queryClient.invalidateQueries(PRODUCT.PRODUCT_DETAIL(productId));
+      }
+    },
+  });
+};

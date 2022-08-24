@@ -1,9 +1,7 @@
-import styled from 'styled-components';
+import { useCategory } from 'src/routers/Home';
+import { ICategory } from 'src/types/category.type';
+import styled, { css } from 'styled-components';
 
-interface ICategory {
-  id: number;
-  name: string;
-}
 interface Props {
   category: ICategory;
 }
@@ -13,21 +11,42 @@ interface IContainerProps {
 }
 
 function Category({ category }: Props) {
-  const currentCategory = '패션잡화';
+  const { category: selectedCategory, onChangeCategory } = useCategory();
+  const isActive = category.id === selectedCategory;
 
-  const isActive = () => {
-    return category.name === currentCategory;
+  const onClickCategoryItem = () => {
+    onChangeCategory(category.id);
   };
-  return <Container isActive={isActive()}>{category.name}</Container>;
+
+  return (
+    <Container isActive={isActive} onClick={onClickCategoryItem}>
+      {category.name}
+    </Container>
+  );
 }
 
 export default Category;
 
 const Container = styled.li<IContainerProps>`
+  padding: 4px 16px;
+
   text-align: center;
-  width: 70px;
-  margin: 10px;
   white-space: nowrap;
-  ${({ theme }) => theme.fonts.linkSmall}
-  color: ${({ theme, isActive }) => (isActive ? theme.color.black : theme.color.grey100)};
+
+  cursor: pointer;
+
+  border: 1px solid ${({ theme }) => theme.color.grey300};
+  border-radius: 999px;
+
+  ${({ theme }) => theme.fonts.linkSmall};
+  ${({ theme, isActive }) =>
+    isActive
+      ? css`
+          background-color: ${theme.color.primary200};
+          color: ${theme.color.white};
+          border-color: ${theme.color.primary200};
+        `
+      : css`
+          color: ${theme.color.grey100};
+        `};
 `;

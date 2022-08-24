@@ -2,7 +2,7 @@ import { IProductDetail } from 'src/types/product.type';
 import timeForToday from 'src/utils/ago';
 import { getTownName } from 'src/utils/region';
 import styled from 'styled-components';
-import Spacing from '../common/Spacing/Spacing';
+import Spacing from '../../common/Spacing/Spacing';
 
 interface Props {
   productDetail?: IProductDetail;

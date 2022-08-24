@@ -37,10 +37,18 @@ export interface IProduct {
 }
 
 export interface IProductDetail {
-  /**  상품 정보 */
+  /** 상품 정보 */
   product: IProduct;
   /** 사용자가 해당 상품에 좋아요 했는지 여부 (e.g true ) */
   isLiked: boolean;
   /** 사용자가 해당 상품의 판매자 인지 여부 (e.g true ) */
   isSeller: boolean;
+}
+
+export interface IProductPreview extends Omit<IProduct, 'content' | 'images'> {
+  thumbnail: IImage;
+  hasView: boolean;
+  isViewed: boolean;
+  hasLike: boolean;
+  isLiked: boolean;
 }

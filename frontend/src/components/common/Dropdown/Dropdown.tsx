@@ -16,7 +16,7 @@ export function Dropdown({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const clickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as any)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as HTMLElement)) {
         setOpen(false);
       }
     };

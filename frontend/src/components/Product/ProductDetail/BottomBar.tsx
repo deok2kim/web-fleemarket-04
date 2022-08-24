@@ -1,30 +1,36 @@
 import { useEffect, useState } from 'react';
+import { useDisLikeProduct, useLikeProduct } from 'src/queries/product';
 import { IProductDetail } from 'src/types/product.type';
 import { formatPrice } from 'src/utils/formatPrice';
 
 import styled from 'styled-components';
-import Button from '../common/Button/Button';
-import Icon from '../common/Icon/Icon';
+import Button from '../../common/Button/Button';
+import Icon from '../../common/Icon/Icon';
 
 interface Props {
-  productDetail?: IProductDetail;
+  productDetail: IProductDetail;
 }
 
 function BottomBar({ productDetail }: Props) {
-  const [like, setLike] = useState(() => productDetail?.isLiked);
-  const priceKr = `${formatPrice(productDetail?.product.price)}원`;
-  const chatText = productDetail?.isSeller
+  const [like, setLike] = useState(productDetail.isLiked);
+
+  const likeMutation = useLikeProduct(productDetail.product.id);
+  const dislikeMutation = useDisLikeProduct(productDetail.product.id);
+  const priceKr = `${formatPrice(productDetail.product.price)}원`;
+  const chatText = productDetail.isSeller
     ? `채팅 목록 보기${productDetail.product.chatRoom > 0 ? `(${productDetail.product.chatRoom})` : ''}`
     : '문의하기';
 
-  const buttonDisabled = productDetail?.isSeller ? !productDetail?.product.chatRoom : false;
-
-  useEffect(() => {
-    setLike(productDetail?.isLiked);
-  }, [productDetail]);
-
+  const buttonDisabled = productDetail.isSeller ? !productDetail.product.chatRoom : false;
+  console.log(like);
   const onClickHeart = () => {
-    setLike((prev) => !prev);
+    if (like) {
+      dislikeMutation.mutate();
+      setLike(false);
+      return;
+    }
+    likeMutation.mutate();
+    setLike(true);
   };
 
   return (

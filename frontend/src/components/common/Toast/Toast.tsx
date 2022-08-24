@@ -12,13 +12,7 @@ const Toast = () => {
     <Portal elementId="toast">
       <Wrapper>
         {toastList.map((toast) => (
-          <ToastItem
-            key={toast.id}
-            id={toast.id}
-            status={toast.status}
-            message={toast.message}
-            timeout={toast.timeout}
-          />
+          <ToastItem key={toast.id} toast={toast} />
         ))}
       </Wrapper>
     </Portal>

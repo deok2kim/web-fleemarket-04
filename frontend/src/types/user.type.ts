@@ -1,3 +1,5 @@
+import { IRegion } from './region.type';
+
 export interface IUserRegion {
   id: number;
   region: {
@@ -8,13 +10,6 @@ export interface IUserRegion {
 export interface IUser {
   id: number;
   userRegions: IUserRegion[];
-}
-
-export interface IRegion {
-  /** 지역 id (e.g. 1)  */
-  id: number;
-  /** 지역명 (e.g. 서울특별시 성동구 용답동)  */
-  name: string;
 }
 
 export interface IUserInfo {

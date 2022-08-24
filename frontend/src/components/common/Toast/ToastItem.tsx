@@ -1,25 +1,27 @@
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { ToastStatus, useToastFactory } from 'src/contexts/ToastContext';
+import { IToast, TToastStatus, useToastFactory } from 'src/contexts/ToastContext';
 import Icon from '../Icon/Icon';
 
 interface Props {
-  id: number;
-  status: ToastStatus;
-  message: string;
-  timeout: number;
+  toast: IToast;
 }
 
-const ToastItem: FC<Props> = ({ id, status, message, timeout }) => {
+function ToastItem({ toast }: Props) {
   const toastRef = useRef<HTMLDivElement>(null);
   const { removeToast } = useToastFactory();
 
   const [visible, setVisible] = useState(true);
 
   const fireToast = useCallback(() => {
-    removeToast(id);
+    removeToast(toast.id);
   }, []);
+
+  const onClickCloseIcon = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    fireToast();
+  };
 
   useEffect(() => {
     if (visible || !toastRef.current) return;
@@ -34,7 +36,7 @@ const ToastItem: FC<Props> = ({ id, status, message, timeout }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-    }, timeout);
+    }, toast.timeout);
 
     return () => {
       clearTimeout(timer);
@@ -42,16 +44,18 @@ const ToastItem: FC<Props> = ({ id, status, message, timeout }) => {
   }, []);
 
   return (
-    <ToastWrapper ref={toastRef} status={status} visible={visible}>
-      {message}
-      <CursorIcon name="iconCircleClose" onClick={fireToast} />
+    <ToastWrapper ref={toastRef} status={toast.status} visible={visible} onClick={toast.onClick}>
+      {toast.message}
+      <div onClick={onClickCloseIcon}>
+        <CursorIcon name="iconCircleClose" />
+      </div>
     </ToastWrapper>
   );
-};
+}
 
 export default ToastItem;
 
-const ToastWrapper = styled.div<{ status: ToastStatus; visible: boolean }>`
+const ToastWrapper = styled.div<{ status: TToastStatus; visible: boolean }>`
   ${({ theme }) => theme.fonts.linkSmall};
   padding: 12px 24px;
   width: 100%;

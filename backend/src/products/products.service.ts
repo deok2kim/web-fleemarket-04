@@ -56,6 +56,7 @@ export class ProductsService {
         'regionNames.name',
       ])
       .leftJoinAndSelect('product.images', 'image')
+      .innerJoinAndSelect('product.productStatus', 'productStatus')
       .loadRelationCountAndMap('product.chatRoom', 'product.chatRoom')
       .leftJoinAndSelect('product.views', 'product.views')
       .leftJoinAndSelect('product.likes', 'product.likes')
@@ -73,8 +74,21 @@ export class ProductsService {
 
     return new Pagination({
       paginationResult: result.map((product) => {
+        const thumbnail = product.images[0];
+        delete product.images;
+
         return {
           ...product,
+          thumbnail,
+          productStatus: product.productStatus.name,
+          user: {
+            id: product.user.id,
+            nickname: product.user.nickname,
+            regions: product.user.userRegions.map((userRegion) => ({
+              id: userRegion.region.id,
+              name: userRegion.region.name,
+            })),
+          },
           hasView: !!product.views.length,
           views: product.views.length,
           isViewed: !!product.views.find(
@@ -192,7 +206,7 @@ export class ProductsService {
   }
 
   async likeProduct(userId: number, productId: number) {
-    const isLiked = this.likeRepository.findOne({
+    const isLiked = await this.likeRepository.findOne({
       where: {
         userId,
         productId,

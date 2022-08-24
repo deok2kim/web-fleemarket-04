@@ -1,19 +1,19 @@
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import Carousel from 'src/components/common/Carousel/Carousel';
-import BottomBar from 'src/components/Product/BottomBar';
-import ProductContent from 'src/components/Product/ProductContent';
+import BottomBar from 'src/components/Product/ProductDetail/BottomBar';
+import ProductContent from 'src/components/Product/ProductDetail/ProductContent';
 import { useProductDetail } from 'src/queries/product';
-import ProductStatusDropdown from 'src/components/Product/ProductStatusDropdown';
+import ProductStatusDropdown from 'src/components/Product/ProductDetail/ProductStatusDropdown';
 import Spacing from 'src/components/common/Spacing/Spacing';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
-import ProductEditDropdown from 'src/components/Product/ProductEditDropdown';
+import ProductEditDropdown from 'src/components/Product/ProductDetail/ProductEditDropdown';
 import { ROUTE } from 'src/constants/route';
 
 function ProductDetail() {
   const productId = useParams<{ id: string }>().id as string;
-  const { data: productDetail } = useProductDetail(+productId, {
+  const { data: productDetail, isLoading } = useProductDetail(+productId, {
     enabled: !!productId,
   });
   const productImages = productDetail?.data.product.images;
@@ -23,6 +23,8 @@ function ProductDetail() {
   const onClickBackIcon = () => {
     navigate(ROUTE.HOME);
   };
+
+  if (!productDetail) return <></>;
 
   return (
     <Container>

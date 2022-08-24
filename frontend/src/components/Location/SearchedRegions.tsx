@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRegions } from 'src/queries/region';
 import { useAddRegionMutation } from 'src/queries/user';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 function SearchedRegions({ keyword }: Props) {
-  const { data, isFetching, fetchNextPage, hasNextPage } = useRegions(keyword);
+  const { data: regionList, isFetching, fetchNextPage, hasNextPage } = useRegions(keyword);
   const addUserRegionMutation = useAddRegionMutation();
   const navigate = useNavigate();
   const observerTarget = useRef<HTMLLIElement>(null);
@@ -31,7 +31,7 @@ function SearchedRegions({ keyword }: Props) {
 
   return (
     <Container>
-      {data?.pages.map((pages) =>
+      {regionList?.pages.map((pages) =>
         pages.data.paginationResult.map(({ id, name }) => (
           <Region key={id} ref={observerTarget} onClick={() => onClickRegion(id)}>
             {name}

@@ -1,19 +1,21 @@
 import { FC, createContext, useContext, useMemo, useRef, useState, useEffect } from 'react';
 
-export type ToastStatus = 'success' | 'error';
+export type TToastStatus = 'success' | 'error';
 
-interface ToastType {
+export interface IToast {
   id: number;
   message: string;
-  status: ToastStatus;
+  status: TToastStatus;
   timeout: number;
+  onClick?: () => void;
 }
 
 interface ToastOptionType {
   timeout?: number;
+  onClick?: () => void;
 }
 
-const ToastContext = createContext<{ toastList: ToastType[]; removeToast: (id: number) => void; init: boolean }>({
+const ToastContext = createContext<{ toastList: IToast[]; removeToast: (id: number) => void; init: boolean }>({
   toastList: [],
   removeToast: () => {},
   init: true,
@@ -28,11 +30,11 @@ interface Props {
 }
 
 const ToastProvider: FC<Props> = ({ children, defaultTimeout = 2000 }) => {
-  const [toastList, setToastList] = useState<ToastType[]>([]);
+  const [toastList, setToastList] = useState<IToast[]>([]);
   const [init, setInit] = useState(true);
   const idRef = useRef(0);
 
-  const addToast = (message: string, status: ToastStatus, options?: ToastOptionType) => {
+  const addToast = (message: string, status: TToastStatus, options?: ToastOptionType) => {
     const toastId = idRef.current++;
 
     const newToast = {
@@ -40,6 +42,7 @@ const ToastProvider: FC<Props> = ({ children, defaultTimeout = 2000 }) => {
       message,
       status,
       timeout: options?.timeout ?? defaultTimeout,
+      onClick: options?.onClick,
     };
 
     setToastList((prev) => [newToast, ...prev]);

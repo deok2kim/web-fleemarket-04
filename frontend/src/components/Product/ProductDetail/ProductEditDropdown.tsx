@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Dropdown from '../common/Dropdown/Dropdown';
-import Icon from '../common/Icon/Icon';
+import Dropdown from '../../common/Dropdown/Dropdown';
+import Icon from '../../common/Icon/Icon';
 
 function ProductEditDropdown() {
   return (
