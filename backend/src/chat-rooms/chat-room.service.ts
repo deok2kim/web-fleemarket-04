@@ -48,18 +48,52 @@ export class ChatRoomService {
 
   // 1. 나의 모든 채팅방
   async findAllMyChatRoom(userId: number) {
-    return await this.chatRoomRepository.find({
+    const chatRoomData = await this.chatRoomRepository.find({
       where: [{ sellerId: userId }, { buyerId: userId }],
       relations: ['messages'],
     });
+
+    const chatRoom = chatRoomData
+      .filter((chatRoomOne) => chatRoomOne.messages.length)
+      .map((chatRoomOne) => ({
+        ...chatRoomOne,
+        unReadCount: chatRoomOne.messages.filter((msg) => !msg.isRead).length,
+      }))
+      .map((chatRoomOne) => {
+        const message = chatRoomOne.messages[chatRoomOne.messages.length - 1];
+        delete chatRoomOne.messages;
+        return {
+          ...chatRoomOne,
+          message,
+        };
+      });
+
+    return { chatRoom };
   }
 
   // 2. 내가 판매중인 {어떤 상품}의 모든 채팅방
   async findAllMyProductChatRoom(userId: number, productId: number) {
-    return await this.chatRoomRepository.find({
+    const chatRoomData = await this.chatRoomRepository.find({
       where: [{ sellerId: userId }, { productId }],
       relations: ['messages'],
     });
+
+    const chatRoom = chatRoomData
+      .filter((chatRoomOne) => chatRoomOne.messages.length)
+      .map((chatRoomOne) => ({
+        ...chatRoomOne,
+        unReadCount: chatRoomOne.messages.filter((msg) => !msg.isRead).length,
+      }))
+      .map((chatRoomOne) => {
+        const message = chatRoomOne.messages[chatRoomOne.messages.length - 1];
+        delete chatRoomOne.messages;
+        return {
+          ...chatRoomOne,
+          message,
+        };
+      });
+
+    return { chatRoom };
   }
 
   // 채팅 하나 입력

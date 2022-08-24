@@ -236,4 +236,26 @@ export class ProductsService {
     });
     return;
   }
+
+  async findProductForChatRoom(productId: number) {
+    const productData = await this.productRepository
+      .createQueryBuilder('product')
+      .select([
+        'product.id',
+        'product.title',
+        'product.price',
+        'product.content',
+      ])
+      .leftJoinAndSelect('product.images', 'images')
+      .where('product.id = :productId', { productId })
+      .getOne();
+    const thumbnail = productData.images[0];
+    delete productData.images;
+    return {
+      product: {
+        ...productData,
+        thumbnail,
+      },
+    };
+  }
 }

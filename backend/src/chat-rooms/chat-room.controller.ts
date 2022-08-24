@@ -34,7 +34,6 @@ export class ChatRoomController {
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
   findChatRoom(@Req() req, @Param('id') id: string) {
-    console.log(id);
     // TODO: seller 나 buyer 둘 중 하나가 로그인한 유저
     return this.chatRoomService.findChatRoom(id);
   }

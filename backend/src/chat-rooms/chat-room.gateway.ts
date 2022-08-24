@@ -22,16 +22,16 @@ export class ChatRoomGateway {
   server: Server; // 서버 인스턴스에 접근하기 위해서 사용한다.
 
   @SubscribeMessage('events')
-  handleEvent(@MessageBody() data: IChatRoom): IChatRoom {
+  async handleEvent(@MessageBody() data: IChatRoom) {
     const { productId, sellerId, buyerId, content, senderId } = data;
     const chatRoomId = `${productId}-${sellerId}-${buyerId}`;
-    this.chatRoomService.createMessage({
+    const chat = await this.chatRoomService.createMessage({
       senderId,
       content,
       chatRoomId,
       isRead: false,
     });
-    this.server.emit(chatRoomId, content);
-    return data;
+    this.server.emit(chatRoomId, chat);
+    return;
   }
 }

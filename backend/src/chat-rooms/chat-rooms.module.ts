@@ -1,3 +1,4 @@
+import Product from 'src/products/entities/product.entity';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,7 +13,9 @@ import { UserRegion } from 'src/entities/user-region.entity';
 import Message from './entities/message.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ChatRoom, User, UserRegion, Message])],
+  imports: [
+    TypeOrmModule.forFeature([ChatRoom, User, UserRegion, Message, Product]),
+  ],
   exports: [TypeOrmModule],
   controllers: [ChatRoomController],
   providers: [

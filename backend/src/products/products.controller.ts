@@ -92,4 +92,10 @@ export class ProductsController {
     await this.productsService.dislikeProduct(req.user.id, productId);
     return;
   }
+
+  @Get('/for-chat-room/:productId')
+  @UseGuards(JwtAuthGuard)
+  async findProductForChatRoom(@Param('productId') productId: number) {
+    return this.productsService.findProductForChatRoom(productId);
+  }
 }
