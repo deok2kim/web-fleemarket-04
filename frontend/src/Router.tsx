@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Chat from './routers/Chat';
 import Home from './routers/Home';
 import Like from './routers/Like';
@@ -9,6 +9,7 @@ import Sold from './routers/Sold';
 import Location from './routers/Location';
 import LocationSearch from './routers/LocationSearch';
 import { ROUTE } from './constants/route';
+import ChatRoom from './routers/ChatRoom';
 
 function Router() {
   return (
@@ -18,11 +19,12 @@ function Router() {
       <Route path={ROUTE.LIKE} element={<Like />} />
       <Route path={ROUTE.SOLD} element={<Sold />} />
       <Route path={ROUTE.CHAT} element={<Chat />} />
+      <Route path={`${ROUTE.CHAT_ROOM}/:id`} element={<ChatRoom />} />
       <Route path={ROUTE.MY} element={<My />} />
 
       <Route path={ROUTE.LOCATION} element={<Location />} />
       <Route path={ROUTE.LOCATION_SEARCH} element={<LocationSearch />} />
-      <Route path="/products/:id" element={<ProductDetail />} />
+      <Route path={`${ROUTE.PRODUCTS}/:id`} element={<ProductDetail />} />
     </Routes>
   );
 }

@@ -25,3 +25,5 @@ export { ReactComponent as iconCircleClose } from 'src/assets/icons/circle-close
 export { ReactComponent as iconChevronLeft } from 'src/assets/icons/chevron-left.svg';
 export { ReactComponent as iconChevronDown } from 'src/assets/icons/chevron-down.svg';
 export { ReactComponent as iconKebab } from 'src/assets/icons/kebab.svg';
+export { ReactComponent as iconOut } from 'src/assets/icons/out.svg';
+export { ReactComponent as iconSend } from 'src/assets/icons/send.svg';
