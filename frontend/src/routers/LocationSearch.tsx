@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SearchedRegions from 'src/components/\bLocation/SearchedRegions';
+import SearchedRegions from 'src/components/Location/SearchedRegions';
 import Button from 'src/components/common/Button/Button';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';

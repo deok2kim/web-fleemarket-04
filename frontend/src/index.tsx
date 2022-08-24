@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { GlobalStyle } from './styles/globalStyle';
 import { BrowserRouter } from 'react-router-dom';
+import ToastProvider from './contexts/ToastContext';
+import Toast from './components/common/Toast/Toast';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,9 +23,12 @@ root.render(
   <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ToastProvider>
+        <BrowserRouter>
+          <App />
+          <Toast />
+        </BrowserRouter>
+      </ToastProvider>
       <ReactQueryDevtools />
     </ThemeProvider>
   </QueryClientProvider>,
