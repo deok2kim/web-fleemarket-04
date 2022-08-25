@@ -8,7 +8,7 @@ import { useProductPagination } from 'src/queries/product';
 
 function Like() {
   const { category, onChangeCategory } = useCategory();
-  const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination(category, true);
+  const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination({ category, like: true });
 
   return (
     <>

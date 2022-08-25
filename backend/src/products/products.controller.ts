@@ -34,6 +34,7 @@ export class ProductsController {
     @Query('limit') limit: number,
     @Query('category') categoryId: number,
     @Query('like') like: boolean,
+    @Query('sell') sell: boolean,
   ) {
     let userId = undefined;
     const { authorization } = req.headers;
@@ -50,6 +51,7 @@ export class ProductsController {
         page: page || 1,
         categoryId,
         like,
+        sell,
       },
       userId,
     );

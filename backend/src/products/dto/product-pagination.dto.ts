@@ -7,4 +7,7 @@ export class ProductPaginationDto extends PaginationOptionDto {
 
   @IsBoolean()
   like: boolean;
+
+  @IsBoolean()
+  sell: boolean;
 }

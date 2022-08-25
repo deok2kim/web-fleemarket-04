@@ -16,7 +16,7 @@ function Home() {
   const { data: userInfo } = useUserInfo(isLoggedIn);
   const location = getTownName(userInfo?.data.regions[0].name) || '전체';
   const { category, onChangeCategory } = useCategory();
-  const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination(category);
+  const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination({ category });
 
   return (
     <>

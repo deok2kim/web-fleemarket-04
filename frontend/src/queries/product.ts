@@ -6,6 +6,12 @@ import { IPaginationResponse } from 'src/types/pagination.type';
 import { IProductPreview, IProductDetail } from 'src/types/product.type';
 import { PRODUCT } from './queryKey';
 
+interface IProductParams {
+  category: number;
+  like?: boolean;
+  sell?: boolean;
+}
+
 export const useProductDetail = (
   productId: number,
   options?: UseQueryOptions<IServerResponse<IProductDetail>, AxiosError<IServerError>>,
@@ -16,10 +22,10 @@ export const useProductDetail = (
     options,
   );
 
-export const useProductPagination = (category: number, like?: boolean) =>
+export const useProductPagination = ({ category, like, sell }: IProductParams) =>
   useInfiniteQuery<IServerResponse<IPaginationResponse<IProductPreview>>, AxiosError<IServerError>>(
     PRODUCT.PRODUCT_CATEGORY_PAGE(category),
-    ({ pageParam = 1 }) => getProductPagination(pageParam, category, like),
+    ({ pageParam = 1 }) => getProductPagination({ page: pageParam, category, like, sell }),
     {
       getNextPageParam: (lastPage) => lastPage.data.nextPage || undefined,
     },

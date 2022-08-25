@@ -40,7 +40,7 @@ export class ProductsService {
   }
 
   async findProducts(options: ProductPaginationDto, userId: number) {
-    const { limit, page, categoryId, like } = options;
+    const { limit, page, categoryId, like, sell } = options;
     const take = limit || DEFAULT_LIMIT;
     const skip = (page - 1) * take;
 
@@ -72,6 +72,10 @@ export class ProductsService {
     }
     if (like) {
       query = query.andWhere('product.likes.userId = :userId', { userId });
+    }
+
+    if (sell) {
+      query = query.andWhere(`product.userId = :userId`, { userId });
     }
 
     query = query.take(take).skip(skip);

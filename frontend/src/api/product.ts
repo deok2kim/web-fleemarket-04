@@ -3,6 +3,13 @@ import { IServerResponse } from 'src/types/api';
 import { IPaginationResponse } from 'src/types/pagination.type';
 import { IProductPreview, IProductDetail } from 'src/types/product.type';
 
+interface IProductParams {
+  page: number;
+  category: number;
+  like?: boolean;
+  sell?: boolean;
+}
+
 /**
  * 상품 상세 정보 API
  * @description 해당 상품의 상세 정보를 불러옵니다.
@@ -20,12 +27,13 @@ export const getProductById = async (productId: number): Promise<IServerResponse
  * @param page 페이지 번호
  **/
 
-export const getProductPagination = async (
-  page: number,
-  category: number,
-  like?: boolean,
-): Promise<IServerResponse<IPaginationResponse<IProductPreview>>> => {
-  const { data } = await axios.get('/products', { params: { page, category, like } });
+export const getProductPagination = async ({
+  page,
+  category,
+  like,
+  sell,
+}: IProductParams): Promise<IServerResponse<IPaginationResponse<IProductPreview>>> => {
+  const { data } = await axios.get('/products', { params: { page, category, like, sell } });
   return data;
 };
 
