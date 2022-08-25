@@ -57,11 +57,36 @@ export class AuthService {
     token: string,
     isRefresh = false,
   ): Promise<{ id: number; userToken: string }> {
-    return await this.jwtService.verify(token, {
-      secret: isRefresh
-        ? this.configService.get('JWT_REFRESH_SECRET')
-        : this.configService.get('JWT_SECRET'),
-    });
+    try {
+      return await this.jwtService.verify(token, {
+        secret: isRefresh
+          ? this.configService.get('JWT_REFRESH_SECRET')
+          : this.configService.get('JWT_SECRET'),
+      });
+    } catch (error) {
+      switch (error.message) {
+        case 'invalid token':
+          throw new ErrorException(
+            ERROR_MESSAGE.INVALID_TOKEN,
+            HttpStatus.UNAUTHORIZED,
+            HttpStatus.UNAUTHORIZED,
+          );
+
+        case 'jwt expired':
+          throw new ErrorException(
+            ERROR_MESSAGE.EXPIRED_TOKEN,
+            HttpStatus.GONE,
+            HttpStatus.GONE,
+          );
+
+        default:
+          throw new ErrorException(
+            ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+      }
+    }
   }
 
   async refreshAccessToken(refreshToken: string) {
