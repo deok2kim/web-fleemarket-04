@@ -6,20 +6,37 @@ import { useChatRooms } from 'src/queries/chatRoom';
 import styled from 'styled-components';
 import timeForToday from 'src/utils/ago';
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
+import { useNavigate } from 'react-router-dom';
+import { useLoggedIn } from 'src/contexts/LoggedInContext';
 
 function ChatRoom() {
-  const { data: chatRoomList } = useChatRooms();
+  // TODO: 채팅 전체 목록과 상품 채팅 목록을 따로 처리하기
+  const { isLoggedIn } = useLoggedIn();
+  const { data: chatRoomList } = useChatRooms({
+    enabled: isLoggedIn,
+  });
+  const navigate = useNavigate();
 
   const hasUnreadMessage = (senderId: number, partnerId: number, messageCount: number): boolean =>
     !!(senderId === partnerId && messageCount);
 
+  const onClickChatRoom = (id: string) => {
+    navigate(`/chat/${id}`);
+  };
+
+  const onClickBack = () => navigate(-1);
+
   return (
     <>
-      <Header headerTheme="offWhite" left={<Icon name="iconChevronLeft" strokeColor="black" />} center={<p>채팅</p>} />
+      <Header
+        headerTheme="offWhite"
+        left={<Icon name="iconChevronLeft" strokeColor="black" onClick={onClickBack} />}
+        center={<p>채팅</p>}
+      />
       {chatRoomList?.data.chatRooms.map(({ id, partner, unreadCount, product, messages }) => {
         const lastMessage = messages[0];
         return (
-          <ChatItem key={id}>
+          <ChatItem key={id} onClick={() => onClickChatRoom(id)}>
             <UserAndContentWrapper>
               <User>{partner.nickname}</User>
               <Content>{lastMessage.content}</Content>
@@ -27,7 +44,7 @@ function ChatRoom() {
             <TimeAndThumbnailAndunreadWrapper>
               <TimeAndunreadWrapper>
                 <Time>{timeForToday(lastMessage.createdAt)}</Time>
-                {hasUnreadMessage(lastMessage.senderId, partner.id, unreadCount) && <Unread>{unreadCount}</Unread>}
+                {hasUnreadMessage(lastMessage.senderId, partner.id, unreadCount || 0) && <Unread>{unreadCount}</Unread>}
               </TimeAndunreadWrapper>
               <Image src={product.thumbnail.url} box="sm" />
             </TimeAndThumbnailAndunreadWrapper>

@@ -20,7 +20,7 @@ function Router() {
       <Route path={ROUTE.LIKE} element={<Like />} />
       <Route path={ROUTE.SOLD} element={<Sold />} />
       <Route path={ROUTE.CHAT} element={<Chat />} />
-      <Route path={`${ROUTE.CHAT_ROOM}/:id`} element={<ChatRoom />} />
+      <Route path={`${ROUTE.CHAT}/:chatRoomId`} element={<ChatRoom />} />
       <Route path={ROUTE.MY} element={<My />} />
 
       <Route path={ROUTE.LOCATION} element={<Location />} />

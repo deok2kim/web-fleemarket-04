@@ -3,19 +3,19 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { ChatRoomService } from './chat-room.service';
 
-interface IChatRoom {
-  id: string;
-  productId: number;
-  sellerId: number;
-  buyerId: number;
-}
-
 @Controller('chatRoom')
 export class ChatRoomController {
   constructor(
     private readonly chatRoomService: ChatRoomService,
     private readonly authService: AuthService,
   ) {}
+
+  // 나의 모든 채팅 방 찾기
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async findAllMyChatRoom(@Req() req) {
+    return this.chatRoomService.findAllMyChatRoom(req.user.id);
+  }
 
   // 내가 판매중인 어떤 상품의 채팅 방 찾기
   @Get('/products/:productId')
@@ -35,13 +35,6 @@ export class ChatRoomController {
   @UseGuards(JwtAuthGuard)
   findChatRoom(@Req() req, @Param('id') id: string) {
     // TODO: seller 나 buyer 둘 중 하나가 로그인한 유저
-    return this.chatRoomService.findChatRoom(id);
-  }
-
-  // 나의 모든 채팅 방 찾기
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  async findAllMyChatRoom(@Req() req) {
-    return this.chatRoomService.findAllMyChatRoom(req.user.id);
+    return this.chatRoomService.findChatRoom(id, req.user.id);
   }
 }

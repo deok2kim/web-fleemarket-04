@@ -3,7 +3,6 @@ export const ROUTE = {
   LIKE: '/like',
   SOLD: '/sold',
   CHAT: '/chat',
-  CHAT_ROOM: '/chat/room',
   MY: '/my',
   LOGIN: '/login',
   LOCATION: '/location',

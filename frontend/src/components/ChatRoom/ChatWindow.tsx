@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 import { TColorToken } from 'src/styles/theme';
+import { IMessage, IUserForChat } from 'src/types/chatRoom';
+import { useUserInfo } from 'src/queries/user';
 
 interface ITextStyles {
   backgroundColor: TColorToken;
@@ -8,37 +10,19 @@ interface ITextStyles {
   borderTopRightRadius?: string;
 }
 
-function ChatWindow() {
-  const myId = 2;
-  const chatList = [
-    {
-      id: 1,
-      sender: 1,
-      content: '안녕하세요! 궁금한게 있는데요',
-    },
-    {
-      id: 2,
-      sender: 2,
-      content: '네 안녕하세요!',
-    },
-    {
-      id: 3,
-      sender: 1,
-      content: '혹시',
-    },
-    {
-      id: 4,
-      sender: 1,
-      content: '실제로 신어볼 수 있는건가요??',
-    },
-  ];
+interface Props {
+  messages: IMessage[];
+  partner: IUserForChat;
+}
 
-  const isMine = (senderId: number) => myId == senderId;
+function ChatWindow({ messages, partner }: Props) {
+  if (!messages) return null;
+  const isMine = (senderId: number) => partner.id != senderId;
   return (
     <Container>
-      {chatList.map((chat) => (
-        <SpeechBubble key={chat.id} isMine={isMine(chat.id)}>
-          <Text isMine={isMine(chat.id)}>{chat.content}</Text>
+      {messages.map(({ id, senderId, isRead, content }) => (
+        <SpeechBubble key={id} isMine={isMine(senderId)}>
+          <Text isMine={isMine(senderId)}>{content}</Text>
         </SpeechBubble>
       ))}
     </Container>
@@ -75,8 +59,6 @@ const Container = styled.div`
 `;
 
 const SpeechBubble = styled.div<{ isMine: boolean }>`
-  height: 32px;
-
   margin: 16px;
 
   display: flex;
@@ -86,6 +68,8 @@ const SpeechBubble = styled.div<{ isMine: boolean }>`
 
 const Text = styled.p<{ isMine: boolean }>`
   border-radius: 8px;
+
+  max-width: 80%;
 
   padding: 8px;
   ${({ theme, isMine }) => {
@@ -97,5 +81,6 @@ const Text = styled.p<{ isMine: boolean }>`
       border-top-right-radius: ${borderTopRightRadius};
       border: 1px solid ${theme.color.primary200};
     `;
-  }}${({ theme }) => theme.fonts.linkSmall}
+  }};
+  ${({ theme }) => theme.fonts.linkSmall};
 `;

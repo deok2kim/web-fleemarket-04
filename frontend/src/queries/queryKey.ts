@@ -18,5 +18,6 @@ export const REGION = {
 } as const;
 
 export const CHAT = {
-  CHATROOMS: (productId?: number) => ['chatRooms', productId],
+  CHATROOMS: ['chatRooms'],
+  CHATROOM: (chatRoomId: string | undefined) => [...CHAT.CHATROOMS, chatRoomId],
 };

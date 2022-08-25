@@ -16,8 +16,8 @@ export interface IMessage {
 }
 
 export interface IChatRoom {
-  /** 채팅방 id (e.g 1) */
-  id: number;
+  /** 채팅방 id (e.g 46-1-3) */
+  id: string;
   /** 상품 id (e.g 46) */
   productId: number;
   /** 판매자 id (e.g 1) */
@@ -25,15 +25,19 @@ export interface IChatRoom {
   /** 구매자 id (e.g 3) */
   buyerId: number;
   /** 읽지 않은 메세지 수 id (e.g 1) */
-  unreadCount: number;
+  unreadCount?: number;
   /** 채팅방을 삭제한 유저 id (e.g 1) */
-  deleteUserId: number;
+  deleteUserId?: number;
   /** 메세지 배열 (e.g [{"id": 21, "createdAt": "2022-08-23T22:20:24.421Z", "senderId": 1, "content": "구매자님 죄송합니다만, 잠실역은 어려울것 같습니다.", "isRead": true, "chatRoomId": "46-3-1" }]) */
   messages: IMessage[];
   /** 상품 정보 id (e.g {"id": 46, "title": "상품 등록 테스트 title1231235555", "price": 1500000, "productStatusId": 1, "thumbnail": { "id": 71, "url": "https://www.apple.com/v/airpods-max/e/images/overview/hero__gnfk5g59t0qe_xlarge.png", "productId": 46 } },) */
   product: IProductPreviewForChat;
   /** 채팅 상대 id (e.g 3) */
   partner: IUserForChat;
+}
+
+export interface IChatRoomRes {
+  chatRoom: IChatRoom;
 }
 
 export interface IChatRooms {
@@ -48,10 +52,12 @@ export interface IProductPreviewForChat {
   title: string;
   /**  상품 가격 (e.g 10000000 ) */
   price: number;
-  /**  상품 상태 id (e.g 1 ) */
-  productStatusId: number;
+  /**  상품 상태 id (e.g '판매중' ) */
+  productStatus: string;
   /**  상품 썸네일 이미지 (e.g {"id": 71,"url": "https://www.apple.com/v/airpods-max/e/images/overview/hero__gnfk5g59t0qe_xlarge.png","productId": 46}) */
   thumbnail: IImage;
+  /** 상품 판매자 아이디 */
+  userId: number;
 }
 
 export interface IUserForChat {

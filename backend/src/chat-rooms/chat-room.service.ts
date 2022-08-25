@@ -20,17 +20,45 @@ export class ChatRoomService {
     return await this.chatRoomRepository.save(createChatRoomDto);
   }
   // 채팅 방 하나 찾기
-  async findChatRoom(id: string) {
-    let chatRoom = await this.chatRoomRepository.findOne({
-      where: {
-        id,
-      },
-      relations: ['messages'],
-    });
-    if (chatRoom) return chatRoom;
+  async findChatRoom(id: string, userId: number) {
+    let chatRoomData = await this.chatRoomRepository
+      .createQueryBuilder('chatRoom')
+      .where('chatRoom.id =:id', { id })
+      .leftJoinAndSelect('chatRoom.messages', 'messages')
+      .leftJoinAndSelect('chatRoom.product', 'product')
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('product.productStatus', 'productStatus')
+      .leftJoinAndSelect('chatRoom.seller', 'seller', 'seller.id != :userId', {
+        userId,
+      })
+      .leftJoinAndSelect('chatRoom.buyer', 'buyer', 'buyer.id != :userId', {
+        userId,
+      })
+      .getOne();
+    let partner;
+    let thumbnail;
+    let productStatus;
+    if (chatRoomData) {
+      partner = getPartner2(chatRoomData.seller, chatRoomData.buyer);
+      thumbnail = getThumbnail(chatRoomData.product.images);
+      productStatus = getProductStatus(chatRoomData.product);
+      deleteRestChatRoomInfo(chatRoomData);
+      deleteProductRestInfo(chatRoomData);
 
+      return {
+        chatRoom: {
+          ...chatRoomData,
+          partner,
+          product: {
+            ...chatRoomData.product,
+            thumbnail,
+            productStatus,
+          },
+        },
+      };
+    }
     const [productId, sellerId, buyerId] = id.split('-').map((v) => +v);
-    chatRoom = await this.createChatRoom({
+    chatRoomData = await this.createChatRoom({
       id,
       productId,
       sellerId,
@@ -39,7 +67,7 @@ export class ChatRoomService {
 
     return {
       chatRoom: {
-        ...chatRoom,
+        ...chatRoomData,
         messages: [],
         deleteUserId: 0,
       },
@@ -69,7 +97,7 @@ export class ChatRoomService {
         thumbnail = getThumbnail(chatRoomOne.product.images);
         partner = chatRoomOne[getPartner(chatRoomOne.buyerId, userId)];
         deleteRestInfo(chatRoomOne, partner);
-
+        deleteProductRestInfo(chatRoomOne);
         return {
           ...chatRoomOne,
           messages: getLastMessage(chatRoomOne.messages),
@@ -143,18 +171,39 @@ export const getThumbnail = (images) => images[0];
 export const getPartner = (buyerId, myId) =>
   buyerId === myId ? 'seller' : 'buyer';
 
+export const getProductStatus = (product) => product.productStatus.name;
+
 export const addUnreadMessageCount = (chatRoom) => ({
   ...chatRoom,
   unreadCount: calcUnreadMessageCount(chatRoom.messages),
 });
 
 export const deleteRestInfo = (chatRoom, partner) => {
-  delete chatRoom.product.content;
-  delete chatRoom.product.categoryId;
-  delete chatRoom.product.userId;
-  delete chatRoom.product.images;
-  delete chatRoom.seller;
-  delete chatRoom.buyer;
   delete partner.snsId;
   delete partner.provider;
+};
+
+export const getPartner2 = (seller, buyer) => {
+  if (seller) return { id: seller.id, nickname: seller.nickname };
+  return {
+    id: buyer.id,
+    nickname: buyer.nickname,
+  };
+};
+
+export const deleteProductRestInfo = (chatRoom) => {
+  delete chatRoom.product.content;
+  delete chatRoom.product.categoryId;
+  delete chatRoom.product.images;
+  delete chatRoom.product.productStatus;
+};
+
+export const deleteRestChatRoomInfo = (chatRoom) => {
+  delete chatRoom.seller;
+  delete chatRoom.buyer;
+};
+
+export const deleteRestUserInfo = (user) => {
+  delete user.snsId;
+  delete user.provider;
 };

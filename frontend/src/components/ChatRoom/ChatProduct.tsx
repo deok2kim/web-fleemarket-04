@@ -1,32 +1,37 @@
 import styled from 'styled-components';
 import Image from 'src/components/common/Image/Image';
 import { formatPrice } from 'src/utils/formatPrice';
+import { IProductPreviewForChat } from 'src/types/chatRoom';
 
-function ChatProduct() {
-  const product = {
-    title: '빈티지 롤러 스케이트',
-    price: 160000,
-    status: '판매중',
-    thumbnail:
-      'https://post-phinf.pstatic.net/MjAxOTA0MjZfMjc2/MDAxNTU2MjE2Njc1NjAz.5GjTVBEPY0kd2SExs3uiK2eeZ1K6pCae4MwViLxf8rcg.BN2Tr6BXUaFG_IJJOB4pSFLRdHqprgQxk-ugh-W0uZ4g.JPEG/KakaoTalk_20190426_032248653.jpg?type=w1200',
-  };
+interface Props {
+  product: IProductPreviewForChat;
+}
+
+function ChatProduct({ product }: Props) {
+  if (!product) return null;
+  const {
+    thumbnail: { url },
+    title,
+    price,
+    productStatus,
+  } = product;
   return (
-    <ProductWrapper>
-      <ProductInfoWrapper>
-        <Image src={product.thumbnail} box="sm" />
-        <ProductTitleAndPriceWrapper>
-          <ProductTitle>{product.title}</ProductTitle>
-          <ProductPrice>{formatPrice(product.price)}원</ProductPrice>
-        </ProductTitleAndPriceWrapper>
-      </ProductInfoWrapper>
-      <ProductStatus>{product.status}</ProductStatus>
-    </ProductWrapper>
+    <Wrapper>
+      <InfoWrapper>
+        <Image src={url} box="sm" />
+        <TitleAndPriceWrapper>
+          <Title>{title}</Title>
+          <Price>{formatPrice(price)}원</Price>
+        </TitleAndPriceWrapper>
+      </InfoWrapper>
+      <Status>{productStatus}</Status>
+    </Wrapper>
   );
 }
 
 export default ChatProduct;
 
-const ProductWrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,13 +43,13 @@ const ProductWrapper = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.color.grey300};
 `;
 
-const ProductInfoWrapper = styled.div`
+const InfoWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
 `;
 
-const ProductStatus = styled.div`
+const Status = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -58,13 +63,13 @@ const ProductStatus = styled.div`
   ${({ theme }) => theme.fonts.linkSmall}
 `;
 
-const ProductTitle = styled.p`
+const Title = styled.p`
   ${({ theme }) => theme.fonts.textSmall};
 `;
 
-const ProductPrice = styled.p`
+const Price = styled.p`
   ${({ theme }) => theme.fonts.textXSmall};
   color: ${({ theme }) => theme.color.grey100};
 `;
 
-const ProductTitleAndPriceWrapper = styled.div``;
+const TitleAndPriceWrapper = styled.div``;
