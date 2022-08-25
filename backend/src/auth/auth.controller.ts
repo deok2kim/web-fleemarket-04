@@ -36,16 +36,14 @@ export class AuthController {
     });
     res.cookie('refreshToken', refreshToken, {
       maxAge: 7 * DAY_SECONDS,
+      httpOnly: true,
     });
   }
 
   @Post('/refresh/access-token')
-  async refreshAccessToken(
-    @Res() res: Response,
-    @Body() refreshTokenDto: RefreshTokenDto,
-  ) {
+  async refreshAccessToken(@Req() req: Request, @Res() res: Response) {
     const { accessToken, refreshToken } =
-      await this.authService.refreshAccessToken(refreshTokenDto.refreshToken);
+      await this.authService.refreshAccessToken(req.cookies.refreshToken);
 
     this.setAccessToken(res, accessToken, refreshToken);
 

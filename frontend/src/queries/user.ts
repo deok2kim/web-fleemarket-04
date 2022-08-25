@@ -7,9 +7,10 @@ import { IServerError, IServerResponse } from 'src/types/api';
 import { IUserInfo } from 'src/types/user.type';
 import { USER } from './queryKey';
 
-export const useUserInfo = () =>
+export const useUserInfo = (enabled = true) =>
   useQuery<IServerResponse<IUserInfo>, AxiosError<IServerError>>(USER.USER_INFO, getUserInfo, {
     staleTime: Infinity,
+    enabled,
   });
 
 export const useLogoutMutation = () => {
@@ -17,7 +18,7 @@ export const useLogoutMutation = () => {
 
   return useMutation(logout, {
     onSuccess: () => {
-      queryClient.removeQueries(USER.USER_INFO);
+      queryClient.clear();
       removeAuthorizationHeader();
     },
   });

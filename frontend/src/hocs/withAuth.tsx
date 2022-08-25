@@ -1,18 +1,21 @@
 /* eslint-disable react/display-name */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserInfo } from 'src/queries/user';
 import { ROUTE } from 'src/constants/route';
+import { useLoggedIn } from 'src/contexts/LoggedInContext';
 
 const withAuth = <P extends {}>(WrappedComponent: React.ComponentType<P>) => {
   const Component = (props: P) => {
-    const { data: userInfo } = useUserInfo();
+    const { isLoggedIn } = useLoggedIn();
     const navigate = useNavigate();
-    if (!userInfo) {
-      navigate(ROUTE.LOGIN, {
-        replace: true,
-      });
-    }
+
+    useEffect(() => {
+      if (!isLoggedIn) {
+        navigate(ROUTE.LOGIN, {
+          replace: true,
+        });
+      }
+    }, []);
 
     return <WrappedComponent {...props} />;
   };

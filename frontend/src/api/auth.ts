@@ -6,12 +6,9 @@ import { getCookie } from 'src/utils/cookie';
  * @description 리프레시 토큰을 이용해 액세스 토큰을 재발급한다.
  **/
 export const refreshAccessToken = async () => {
-  const refreshToken = getCookie('refreshToken');
   await axios.post(
     '/auth/refresh/access-token',
-    {
-      refreshToken,
-    },
+    {},
     {
       withCredentials: true,
     },
@@ -23,11 +20,7 @@ export const refreshAccessToken = async () => {
  * @description 쿠키의 액세스토큰,리프레시토큰을 삭제한다.
  **/
 export const logout = async () => {
-  await axios.post(
-    '/auth/logout',
-    {},
-    {
-      withCredentials: true,
-    },
-  );
+  await axios.post('/auth/logout', null, {
+    withCredentials: true,
+  });
 };

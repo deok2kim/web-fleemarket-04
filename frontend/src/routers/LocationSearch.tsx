@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SearchedRegions from 'src/components/Location/SearchedRegions';
 import Button from 'src/components/common/Button/Button';
 import Header from 'src/components/common/Header/Header';
@@ -11,6 +11,7 @@ import { ROUTE } from 'src/constants/route';
 function LocationSearch() {
   const [input, setInput] = useState('');
   const navigate = useNavigate();
+  const state = useLocation().state as { isInitUser?: boolean };
 
   // TODO: 디바운스 적용하기
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,11 +21,12 @@ function LocationSearch() {
   const onClickBack = () => {
     navigate(ROUTE.LOCATION);
   };
+
   return (
     <Container>
       <Header
         headerTheme="offWhite"
-        left={<Icon onClick={onClickBack} name="iconChevronLeft" strokeColor="black" />}
+        left={!state?.isInitUser && <Icon onClick={onClickBack} name="iconChevronLeft" strokeColor="black" />}
         center={
           <Center>
             <Icon name="iconSearchMini" strokeColor="grey100" />

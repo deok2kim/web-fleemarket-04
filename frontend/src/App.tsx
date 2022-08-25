@@ -1,14 +1,16 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect } from 'react';
 import { initAxiosConfig } from './api';
-import { useUserInfo } from './queries/user';
+import { useUserCheck } from './hooks/useUserCheck';
 import Router from './Router';
 
 function App() {
-  useUserInfo();
+  const { isPassing } = useUserCheck();
 
   useLayoutEffect(() => {
     initAxiosConfig();
   }, []);
+
+  if (isPassing) return null;
 
   return <Router />;
 }

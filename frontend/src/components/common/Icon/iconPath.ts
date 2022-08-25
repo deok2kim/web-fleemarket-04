@@ -27,3 +27,5 @@ export { ReactComponent as iconChevronDown } from 'src/assets/icons/chevron-down
 export { ReactComponent as iconKebab } from 'src/assets/icons/kebab.svg';
 export { ReactComponent as iconOut } from 'src/assets/icons/out.svg';
 export { ReactComponent as iconSend } from 'src/assets/icons/send.svg';
+
+export { ReactComponent as iconMap } from 'src/assets/icons/map.svg';

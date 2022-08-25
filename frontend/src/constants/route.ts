@@ -8,5 +8,6 @@ export const ROUTE = {
   LOGIN: '/login',
   LOCATION: '/location',
   LOCATION_SEARCH: '/location/search',
+  LOCATION_INIT: '/location/init',
   PRODUCTS: '/products',
 };

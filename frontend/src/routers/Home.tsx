@@ -5,6 +5,7 @@ import FAB from 'src/components/common/Button/FAB';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
 import Products from 'src/components/Product/ProductList/Products';
+import { useLoggedIn } from 'src/contexts/LoggedInContext';
 import { useUserInfo } from 'src/queries/user';
 import { getTownName } from 'src/utils/region';
 import styled from 'styled-components';
@@ -26,9 +27,10 @@ export const useCategory = () => {
 };
 
 function Home() {
-  const { data: userInfo } = useUserInfo();
+  const { isLoggedIn } = useLoggedIn();
+  const { data: userInfo } = useUserInfo(isLoggedIn);
   const location = getTownName(userInfo?.data.regions[0].name) || '전체';
-  const [category, setCategory] = useState<number | undefined>(undefined);
+  const [category, setCategory] = useState<number>(0);
 
   const onChangeCategory = useCallback((categoryId: number) => {
     setCategory(categoryId);

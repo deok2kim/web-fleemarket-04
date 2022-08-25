@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE } from 'src/constants/route';
+import { useLoggedIn } from 'src/contexts/LoggedInContext';
 import { useToast } from 'src/contexts/ToastContext';
 import { useDisLikeProduct, useLikeProduct } from 'src/queries/product';
 import { useUserInfo } from 'src/queries/user';
@@ -18,9 +19,10 @@ interface Props {
 
 function Product({ product }: Props, ref: React.ForwardedRef<HTMLLIElement>) {
   const { category } = useCategory();
+  const { isLoggedIn } = useLoggedIn();
+  const { data: userInfo } = useUserInfo(isLoggedIn);
   const [like, setLike] = useState(product.isLiked);
   const [likeCount, setLikeCount] = useState(product.likes);
-  const { data: userInfo } = useUserInfo();
   const likeMutation = useLikeProduct(product.id, category);
   const dislikeMutation = useDisLikeProduct(product.id, category);
   const isExistence = (count: number): boolean => count > 0;
@@ -109,6 +111,8 @@ const Container = styled.li`
   justify-content: space-between;
 
   padding: 0 16px;
+
+  cursor: pointer;
 `;
 
 const InfoWrapper = styled.div`
@@ -165,8 +169,7 @@ const InfoIconCount = styled.div`
 `;
 
 const Title = styled.p`
-  // TODO: 기기의 정보를 받아서 유동적으로 늘려주자. ellipsis 를 위해서
-  width: 125px;
+  max-width: 80%;
 
   ${({ theme }) => theme.fonts.linkMedium};
 

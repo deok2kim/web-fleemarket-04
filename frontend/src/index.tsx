@@ -8,6 +8,7 @@ import { GlobalStyle } from './styles/globalStyle';
 import { BrowserRouter } from 'react-router-dom';
 import ToastProvider from './contexts/ToastContext';
 import Toast from './components/common/Toast/Toast';
+import LoggedInProvider from './contexts/LoggedInContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,10 +25,12 @@ root.render(
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <ToastProvider>
-        <BrowserRouter>
-          <App />
-          <Toast />
-        </BrowserRouter>
+        <LoggedInProvider>
+          <BrowserRouter>
+            <App />
+            <Toast />
+          </BrowserRouter>
+        </LoggedInProvider>
       </ToastProvider>
       <ReactQueryDevtools />
     </ThemeProvider>

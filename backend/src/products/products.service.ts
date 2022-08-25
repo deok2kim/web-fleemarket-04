@@ -63,9 +63,14 @@ export class ProductsService {
       .leftJoin('product.user', 'user')
       .leftJoin('user.userRegions', 'regions')
       .leftJoin('regions.region', 'regionNames')
-      .where(isNaN(categoryId) ? '' : 'product.categoryId = :categoryId', {
-        categoryId,
-      })
+      .where(
+        isNaN(categoryId) || categoryId === 0
+          ? ''
+          : 'product.categoryId = :categoryId',
+        {
+          categoryId,
+        },
+      )
       .take(take)
       .skip(skip)
       .getManyAndCount();

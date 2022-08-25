@@ -1,22 +1,14 @@
-import { useEffect, useState } from 'react';
 import { useCategories } from 'src/queries/category';
-import { useCategory } from 'src/routers/Home';
 import styled from 'styled-components';
 import Category from './Category';
 
 function Categories() {
-  const { data, isLoading } = useCategories();
-  const { onChangeCategory } = useCategory();
-
-  useEffect(() => {
-    if (isLoading || !data?.data.categories.length) return;
-    const firstCategory = data?.data.categories[0].id;
-    onChangeCategory(firstCategory);
-  }, [isLoading]);
+  const { data: categoryList } = useCategories();
 
   return (
     <Container>
-      {data?.data.categories.map((category) => (
+      <Category category={{ id: 0, name: '전체' }} />
+      {categoryList?.data.categories.map((category) => (
         <Category key={category.id} category={category} />
       ))}
     </Container>

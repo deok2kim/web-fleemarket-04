@@ -13,7 +13,6 @@ interface Props {
 
 function BottomBar({ productDetail }: Props) {
   const [like, setLike] = useState(productDetail.isLiked);
-
   const likeMutation = useLikeProduct(productDetail.product.id);
   const dislikeMutation = useDisLikeProduct(productDetail.product.id);
   const priceKr = `${formatPrice(productDetail.product.price)}원`;
@@ -22,7 +21,6 @@ function BottomBar({ productDetail }: Props) {
     : '문의하기';
 
   const buttonDisabled = productDetail.isSeller ? !productDetail.product.chatRoom : false;
-  console.log(like);
   const onClickHeart = () => {
     if (like) {
       dislikeMutation.mutate();
