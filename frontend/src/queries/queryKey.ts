@@ -16,3 +16,7 @@ export const PRODUCT = {
 export const REGION = {
   REGIONS: (keyword: string) => ['regions', keyword],
 } as const;
+
+export const CHAT = {
+  CHATROOMS: (productId?: number) => ['chatRooms', productId],
+};

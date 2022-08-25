@@ -5,6 +5,7 @@ import Product from 'src/products/entities/product.entity';
 import { Like } from 'src/entities/like.entity';
 import { View } from 'src/entities/view.entity';
 import { UserRegion } from 'src/entities/user-region.entity';
+import ChatRoom from 'src/chat-rooms/entities/chat-room.entity';
 
 @Entity()
 export default class User extends CoreEntity {
@@ -28,4 +29,10 @@ export default class User extends CoreEntity {
 
   @OneToMany(() => UserRegion, (userRegion) => userRegion.user)
   userRegions: UserRegion[];
+
+  @OneToMany(() => ChatRoom, (chatRoom) => chatRoom.seller, { eager: true })
+  chatRoomS: ChatRoom[];
+
+  @OneToMany(() => ChatRoom, (chatRoom) => chatRoom.buyer, { eager: true })
+  chatRoomB: ChatRoom[];
 }

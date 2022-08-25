@@ -14,7 +14,7 @@ import User from 'src/users/entities/user.entity';
 @Entity()
 export default class ChatRoom extends BaseEntity {
   @Column({ type: 'int' })
-  deleteUser: number;
+  deleteUserId: number;
 
   @OneToMany(() => Message, (message) => message.chatRoom, { cascade: true })
   messages: Message[];
@@ -37,7 +37,7 @@ export default class ChatRoom extends BaseEntity {
   @Column()
   buyerId: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
   @PrimaryColumn({ name: 'id' })

@@ -1,5 +1,11 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
-import { CoreEntity } from 'src/common/entity/core.entity';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import ChatRoom from './chat-room.entity';
 
 @Entity({
@@ -7,7 +13,13 @@ import ChatRoom from './chat-room.entity';
     id: 'DESC',
   },
 })
-export default class Message extends CoreEntity {
+export default class Message extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
   @Column({ type: 'int' })
   senderId: number;
 

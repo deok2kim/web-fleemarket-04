@@ -41,59 +41,90 @@ export class ChatRoomService {
       chatRoom: {
         ...chatRoom,
         messages: [],
-        deleteUser: 0,
+        deleteUserId: 0,
       },
     };
   }
 
   // 1. 나의 모든 채팅방
   async findAllMyChatRoom(userId: number) {
-    const chatRoomData = await this.chatRoomRepository.find({
-      where: [{ sellerId: userId }, { buyerId: userId }],
-      relations: ['messages'],
-    });
+    const chatRoomData = await this.chatRoomRepository
+      .createQueryBuilder('chatRoom')
+      .leftJoinAndSelect('chatRoom.messages', 'messages')
+      .leftJoinAndSelect('chatRoom.product', 'product')
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('chatRoom.seller', 'seller')
+      .leftJoinAndSelect('chatRoom.buyer', 'buyer')
+      .where('chatRoom.sellerId = :userId OR chatRoom.buyerId = :userId', {
+        userId,
+      })
+      .getMany();
 
-    const chatRoom = chatRoomData
+    let thumbnail;
+    let partner;
+    const chatRooms = chatRoomData
       .filter((chatRoomOne) => chatRoomOne.messages.length)
-      .map((chatRoomOne) => ({
-        ...chatRoomOne,
-        unReadCount: chatRoomOne.messages.filter((msg) => !msg.isRead).length,
-      }))
+      .map(addUnreadMessageCount)
       .map((chatRoomOne) => {
-        const message = chatRoomOne.messages[chatRoomOne.messages.length - 1];
-        delete chatRoomOne.messages;
+        thumbnail = getThumbnail(chatRoomOne.product.images);
+        partner = chatRoomOne[getPartner(chatRoomOne.buyerId, userId)];
+        deleteRestInfo(chatRoomOne, partner);
+
         return {
           ...chatRoomOne,
-          message,
+          messages: getLastMessage(chatRoomOne.messages),
+          product: {
+            ...chatRoomOne.product,
+            thumbnail,
+          },
+          partner,
         };
       });
 
-    return { chatRoom };
+    return { chatRooms };
   }
 
   // 2. 내가 판매중인 {어떤 상품}의 모든 채팅방
   async findAllMyProductChatRoom(userId: number, productId: number) {
-    const chatRoomData = await this.chatRoomRepository.find({
-      where: [{ sellerId: userId }, { productId }],
-      relations: ['messages'],
-    });
+    const chatRoomData = await this.chatRoomRepository
+      .createQueryBuilder('chatRoom')
+      .leftJoinAndSelect('chatRoom.messages', 'messages')
+      .leftJoinAndSelect('chatRoom.product', 'product')
+      .leftJoinAndSelect('product.images', 'images')
+      .where(
+        'chatRoom.sellerId = :userId AND chatRoom.productId = :productId',
+        {
+          userId,
+          productId,
+        },
+      )
+      .getMany();
 
-    const chatRoom = chatRoomData
+    let thumbnail;
+    const chatRooms = chatRoomData
       .filter((chatRoomOne) => chatRoomOne.messages.length)
       .map((chatRoomOne) => ({
         ...chatRoomOne,
-        unReadCount: chatRoomOne.messages.filter((msg) => !msg.isRead).length,
+        unreadCount: calcUnreadMessageCount(chatRoomOne.messages),
       }))
       .map((chatRoomOne) => {
-        const message = chatRoomOne.messages[chatRoomOne.messages.length - 1];
-        delete chatRoomOne.messages;
+        thumbnail = getThumbnail(chatRoomOne.product.images);
+
+        delete chatRoomOne.product.content;
+        delete chatRoomOne.product.categoryId;
+        delete chatRoomOne.product.userId;
+        delete chatRoomOne.product.images;
         return {
           ...chatRoomOne,
-          message,
+          messages: getLastMessage(chatRoomOne.messages),
+          product: {
+            ...chatRoomOne.product,
+            thumbnail,
+          },
         };
       });
 
-    return { chatRoom };
+    return { chatRooms };
   }
 
   // 채팅 하나 입력
@@ -101,3 +132,29 @@ export class ChatRoomService {
     return await this.messageRepository.save(createMessageDto);
   }
 }
+
+export const calcUnreadMessageCount = (messages) =>
+  messages.filter((message) => !message.isRead).length;
+
+export const getLastMessage = (messages) => [messages[messages.length - 1]];
+
+export const getThumbnail = (images) => images[0];
+
+export const getPartner = (buyerId, myId) =>
+  buyerId === myId ? 'seller' : 'buyer';
+
+export const addUnreadMessageCount = (chatRoom) => ({
+  ...chatRoom,
+  unreadCount: calcUnreadMessageCount(chatRoom.messages),
+});
+
+export const deleteRestInfo = (chatRoom, partner) => {
+  delete chatRoom.product.content;
+  delete chatRoom.product.categoryId;
+  delete chatRoom.product.userId;
+  delete chatRoom.product.images;
+  delete chatRoom.seller;
+  delete chatRoom.buyer;
+  delete partner.snsId;
+  delete partner.provider;
+};
