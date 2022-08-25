@@ -11,7 +11,7 @@ import { ImageService } from './images.service';
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
-  @Post()
+  @Post('/upload')
   @UseInterceptors(FilesInterceptor('images', 10))
   async uploadImage(@UploadedFiles() files: Express.MulterS3.File[]) {
     return await this.imageService.uploadImage(files);

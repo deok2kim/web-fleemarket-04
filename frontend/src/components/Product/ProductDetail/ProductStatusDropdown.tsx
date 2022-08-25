@@ -1,12 +1,35 @@
+import { useToast } from 'src/contexts/ToastContext';
+import { useUpdateProductStatusMutation } from 'src/queries/product';
 import styled from 'styled-components';
 import Dropdown from '../../common/Dropdown/Dropdown';
 import Icon from '../../common/Icon/Icon';
 
 interface Props {
+  productId: number;
   currentStatus: string;
 }
 
-function ProductStatusDropdown({ currentStatus }: Props) {
+const PRODUCT_STATUS = {
+  SALE: 1,
+  RESERVED: 2,
+  SOLDOUT: 3,
+} as const;
+
+function ProductStatusDropdown({ productId, currentStatus }: Props) {
+  const updateProductStatusMutation = useUpdateProductStatusMutation();
+  const toast = useToast();
+
+  const onClickProductStatus = (productStatusId: number) => {
+    updateProductStatusMutation.mutate(
+      { productId, productStatusId },
+      {
+        onSuccess: () => {
+          toast.success('해당 상품의 상태가 변경되었습니다.');
+        },
+      },
+    );
+  };
+
   return (
     <Dropdown>
       <Dropdown.Toggle>
@@ -17,9 +40,15 @@ function ProductStatusDropdown({ currentStatus }: Props) {
       </Dropdown.Toggle>
 
       <Dropdown.List position="left">
-        {currentStatus !== '판매중' && <Dropdown.Item>판매중으로 변경</Dropdown.Item>}
-        {currentStatus !== '예약중' && <Dropdown.Item>예약중으로 변경</Dropdown.Item>}
-        {currentStatus !== '판매완료' && <Dropdown.Item>판매완료로 변경</Dropdown.Item>}
+        {currentStatus !== '판매중' && (
+          <Dropdown.Item onClick={() => onClickProductStatus(PRODUCT_STATUS.SALE)}>판매중으로 변경</Dropdown.Item>
+        )}
+        {currentStatus !== '예약중' && (
+          <Dropdown.Item onClick={() => onClickProductStatus(PRODUCT_STATUS.RESERVED)}>예약중으로 변경</Dropdown.Item>
+        )}
+        {currentStatus !== '판매완료' && (
+          <Dropdown.Item onClick={() => onClickProductStatus(PRODUCT_STATUS.SOLDOUT)}>판매완료로 변경</Dropdown.Item>
+        )}
       </Dropdown.List>
     </Dropdown>
   );

@@ -28,6 +28,9 @@ function Product({ category, product }: Props, ref: React.ForwardedRef<HTMLLIEle
   const navigate = useNavigate();
   const toast = useToast();
 
+  const isReserved = product.productStatus === '예약중';
+  const isUndefinedPrice = !!product.price;
+
   const onClickProduct = (e: React.MouseEvent<HTMLLIElement>) => {
     navigate(`/products/${product.id}`);
   };
@@ -63,7 +66,10 @@ function Product({ category, product }: Props, ref: React.ForwardedRef<HTMLLIEle
         <InfoText>
           <Title>{product.title}</Title>
           <LocationAndTime>{timeForToday(product.createdAt)}</LocationAndTime>
-          <Price>{formatPrice(product.price)}원</Price>
+          <Price>
+            {isReserved && <ProductStatus>{product.productStatus}</ProductStatus>}{' '}
+            {isUndefinedPrice ? `${formatPrice(product.price)}원` : '가격미정'}
+          </Price>
         </InfoText>
       </InfoWrapper>
 
@@ -176,9 +182,18 @@ const Title = styled.p`
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
+
 const Price = styled.p`
   ${({ theme }) => theme.fonts.linkSmall};
 `;
+
+const ProductStatus = styled.span`
+  padding: 2px 4px;
+  background-color: ${({ theme }) => theme.color.primary200};
+  color: ${({ theme }) => theme.color.white};
+  border-radius: 2px;
+`;
+
 const LocationAndTime = styled.p`
   color: ${({ theme }) => theme.color.grey100};
   ${({ theme }) => theme.fonts.textSmall};

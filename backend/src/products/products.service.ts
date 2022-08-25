@@ -12,6 +12,11 @@ import { Pagination } from 'src/common/pagination/pagination';
 import { ErrorException } from 'src/common/exception/error.exception';
 import { ERROR_CODE, ERROR_MESSAGE } from 'src/common/constant/error-message';
 import { DEFAULT_LIMIT } from 'src/common/constant/pagination';
+import {
+  UpdateProductDto,
+  UpdateProductStatusDto,
+} from './dto/update-product.dto';
+import ProductStatus from './entities/product-status.entity';
 
 const DEFAULT_PRODUCT_STATUS_ID = 1; /* 1: 'sale' */
 
@@ -20,6 +25,9 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
+
+    @InjectRepository(ProductStatus)
+    private productStatusRepository: Repository<ProductStatus>,
 
     @InjectRepository(Image)
     private ImageRepository: Repository<Image>,
@@ -78,7 +86,7 @@ export class ProductsService {
       query = query.andWhere(`product.userId = :userId`, { userId });
     }
 
-    query = query.take(take).skip(skip);
+    query = query.take(take).skip(skip).orderBy('product.createdAt', 'DESC');
 
     const [result, total] = await query.getManyAndCount();
 
@@ -232,7 +240,42 @@ export class ProductsService {
     });
     await Promise.all(promiseImages);
 
-    return;
+    return newProduct;
+  }
+
+  async updateProduct(userId: number, productData: UpdateProductDto) {
+    // TODO 상품 정보 업데이트
+    const { title, price, content, categoryId, images } = productData;
+  }
+
+  async updateProductStatus(
+    userId: number,
+    productId: number,
+    productStatusDto: UpdateProductStatusDto,
+  ) {
+    const product = await this.productRepository.findOne({
+      where: {
+        id: productId,
+      },
+    });
+
+    if (product.userId !== userId) {
+      throw new ErrorException(
+        ERROR_MESSAGE.ONLY_EDITABLE_OWNER,
+        ERROR_CODE.ONLY_EDITABLE_OWNER,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const newProductStatus = await this.productStatusRepository.findOne({
+      where: {
+        id: productStatusDto.productStatus,
+      },
+    });
+
+    product.productStatus = newProductStatus;
+
+    return await this.productRepository.save(product);
   }
 
   async likeProduct(userId: number, productId: number) {

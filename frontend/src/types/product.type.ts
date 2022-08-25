@@ -1,5 +1,7 @@
 import { IUserInfo } from './user.type';
 
+type TProductStatus = '판매중' | '예약중' | '판매완료';
+
 export interface IImage {
   /** 이미지 id (e.g 1) */
   id: number;
@@ -27,7 +29,7 @@ export interface IProduct {
   /**  상품 조회수 (e.g 3 ) */
   views: number;
   /**  상품 상태 (e.g 판매중 ) */
-  productStatus: string;
+  productStatus: TProductStatus;
   /**  상품 좋아요 수 (e.g 3 ) */
   likes: number;
   /**  상품 채팅 수 (e.g 1 ) */

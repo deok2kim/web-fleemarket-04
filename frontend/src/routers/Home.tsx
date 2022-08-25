@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import Categories from 'src/components/Category/Categories';
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
 import FAB from 'src/components/common/Button/FAB';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
 import Products from 'src/components/Product/ProductList/Products';
+import { ROUTE } from 'src/constants/route';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
 import { useCategory } from 'src/hooks/useCategory';
 import { useProductPagination } from 'src/queries/product';
@@ -17,10 +19,15 @@ function Home() {
   const location = getTownName(userInfo?.data.regions[0].name) || '전체';
   const { category, onChangeCategory } = useCategory();
   const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination({ category });
+  const navigate = useNavigate();
+
+  const onClickFAB = () => {
+    navigate(ROUTE.PRODUCTS_POST);
+  };
 
   return (
     <>
-      <FAB onClick={() => {}} />
+      <FAB onClick={onClickFAB} />
       <Header
         headerTheme="primary"
         left={<Icon name="iconSearch" strokeColor="white" />}

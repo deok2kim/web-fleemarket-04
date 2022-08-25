@@ -9,11 +9,19 @@ import { AuthModule } from 'src/auth/auth.module';
 import { UsersService } from 'src/users/users.service';
 import { Like } from 'src/entities/like.entity';
 import { View } from 'src/entities/view.entity';
+import ProductStatus from './entities/product-status.entity';
 
 @Module({
   imports: [
     TypeOrmModule,
-    TypeOrmModule.forFeature([Category, Product, Image, Like, View]),
+    TypeOrmModule.forFeature([
+      Category,
+      Product,
+      ProductStatus,
+      Image,
+      Like,
+      View,
+    ]),
     AuthModule,
   ],
   exports: [TypeOrmModule],

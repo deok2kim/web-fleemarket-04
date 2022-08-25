@@ -9,4 +9,5 @@ export const ROUTE = {
   LOCATION_SEARCH: '/location/search',
   LOCATION_INIT: '/location/init',
   PRODUCTS: '/products',
+  PRODUCTS_POST: '/post/products',
 };

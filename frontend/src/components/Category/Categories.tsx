@@ -1,22 +1,25 @@
-import { useCategories } from 'src/queries/category';
+import { useCategoriesQuery } from 'src/queries/category';
 import styled from 'styled-components';
 import Category from './Category';
 
 interface Props {
   selectedCategory: number;
   onChangeCategory: (categoryId: number) => void;
+  isPost?: boolean;
 }
 
-function Categories({ selectedCategory, onChangeCategory }: Props) {
-  const { data: categoryList } = useCategories();
+function Categories({ isPost, selectedCategory, onChangeCategory }: Props) {
+  const { data: categoryList } = useCategoriesQuery();
 
   return (
     <Container>
-      <Category
-        category={{ id: 0, name: '전체' }}
-        selectedCategory={selectedCategory}
-        onChangeCategory={onChangeCategory}
-      />
+      {!isPost && (
+        <Category
+          category={{ id: 0, name: '전체' }}
+          selectedCategory={selectedCategory}
+          onChangeCategory={onChangeCategory}
+        />
+      )}
       {categoryList?.data.categories.map((category) => (
         <Category
           key={category.id}

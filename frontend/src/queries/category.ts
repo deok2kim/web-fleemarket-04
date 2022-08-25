@@ -5,7 +5,7 @@ import { IServerError, IServerResponse } from 'src/types/api';
 import { ICategories } from 'src/types/category.type';
 import { CATEGORY } from './queryKey';
 
-export const useCategories = () =>
+export const useCategoriesQuery = () =>
   useQuery<IServerResponse<ICategories>, AxiosError<IServerError>>(CATEGORY.CATEGORIES, getCategories, {
     staleTime: Infinity,
   });

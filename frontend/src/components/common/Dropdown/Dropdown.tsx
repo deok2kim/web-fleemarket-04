@@ -58,8 +58,18 @@ function List({ position, children }: PropsWithChildren<ListProps>) {
   return <ListContainer position={position}>{children}</ListContainer>;
 }
 
-function Item({ children }: PropsWithChildren) {
-  return <LiWrapper>{children}</LiWrapper>;
+interface ItemProps {
+  onClick?: () => void;
+}
+
+function Item({ onClick, children }: PropsWithChildren<ItemProps>) {
+  const { toggle } = useContext(DropdownContext);
+
+  const onClickItem = () => {
+    toggle();
+    if (onClick) onClick();
+  };
+  return <LiWrapper onClick={onClickItem}>{children}</LiWrapper>;
 }
 
 const POSITION_DIRECTION = {

@@ -42,7 +42,8 @@ export const GlobalStyle = createGlobalStyle`
     -webkit-user-drag: none;
   }
 	input,
-  button
+  button,
+  textarea
   {
     font: inherit;
   }

@@ -11,6 +11,7 @@ import LocationSearch from './routers/LocationSearch';
 import { ROUTE } from './constants/route';
 import ChatRoom from './routers/ChatRoom';
 import LocationInit from './routers/LocationInit';
+import Post from './routers/Post';
 
 function Router() {
   return (
@@ -26,7 +27,10 @@ function Router() {
       <Route path={ROUTE.LOCATION} element={<Location />} />
       <Route path={ROUTE.LOCATION_SEARCH} element={<LocationSearch />} />
       <Route path={ROUTE.LOCATION_INIT} element={<LocationInit />} />
+
       <Route path={`${ROUTE.PRODUCTS}/:id`} element={<ProductDetail />} />
+      <Route path={`${ROUTE.PRODUCTS_POST}`} element={<Post />} />
+      <Route path={`${ROUTE.PRODUCTS_POST}/:id`} element={<Post />} />
     </Routes>
   );
 }

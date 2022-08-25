@@ -1,6 +1,13 @@
 import { AxiosError } from 'axios';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient, UseQueryOptions } from 'react-query';
-import { dislikeProduct, getProductById, getProductPagination, likeProduct } from 'src/api/product';
+import {
+  addProduct,
+  dislikeProduct,
+  getProductById,
+  getProductPagination,
+  likeProduct,
+  updateProductStatus,
+} from 'src/api/product';
 import { IServerError, IServerResponse } from 'src/types/api';
 import { IPaginationResponse } from 'src/types/pagination.type';
 import { IProductPreview, IProductDetail } from 'src/types/product.type';
@@ -53,6 +60,26 @@ export const useDisLikeProduct = (productId: number, category?: number) => {
       } else {
         queryClient.invalidateQueries(PRODUCT.PRODUCT_DETAIL(productId));
       }
+    },
+  });
+};
+
+export const useAddProductMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(addProduct, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(PRODUCT.ALL);
+    },
+  });
+};
+
+export const useUpdateProductStatusMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(updateProductStatus, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(PRODUCT.ALL);
     },
   });
 };

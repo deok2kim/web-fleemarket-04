@@ -21,6 +21,7 @@ const ToastContext = createContext<{ toastList: IToast[]; removeToast: (id: numb
   init: true,
 });
 const ToastActionContext = createContext({
+  success: (message: string, options?: ToastOptionType) => {},
   error: (message: string, options?: ToastOptionType) => {},
 });
 
@@ -54,6 +55,7 @@ const ToastProvider: FC<Props> = ({ children, defaultTimeout = 2000 }) => {
 
   const actions = useMemo(
     () => ({
+      success: (message: string, options?: ToastOptionType) => addToast(message, 'success', options),
       error: (message: string, options?: ToastOptionType) => addToast(message, 'error', options),
     }),
     [],

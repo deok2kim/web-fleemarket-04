@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -15,6 +16,10 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { ProductsService } from 'src/products/products.service';
 import { LikeProductDto } from './dto/like-product.dto';
+import {
+  UpdateProductDto,
+  UpdateProductStatusDto,
+} from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -57,6 +62,24 @@ export class ProductsController {
     );
   }
 
+  @Put()
+  @UseGuards(JwtAuthGuard)
+  async updateProduct(@Req() req, @Body() updateProductDto: UpdateProductDto) {}
+
+  @Put('/:productId/status')
+  @UseGuards(JwtAuthGuard)
+  async updateProductStatus(
+    @Param('productId') productId: number,
+    @Req() req,
+    @Body() updateProductStatusDto: UpdateProductStatusDto,
+  ) {
+    return await this.productsService.updateProductStatus(
+      req.user.id,
+      productId,
+      updateProductStatusDto,
+    );
+  }
+
   @Get('/:productId')
   async findProductById(
     @Req() req: Request,
@@ -76,16 +99,18 @@ export class ProductsController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async createProduct(@Req() req, @Body() createProductData: CreateProductDto) {
-    await this.productsService.createProduct(req.user.id, createProductData);
-    return;
+    return await this.productsService.createProduct(
+      req.user.id,
+      createProductData,
+    );
   }
 
   @Post('/like')
   @UseGuards(JwtAuthGuard)
-  async likeProduct(@Req() req, @Body() LikeProductDto: LikeProductDto) {
+  async likeProduct(@Req() req, @Body() likeProductDto: LikeProductDto) {
     await this.productsService.likeProduct(
       req.user.id,
-      LikeProductDto.productId,
+      likeProductDto.productId,
     );
     return;
   }

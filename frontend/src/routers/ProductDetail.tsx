@@ -10,15 +10,17 @@ import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
 import ProductEditDropdown from 'src/components/Product/ProductDetail/ProductEditDropdown';
 import { ROUTE } from 'src/constants/route';
+import { HOUR_SECOND } from 'src/constants/time';
 
 function ProductDetail() {
+  const navigate = useNavigate();
   const productId = useParams<{ id: string }>().id as string;
-  const { data: productDetail, isLoading } = useProductDetail(+productId, {
+  const { data: productDetail } = useProductDetail(+productId, {
     enabled: !!productId,
+    staleTime: HOUR_SECOND,
   });
   const productImages = productDetail?.data.product.images;
   const isSeller = productDetail?.data.isSeller;
-  const navigate = useNavigate();
 
   const onClickBackIcon = () => {
     navigate(ROUTE.HOME);
@@ -40,7 +42,12 @@ function ProductDetail() {
       </Carousel>
       <Wrapper>
         <Spacing size={24} />
-        {isSeller && <ProductStatusDropdown currentStatus={productDetail?.data.product.productStatus || ''} />}
+        {isSeller && (
+          <ProductStatusDropdown
+            productId={productDetail.data.product.id}
+            currentStatus={productDetail?.data.product.productStatus || ''}
+          />
+        )}
         <Spacing size={16} />
         <ProductContent productDetail={productDetail?.data} />
       </Wrapper>
