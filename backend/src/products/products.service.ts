@@ -39,12 +39,12 @@ export class ProductsService {
     return { categories };
   }
 
-  async findAllProducts(options: ProductPaginationDto, userId: number) {
-    const { limit, page, categoryId } = options;
+  async findProducts(options: ProductPaginationDto, userId: number) {
+    const { limit, page, categoryId, like } = options;
     const take = limit || DEFAULT_LIMIT;
     const skip = (page - 1) * take;
 
-    const [result, total] = await this.productRepository
+    let query = this.productRepository
       .createQueryBuilder('product')
       .select([
         'product.id',
@@ -63,17 +63,20 @@ export class ProductsService {
       .leftJoin('product.user', 'user')
       .leftJoin('user.userRegions', 'regions')
       .leftJoin('regions.region', 'regionNames')
-      .where(
-        isNaN(categoryId) || categoryId === 0
-          ? ''
-          : 'product.categoryId = :categoryId',
-        {
-          categoryId,
-        },
-      )
-      .take(take)
-      .skip(skip)
-      .getManyAndCount();
+      .where(`product.id is not null`);
+
+    if (categoryId) {
+      query = query.andWhere('product.categoryId = :categoryId', {
+        categoryId,
+      });
+    }
+    if (like) {
+      query = query.andWhere('product.likes.userId = :userId', { userId });
+    }
+
+    query = query.take(take).skip(skip);
+
+    const [result, total] = await query.getManyAndCount();
 
     const next = skip + take <= total;
 

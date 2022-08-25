@@ -1,13 +1,21 @@
 import { useRef } from 'react';
+import { InfiniteData } from 'react-query';
 import { useInfiniteScroll } from 'src/hooks/useInfiniteScroll';
-import { useProductPagination } from 'src/queries/product';
-import { useCategory } from 'src/routers/Home';
+import { IServerResponse } from 'src/types/api';
+import { IPaginationResponse } from 'src/types/pagination.type';
+import { IProductPreview } from 'src/types/product.type';
 import styled from 'styled-components';
 import Product from './Product';
 
-function Products() {
-  const { category } = useCategory();
-  const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination(category);
+interface Props {
+  category: number;
+  productList: InfiniteData<IServerResponse<IPaginationResponse<IProductPreview>>> | undefined;
+  isFetching: boolean;
+  hasNextPage: boolean | undefined;
+  fetchNextPage: () => Promise<any>;
+}
+
+function Products({ category, productList, isFetching, fetchNextPage, hasNextPage }: Props) {
   const observerTarget = useRef<HTMLLIElement>(null);
 
   useInfiniteScroll({
@@ -21,7 +29,7 @@ function Products() {
     <Container>
       {productList?.pages.map((pages) =>
         pages.data.paginationResult.map((product) => (
-          <Product key={product.id} ref={observerTarget} product={product} />
+          <Product key={product.id} ref={observerTarget} category={category} product={product} />
         )),
       )}
       {isFetching && <p>데이터 로딩중...</p>}

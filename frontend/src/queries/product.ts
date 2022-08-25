@@ -16,10 +16,10 @@ export const useProductDetail = (
     options,
   );
 
-export const useProductPagination = (category: number | undefined) =>
+export const useProductPagination = (category: number, like?: boolean) =>
   useInfiniteQuery<IServerResponse<IPaginationResponse<IProductPreview>>, AxiosError<IServerError>>(
     PRODUCT.PRODUCT_CATEGORY_PAGE(category),
-    ({ pageParam = 1 }) => getProductPagination(category, pageParam),
+    ({ pageParam = 1 }) => getProductPagination(pageParam, category, like),
     {
       getNextPageParam: (lastPage) => lastPage.data.nextPage || undefined,
     },

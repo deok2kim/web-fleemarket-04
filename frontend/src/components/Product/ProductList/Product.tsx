@@ -5,7 +5,6 @@ import { useLoggedIn } from 'src/contexts/LoggedInContext';
 import { useToast } from 'src/contexts/ToastContext';
 import { useDisLikeProduct, useLikeProduct } from 'src/queries/product';
 import { useUserInfo } from 'src/queries/user';
-import { useCategory } from 'src/routers/Home';
 import { IProductPreview } from 'src/types/product.type';
 import timeForToday from 'src/utils/ago';
 import { formatPrice } from 'src/utils/formatPrice';
@@ -15,10 +14,10 @@ import Image from '../../common/Image/Image';
 
 interface Props {
   product: IProductPreview;
+  category: number;
 }
 
-function Product({ product }: Props, ref: React.ForwardedRef<HTMLLIElement>) {
-  const { category } = useCategory();
+function Product({ category, product }: Props, ref: React.ForwardedRef<HTMLLIElement>) {
   const { isLoggedIn } = useLoggedIn();
   const { data: userInfo } = useUserInfo(isLoggedIn);
   const [like, setLike] = useState(product.isLiked);

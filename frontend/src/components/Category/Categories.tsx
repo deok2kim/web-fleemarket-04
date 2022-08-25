@@ -2,14 +2,28 @@ import { useCategories } from 'src/queries/category';
 import styled from 'styled-components';
 import Category from './Category';
 
-function Categories() {
+interface Props {
+  selectedCategory: number;
+  onChangeCategory: (categoryId: number) => void;
+}
+
+function Categories({ selectedCategory, onChangeCategory }: Props) {
   const { data: categoryList } = useCategories();
 
   return (
     <Container>
-      <Category category={{ id: 0, name: '전체' }} />
+      <Category
+        category={{ id: 0, name: '전체' }}
+        selectedCategory={selectedCategory}
+        onChangeCategory={onChangeCategory}
+      />
       {categoryList?.data.categories.map((category) => (
-        <Category key={category.id} category={category} />
+        <Category
+          key={category.id}
+          category={category}
+          selectedCategory={selectedCategory}
+          onChangeCategory={onChangeCategory}
+        />
       ))}
     </Container>
   );

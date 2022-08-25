@@ -21,10 +21,11 @@ export const getProductById = async (productId: number): Promise<IServerResponse
  **/
 
 export const getProductPagination = async (
-  category: number | undefined,
   page: number,
+  category: number,
+  like?: boolean,
 ): Promise<IServerResponse<IPaginationResponse<IProductPreview>>> => {
-  const { data } = await axios.get('/products', { params: { page, category } });
+  const { data } = await axios.get('/products', { params: { page, category, like } });
   return data;
 };
 

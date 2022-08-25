@@ -7,9 +7,11 @@ export const CATEGORY = {
 } as const;
 
 export const PRODUCT = {
-  PRODUCT_CATEGORY_PAGE: (category: number | undefined) => ['products', category],
-  PRODUCT_DETAIL: (productId: number) => ['product', productId],
-};
+  ALL: ['product'],
+  PRODUCT_USER_LIKE_PAGE: () => [...PRODUCT.ALL, 'like'],
+  PRODUCT_CATEGORY_PAGE: (category: number | undefined, like?: number) => [...PRODUCT.ALL, category, like],
+  PRODUCT_DETAIL: (productId: number) => [...PRODUCT.ALL, productId],
+} as const;
 
 export const REGION = {
   REGIONS: (keyword: string) => ['regions', keyword],

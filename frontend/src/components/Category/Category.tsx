@@ -1,8 +1,9 @@
-import { useCategory } from 'src/routers/Home';
 import { ICategory } from 'src/types/category.type';
 import styled, { css } from 'styled-components';
 
 interface Props {
+  onChangeCategory: (categoryId: number) => void;
+  selectedCategory: number;
   category: ICategory;
 }
 
@@ -10,8 +11,7 @@ interface IContainerProps {
   isActive: boolean;
 }
 
-function Category({ category }: Props) {
-  const { category: selectedCategory, onChangeCategory } = useCategory();
+function Category({ selectedCategory, category, onChangeCategory }: Props) {
   const isActive = category.id === selectedCategory;
 
   const onClickCategoryItem = () => {

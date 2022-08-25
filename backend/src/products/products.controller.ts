@@ -33,6 +33,7 @@ export class ProductsController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('category') categoryId: number,
+    @Query('like') like: boolean,
   ) {
     let userId = undefined;
     const { authorization } = req.headers;
@@ -43,11 +44,12 @@ export class ProductsController {
       userId = id;
     }
 
-    return this.productsService.findAllProducts(
+    return this.productsService.findProducts(
       {
         limit,
         page: page || 1,
         categoryId,
+        like,
       },
       userId,
     );
