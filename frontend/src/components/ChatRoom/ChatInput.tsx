@@ -1,19 +1,34 @@
+import React from 'react';
 import styled from 'styled-components';
 import Icon from '../common/Icon/Icon';
 
-function ChatInput() {
+interface Props {
+  message: string;
+  onChangeMessage: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClickSubmit: () => void;
+}
+
+function ChatInput({ message, onChangeMessage, onClickSubmit }: Props) {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onClickSubmit();
+  };
+
+  const isInputText = !!message.trim();
   return (
-    <Container>
-      <Input placeholder="메세지를 입력하세요." />
-      <Icon name="iconSend" strokeColor="grey100" />
+    <Container onSubmit={onSubmit}>
+      <Input placeholder="메세지를 입력하세요." value={message} onChange={onChangeMessage} />
+      <button>
+        <Icon name="iconSend" strokeColor={isInputText ? 'primary200' : 'grey100'} onClick={onClickSubmit} />
+      </button>
     </Container>
   );
 }
 
 export default ChatInput;
 
-const Container = styled.div`
-  position: fixed;
+const Container = styled.form`
+  position: absolute;
   bottom: 0;
   left: 0;
 
@@ -31,6 +46,10 @@ const Container = styled.div`
   justify-content: space-between;
 
   padding: 14px;
+
+  form {
+    width: 100%;
+  }
 `;
 
 const Input = styled.input`

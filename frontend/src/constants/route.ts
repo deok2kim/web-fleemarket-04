@@ -10,4 +10,5 @@ export const ROUTE = {
   LOCATION_INIT: '/location/init',
   PRODUCTS: '/products',
   PRODUCTS_POST: '/post/products',
+  PRODUCT_CHATROOMS: '/product/chat-rooms',
 };

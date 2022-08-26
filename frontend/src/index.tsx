@@ -8,6 +8,7 @@ import ToastProvider from './contexts/ToastContext';
 import Toast from './components/common/Toast/Toast';
 import LoggedInProvider from './contexts/LoggedInContext';
 import CustomQueryClientProvider from './components/CustomQueryClientProvider';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -21,6 +22,7 @@ root.render(
             <Toast />
           </LoggedInProvider>
         </ThemeProvider>
+        <ReactQueryDevtools />
       </CustomQueryClientProvider>
     </ToastProvider>
   </BrowserRouter>,

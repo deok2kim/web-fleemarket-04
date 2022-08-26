@@ -1,7 +1,8 @@
 import styled, { css } from 'styled-components';
 import { TColorToken } from 'src/styles/theme';
 import { IMessage, IUserForChat } from 'src/types/chatRoom';
-import { useUserInfo } from 'src/queries/user';
+import { useEffect, useRef } from 'react';
+import useScrollToBottomChat from 'src/hooks/useScrollToBottomChat';
 
 interface ITextStyles {
   backgroundColor: TColorToken;
@@ -13,11 +14,15 @@ interface ITextStyles {
 interface Props {
   messages: IMessage[];
   partner: IUserForChat;
+  newChatLog: IMessage[];
 }
 
-function ChatWindow({ messages, partner }: Props) {
+function ChatWindow({ messages, partner, newChatLog }: Props) {
+  const lastMessageTarget = useRef<HTMLDivElement>(null);
+  useScrollToBottomChat(lastMessageTarget, !!messages, newChatLog);
   if (!messages) return null;
   const isMine = (senderId: number) => partner.id != senderId;
+
   return (
     <Container>
       {messages.map(({ id, senderId, isRead, content }) => (
@@ -25,6 +30,12 @@ function ChatWindow({ messages, partner }: Props) {
           <Text isMine={isMine(senderId)}>{content}</Text>
         </SpeechBubble>
       ))}
+      {newChatLog.map(({ id, senderId, isRead, content }) => (
+        <SpeechBubble key={id} isMine={isMine(senderId)}>
+          <Text isMine={isMine(senderId)}>{content}</Text>
+        </SpeechBubble>
+      ))}
+      <div ref={lastMessageTarget}></div>
     </Container>
   );
 }

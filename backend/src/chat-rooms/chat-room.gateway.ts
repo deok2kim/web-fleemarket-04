@@ -1,30 +1,39 @@
 import { ChatRoomService } from './chat-room.service';
 import {
+  ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 interface IChatRoom {
-  productId: number;
-  sellerId: number;
-  buyerId: number;
   content: string;
   senderId: number;
+  chatRoomId: string;
 }
 
-@WebSocketGateway(80, { namespace: ['woowatechcamp'] }) // 웹소켓을 8080번 포트에서 열겠다
-export class ChatRoomGateway {
+@WebSocketGateway(80, {
+  namespace: 'woowatechcamp',
+  cors: true,
+})
+export class ChatRoomGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   constructor(private readonly chatRoomService: ChatRoomService) {}
   @WebSocketServer()
-  server: Server; // 서버 인스턴스에 접근하기 위해서 사용한다.
+  server: Server;
 
-  @SubscribeMessage('events')
-  async handleEvent(@MessageBody() data: IChatRoom) {
-    const { productId, sellerId, buyerId, content, senderId } = data;
-    const chatRoomId = `${productId}-${sellerId}-${buyerId}`;
+  @SubscribeMessage('woowa')
+  async handleEvent(
+    @MessageBody() payload: IChatRoom,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const { content, senderId, chatRoomId } = payload;
     const chat = await this.chatRoomService.createMessage({
       senderId,
       content,
@@ -33,5 +42,17 @@ export class ChatRoomGateway {
     });
     this.server.emit(chatRoomId, chat);
     return;
+  }
+
+  afterInit(server: Server) {
+    console.log('Init', server);
+  }
+
+  handleDisconnect(client: Socket) {
+    console.log(`Client Disconnected : ${client.id}`);
+  }
+
+  handleConnection(client: Socket, ...args: any[]) {
+    console.log(`Client Connected : ${client.id}`);
   }
 }

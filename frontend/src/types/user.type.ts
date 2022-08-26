@@ -1,17 +1,5 @@
 import { IRegion } from './region.type';
 
-export interface IUserRegion {
-  id: number;
-  region: {
-    name: string;
-  };
-}
-
-export interface IUser {
-  id: number;
-  userRegions: IUserRegion[];
-}
-
 export interface IUserInfo {
   /** 유저 id (e.g. 1)  */
   id: number;

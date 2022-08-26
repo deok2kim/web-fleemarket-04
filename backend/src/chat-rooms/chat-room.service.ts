@@ -19,6 +19,18 @@ export class ChatRoomService {
   async createChatRoom(createChatRoomDto: CreateChatRoomDto) {
     return await this.chatRoomRepository.save(createChatRoomDto);
   }
+
+  async updateReadChatMessage(chatRoomId: string, userId: number) {
+    return await this.messageRepository
+      .createQueryBuilder('message')
+      .update(Message)
+      .set({ isRead: true })
+      .where('chatRoomId=:chatRoomId and senderId=:userId', {
+        chatRoomId,
+        userId,
+      })
+      .execute();
+  }
   // 채팅 방 하나 찾기
   async findChatRoom(id: string, userId: number) {
     let chatRoomData = await this.chatRoomRepository

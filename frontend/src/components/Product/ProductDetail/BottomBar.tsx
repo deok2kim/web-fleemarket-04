@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDisLikeProduct, useLikeProduct } from 'src/queries/product';
 import { IProductDetail } from 'src/types/product.type';
 import { formatPrice } from 'src/utils/formatPrice';
@@ -12,6 +13,8 @@ interface Props {
 }
 
 function BottomBar({ productDetail }: Props) {
+  console.log(productDetail);
+  const navigate = useNavigate();
   const [like, setLike] = useState(productDetail.isLiked);
   const likeMutation = useLikeProduct(productDetail.product.id);
   const dislikeMutation = useDisLikeProduct(productDetail.product.id);
@@ -29,6 +32,10 @@ function BottomBar({ productDetail }: Props) {
     }
     likeMutation.mutate();
     setLike(true);
+  };
+
+  const onClickChatRoom = (id: string) => {
+    navigate(`/chat/${id}`);
   };
 
   return (

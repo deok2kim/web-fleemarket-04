@@ -52,7 +52,7 @@ export default class Product extends CoreEntity {
   images: Image[];
 
   @OneToMany(() => ChatRoom, (chatRoom) => chatRoom.product, { eager: true })
-  chatRoom: ChatRoom[];
+  chatRooms: ChatRoom[];
 
   @Column()
   userId: number;

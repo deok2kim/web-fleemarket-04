@@ -11,6 +11,7 @@ export const PRODUCT = {
   PRODUCT_USER_LIKE_PAGE: () => [...PRODUCT.ALL, 'like'],
   PRODUCT_CATEGORY_PAGE: (category: number | undefined, like?: number) => [...PRODUCT.ALL, category, like],
   PRODUCT_DETAIL: (productId: number) => [...PRODUCT.ALL, productId],
+  PRODUCT_CHATROOMS: (productId: number) => [...PRODUCT.ALL, productId, 'chatRooms'],
 } as const;
 
 export const REGION = {

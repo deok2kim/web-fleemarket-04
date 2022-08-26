@@ -5,13 +5,10 @@ import withAuth from 'src/hocs/withAuth';
 import { useChatRooms } from 'src/queries/chatRoom';
 import styled from 'styled-components';
 import timeForToday from 'src/utils/ago';
-import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
 import { useNavigate } from 'react-router-dom';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
-import { useQueryClient } from 'react-query';
-import { useEffect } from 'react';
 
-function ChatRoom() {
+function ProductChatRooms() {
   // TODO: 채팅 전체 목록과 상품 채팅 목록을 따로 처리하기
   const { isLoggedIn } = useLoggedIn();
   const { data: chatRoomList } = useChatRooms({
@@ -27,13 +24,12 @@ function ChatRoom() {
   };
 
   const onClickBack = () => navigate(-1);
-
   return (
     <>
       <Header
         headerTheme="offWhite"
         left={<Icon name="iconChevronLeft" strokeColor="black" onClick={onClickBack} />}
-        center={<p>채팅</p>}
+        center={<p>(임시) 해당 상품의 채팅</p>}
       />
       {chatRoomList?.data.chatRooms.map(({ id, partner, unreadCount, product, messages }) => {
         const lastMessage = messages[0];
@@ -53,12 +49,11 @@ function ChatRoom() {
           </ChatItem>
         );
       })}
-      <BottomNavigation />
     </>
   );
 }
 
-export default withAuth(ChatRoom);
+export default withAuth(ProductChatRooms);
 
 const ChatItem = styled.div`
   height: 72px;

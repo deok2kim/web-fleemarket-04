@@ -65,7 +65,7 @@ export class ProductsService {
       ])
       .leftJoinAndSelect('product.images', 'image')
       .innerJoinAndSelect('product.productStatus', 'productStatus')
-      .loadRelationCountAndMap('product.chatRoom', 'product.chatRoom')
+      .loadRelationCountAndMap('product.chatRooms', 'product.chatRooms')
       .leftJoinAndSelect('product.views', 'product.views')
       .leftJoinAndSelect('product.likes', 'product.likes')
       .leftJoin('product.user', 'user')
@@ -193,7 +193,7 @@ export class ProductsService {
       .leftJoinAndSelect('product.productStatus', 'productStatus')
       .loadRelationCountAndMap('product.views', 'product.views')
       .loadRelationCountAndMap('product.likes', 'product.likes')
-      .loadRelationCountAndMap('product.chatRoom', 'product.chatRoom')
+      .loadRelationCountAndMap('product.chatRooms', 'product.chatRooms')
       .leftJoin('product.user', 'user')
       .leftJoin('product.views', 'isView', 'user.id = isView.user_id')
       .leftJoin('user.userRegions', 'regions')
@@ -396,5 +396,17 @@ export class ProductsService {
         thumbnail,
       },
     };
+  }
+
+  async findChatRoomsByProductId(productId: number, userId: number) {
+    const chatRooms = await this.productRepository
+      .createQueryBuilder('product')
+      .where('product.id= :productId and product.userId= :userId', {
+        productId,
+        userId,
+      })
+      .leftJoinAndSelect('product.chatRooms', 'chatRooms', '')
+      .getMany();
+    return chatRooms;
   }
 }

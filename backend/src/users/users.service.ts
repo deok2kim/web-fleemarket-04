@@ -8,9 +8,6 @@ import { UserRegion } from 'src/entities/user-region.entity';
 import { ErrorException } from 'src/common/exception/error.exception';
 import { ERROR_CODE, ERROR_MESSAGE } from 'src/common/constant/error-message';
 import Product from 'src/products/entities/product.entity';
-import { PaginationOptionDto } from 'src/common/pagination/pagination-option.dto';
-import { DEFAULT_LIMIT } from 'src/common/constant/pagination';
-import { Pagination } from 'src/common/pagination/pagination';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +34,7 @@ export class UsersService {
   async findUserInfoById(id: number) {
     const userInfo: any = await this.userRepository
       .createQueryBuilder('user')
-      .select(['user.nickname', 'regions.id', 'regionNames'])
+      .select(['user.nickname', 'regions.id', 'regionNames', 'user.id'])
       .leftJoin('user.userRegions', 'regions')
       .leftJoin('regions.region', 'regionNames')
       .where('user.id = :userId', { userId: id })

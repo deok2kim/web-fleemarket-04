@@ -137,4 +137,17 @@ export class ProductsController {
   async findProductForChatRoom(@Param('productId') productId: number) {
     return this.productsService.findProductForChatRoom(productId);
   }
+
+  @Get('/:productId/chat-rooms')
+  @UseGuards(JwtAuthGuard)
+  async findProductChatRooms(
+    @Param('productId') productId: number,
+    @Req() req,
+  ) {
+    // 상품에서 채팅을 가져오기 vs 채팅에서 해당 상품만 가져오기
+    return this.productsService.findChatRoomsByProductId(
+      productId,
+      req.user.id,
+    );
+  }
 }
