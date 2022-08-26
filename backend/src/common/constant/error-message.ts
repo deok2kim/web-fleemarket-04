@@ -11,6 +11,7 @@ export const ERROR_MESSAGE = {
   NOT_LIKED: '찜하지 않은 상품은 취소할 수 없습니다.',
   NOT_FOUND_PRODUCT: '등록되지 않은 상품입니다',
   ONLY_EDITABLE_OWNER: '상품 주인만 수정이 가능합니다.',
+  NOT_FOUND_USER: '존재하지 않는 사용자입니다.',
 } as const;
 
 export const ERROR_CODE = {
@@ -22,4 +23,5 @@ export const ERROR_CODE = {
   NOT_LIKED: 1005,
   NOT_FOUND_PRODUCT: 1006,
   ONLY_EDITABLE_OWNER: 1007,
+  NOT_FOUND_USER: 1008,
 } as const;

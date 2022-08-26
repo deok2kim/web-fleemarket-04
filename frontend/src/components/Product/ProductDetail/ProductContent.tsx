@@ -12,7 +12,7 @@ function ProductContent({ productDetail }: Props) {
   const categoryAndTimeText = `${productDetail?.product.category} ∙ ${timeForToday(
     productDetail?.product.createdAt as string,
   )}`;
-  const countText = `채팅 ${productDetail?.product.chatRoom} ∙ 관심 ${productDetail?.product.likes} ∙ 조회 ${productDetail?.product.views}`;
+  const countText = `채팅 ${productDetail?.product.chatRooms} ∙ 관심 ${productDetail?.product.likes} ∙ 조회 ${productDetail?.product.views}`;
   const regionText = `${getTownName(productDetail?.product.user.regions[0].name)}`;
 
   return (

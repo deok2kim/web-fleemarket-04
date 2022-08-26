@@ -1,10 +1,14 @@
 import { CreateChatRoomDto } from './dto/create-chat-room.dto';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import ChatRoom from './entities/chat-room.entity';
 import Message from './entities/message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
+import User from 'src/users/entities/user.entity';
+import Product from 'src/products/entities/product.entity';
+import { ERROR_CODE, ERROR_MESSAGE } from 'src/common/constant/error-message';
+import { ErrorException } from 'src/common/exception/error.exception';
 
 @Injectable()
 export class ChatRoomService {
@@ -13,6 +17,10 @@ export class ChatRoomService {
     private chatRoomRepository: Repository<ChatRoom>,
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
   ) {}
 
   // 채팅 방 만들기
@@ -32,10 +40,10 @@ export class ChatRoomService {
       .execute();
   }
   // 채팅 방 하나 찾기
-  async findChatRoom(id: string, userId: number) {
+  async findChatRoom(chatRoomId: string, userId: number) {
     let chatRoomData = await this.chatRoomRepository
       .createQueryBuilder('chatRoom')
-      .where('chatRoom.id =:id', { id })
+      .where('chatRoom.id =:chatRoomId', { chatRoomId })
       .leftJoinAndSelect('chatRoom.messages', 'messages')
       .leftJoinAndSelect('chatRoom.product', 'product')
       .leftJoinAndSelect('product.images', 'images')
@@ -69,9 +77,35 @@ export class ChatRoomService {
         },
       };
     }
-    const [productId, sellerId, buyerId] = id.split('-').map((v) => +v);
+    // TODO: 에러 핸들링, 없는 유저일 때? 없는 상품일 떄?
+    const [productId, sellerId, buyerId] = chatRoomId.split('-').map((v) => +v);
+    const seller = await this.userRepository.findOne({
+      where: { id: sellerId },
+    });
+    const buyer = await this.userRepository.findOne({
+      where: { id: buyerId },
+    });
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
+    if (!seller || !buyer) {
+      throw new ErrorException(
+        ERROR_MESSAGE.NOT_FOUND_USER,
+        ERROR_CODE.NOT_FOUND_USER,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (!product) {
+      throw new ErrorException(
+        ERROR_MESSAGE.NOT_FOUND_PRODUCT,
+        ERROR_CODE.NOT_FOUND_PRODUCT,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     chatRoomData = await this.createChatRoom({
-      id,
+      id: chatRoomId,
       productId,
       sellerId,
       buyerId,
@@ -82,6 +116,7 @@ export class ChatRoomService {
         ...chatRoomData,
         messages: [],
         deleteUserId: 0,
+        partner: seller,
       },
     };
   }

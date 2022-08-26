@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE } from 'src/constants/route';
 import { useDisLikeProduct, useLikeProduct } from 'src/queries/product';
+import { useUserInfo } from 'src/queries/user';
 import { IProductDetail } from 'src/types/product.type';
 import { formatPrice } from 'src/utils/formatPrice';
 
@@ -13,17 +15,17 @@ interface Props {
 }
 
 function BottomBar({ productDetail }: Props) {
-  console.log(productDetail);
   const navigate = useNavigate();
+  const userInfo = useUserInfo();
   const [like, setLike] = useState(productDetail.isLiked);
   const likeMutation = useLikeProduct(productDetail.product.id);
   const dislikeMutation = useDisLikeProduct(productDetail.product.id);
   const priceKr = productDetail.product.price ? `${formatPrice(productDetail.product.price)}원` : '가격미정';
   const chatText = productDetail.isSeller
-    ? `채팅 목록 보기${productDetail.product.chatRoom > 0 ? `(${productDetail.product.chatRoom})` : ''}`
+    ? `채팅 목록 보기${productDetail.product.chatRooms > 0 ? `(${productDetail.product.chatRooms})` : ''}`
     : '문의하기';
 
-  const buttonDisabled = productDetail.isSeller ? !productDetail.product.chatRoom : false;
+  const buttonDisabled = productDetail.isSeller ? !productDetail.product.chatRooms : false;
   const onClickHeart = () => {
     if (like) {
       dislikeMutation.mutate();
@@ -34,8 +36,10 @@ function BottomBar({ productDetail }: Props) {
     setLike(true);
   };
 
-  const onClickChatRoom = (id: string) => {
-    navigate(`/chat/${id}`);
+  const onClickChatRoom = () => {
+    if (productDetail.isSeller) return null; // TODO: 나중에 목록 보기 할거임
+    const chatRoomId = `${productDetail.product.id}-${productDetail.product.user.id}-${userInfo.data?.data.id}`;
+    navigate(`${ROUTE.CHAT}/${chatRoomId}`);
   };
 
   return (
@@ -52,7 +56,7 @@ function BottomBar({ productDetail }: Props) {
         </IconWrapper>
         <Price>{priceKr}</Price>
       </FlexWrapper>
-      <Button size="md" title={chatText} disabled={buttonDisabled} />
+      <Button size="md" title={chatText} onClick={onClickChatRoom} disabled={buttonDisabled} />
     </Container>
   );
 }

@@ -74,12 +74,12 @@ function Product({ category, product }: Props, ref: React.ForwardedRef<HTMLLIEle
       </InfoWrapper>
 
       <InfoIconWrapper>
-        {isExistence(product.chatRoom) && (
+        {isExistence(product.chatRooms) && (
           <div>
             <InfoIcon>
               <Icon name="iconSpeechBubbleMini" strokeColor="grey100" />
             </InfoIcon>
-            <InfoIconCount>{product.chatRoom}</InfoIconCount>
+            <InfoIconCount>{product.chatRooms}</InfoIconCount>
           </div>
         )}
         {isExistence(likeCount) && (

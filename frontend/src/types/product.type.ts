@@ -35,7 +35,7 @@ export interface IProduct {
   /**  상품 좋아요 수 (e.g 3 ) */
   likes: number;
   /**  상품 채팅 수 (e.g 1 ) */
-  chatRoom: number;
+  chatRooms: number;
   /**  상품 등록 날짜 (e.g 2022-08-19T05:48:57.830Z ) */
   createdAt: string;
 }

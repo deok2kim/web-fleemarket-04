@@ -44,6 +44,7 @@ const Container = styled.form`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 
   padding: 14px;
 
@@ -53,9 +54,11 @@ const Container = styled.form`
 `;
 
 const Input = styled.input`
-  width: 85%;
+  width: 100%;
   height: 36px;
   border-radius: 8px;
   outline: none;
-  border: 1px solid ${({ theme }) => theme.color.grey300}; ;
+  border: 1px solid ${({ theme }) => theme.color.grey300};
+
+  padding-left: 8px;
 `;
