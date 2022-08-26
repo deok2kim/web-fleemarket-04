@@ -20,6 +20,8 @@ export interface IProduct {
   price: number;
   /**  상품 설명 (e.g 흠집있음 ) */
   content: string;
+  /**  카테고리 id (e.g 1 ) */
+  categoryId: number;
   /**  카테고리 이름 (e.g 디지털기기 ) */
   category: string;
   /**  상품 이미지 url 배열 (e.g [{id: 1, url: 'https://s3 ~', productId: 1}] ) */

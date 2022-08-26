@@ -31,7 +31,7 @@ function Product({ category, product }: Props, ref: React.ForwardedRef<HTMLLIEle
   const isReserved = product.productStatus === '예약중';
   const isUndefinedPrice = !!product.price;
 
-  const onClickProduct = (e: React.MouseEvent<HTMLLIElement>) => {
+  const onClickProduct = () => {
     navigate(`/products/${product.id}`);
   };
 

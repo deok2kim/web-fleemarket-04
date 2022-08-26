@@ -1,8 +1,20 @@
+import { useNavigate } from 'react-router-dom';
+import { IProduct } from 'src/types/product.type';
 import styled from 'styled-components';
 import Dropdown from '../../common/Dropdown/Dropdown';
 import Icon from '../../common/Icon/Icon';
 
-function ProductEditDropdown() {
+interface Props {
+  product: IProduct;
+}
+
+function ProductEditDropdown({ product }: Props) {
+  const navigate = useNavigate();
+
+  const onClickEditButton = () => {
+    navigate(`/post/products/${product.id}`);
+  };
+
   return (
     <Dropdown>
       <Dropdown.Toggle>
@@ -10,7 +22,7 @@ function ProductEditDropdown() {
       </Dropdown.Toggle>
 
       <Dropdown.List position="right">
-        <Dropdown.Item>수정하기</Dropdown.Item>
+        <Dropdown.Item onClick={onClickEditButton}>수정하기</Dropdown.Item>
         <Dropdown.Item>
           <DeleteText>삭제하기</DeleteText>
         </Dropdown.Item>

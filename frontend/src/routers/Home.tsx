@@ -30,7 +30,6 @@ function Home() {
       <FAB onClick={onClickFAB} />
       <Header
         headerTheme="primary"
-        left={<Icon name="iconSearch" strokeColor="white" />}
         center={
           <Center>
             <Icon name="iconMapPin" strokeColor="white" />

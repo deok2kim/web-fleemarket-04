@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Chat from './routers/Chat';
 import Home from './routers/Home';
 import Like from './routers/Like';
@@ -31,6 +31,9 @@ function Router() {
       <Route path={`${ROUTE.PRODUCTS}/:id`} element={<ProductDetail />} />
       <Route path={`${ROUTE.PRODUCTS_POST}`} element={<Post />} />
       <Route path={`${ROUTE.PRODUCTS_POST}/:id`} element={<Post />} />
+
+      {/* TODO : 404 */}
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

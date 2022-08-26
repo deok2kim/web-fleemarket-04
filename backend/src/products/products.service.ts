@@ -30,7 +30,7 @@ export class ProductsService {
     private productStatusRepository: Repository<ProductStatus>,
 
     @InjectRepository(Image)
-    private ImageRepository: Repository<Image>,
+    private imageRepository: Repository<Image>,
 
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
@@ -204,6 +204,7 @@ export class ProductsService {
     return {
       product: {
         ...product,
+        categoryId: product.category.id,
         category: product.category.name,
         productStatus: product.productStatus.name,
         user: {
@@ -233,7 +234,7 @@ export class ProductsService {
     });
 
     const promiseImages = images.map(async (image) => {
-      return await this.ImageRepository.save({
+      return await this.imageRepository.save({
         productId: newProduct.id,
         url: image,
       });
@@ -243,9 +244,60 @@ export class ProductsService {
     return newProduct;
   }
 
-  async updateProduct(userId: number, productData: UpdateProductDto) {
-    // TODO 상품 정보 업데이트
+  async updateProduct(
+    userId: number,
+    productId: number,
+    productData: UpdateProductDto,
+  ) {
     const { title, price, content, categoryId, images } = productData;
+
+    const product = await this.productRepository.findOne({
+      where: {
+        id: productId,
+      },
+    });
+
+    if (product.userId !== userId) {
+      throw new ErrorException(
+        ERROR_MESSAGE.ONLY_EDITABLE_OWNER,
+        ERROR_CODE.ONLY_EDITABLE_OWNER,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const categoryEntity = await this.categoryRepository.findOne({
+      where: {
+        id: categoryId,
+      },
+    });
+
+    await this.imageRepository
+      .createQueryBuilder('image')
+      .delete()
+      .where('productId = :productId', { productId })
+      .execute();
+
+    const imagePromises = images.map(
+      async (url) =>
+        await this.imageRepository.save({
+          productId,
+          url,
+        }),
+    );
+
+    await Promise.all(imagePromises);
+
+    return await this.productRepository
+      .createQueryBuilder('product')
+      .update('product')
+      .set({
+        title: title || product.title,
+        price: price || product.price,
+        content: content || product.content,
+        category: categoryEntity || product.category,
+      })
+      .where('id = :productId', { productId })
+      .execute();
   }
 
   async updateProductStatus(

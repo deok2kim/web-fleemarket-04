@@ -14,10 +14,20 @@ function CustomQueryClientProvider({ children }: PropsWithChildren) {
       const status = error?.response?.status as number;
 
       if (400 <= status && status < 500) {
-        const code = (error as AxiosError<IServerError>)?.response?.data.code;
+        // TODO Type
+        const errorResponse = error?.response?.data as IServerError;
+        const code = errorResponse.code;
+        const message = errorResponse.message;
+
         switch (code) {
+          case 1000:
+          case 1001:
+          case 1002:
+          case 1003:
+          case 1004:
+          case 1005:
           case 1006:
-            toast.error('존재하지 않는 상품입니다. 😢');
+            toast.error(message);
             navigate('/');
             break;
           default:
@@ -36,6 +46,9 @@ function CustomQueryClientProvider({ children }: PropsWithChildren) {
   const queryClientRef = useRef<QueryClient>(
     new QueryClient({
       defaultOptions: {
+        mutations: {
+          onError: handleQueryError,
+        },
         queries: {
           refetchOnWindowFocus: false,
           retry: false,

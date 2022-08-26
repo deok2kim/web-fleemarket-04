@@ -15,7 +15,7 @@ function BottomBar({ productDetail }: Props) {
   const [like, setLike] = useState(productDetail.isLiked);
   const likeMutation = useLikeProduct(productDetail.product.id);
   const dislikeMutation = useDisLikeProduct(productDetail.product.id);
-  const priceKr = `${formatPrice(productDetail.product.price)}원`;
+  const priceKr = productDetail.product.price ? `${formatPrice(productDetail.product.price)}원` : '가격미정';
   const chatText = productDetail.isSeller
     ? `채팅 목록 보기${productDetail.product.chatRoom > 0 ? `(${productDetail.product.chatRoom})` : ''}`
     : '문의하기';

@@ -8,7 +8,7 @@ interface Props {
 }
 
 interface IContainerProps {
-  isActive: boolean;
+  $isActive: boolean;
 }
 
 function Category({ selectedCategory, category, onChangeCategory }: Props) {
@@ -19,7 +19,7 @@ function Category({ selectedCategory, category, onChangeCategory }: Props) {
   };
 
   return (
-    <Container isActive={isActive} onClick={onClickCategoryItem}>
+    <Container $isActive={isActive} onClick={onClickCategoryItem}>
       {category.name}
     </Container>
   );
@@ -39,8 +39,8 @@ const Container = styled.li<IContainerProps>`
   border-radius: 999px;
 
   ${({ theme }) => theme.fonts.linkSmall};
-  ${({ theme, isActive }) =>
-    isActive
+  ${({ theme, $isActive }) =>
+    $isActive
       ? css`
           background-color: ${theme.color.primary200};
           color: ${theme.color.white};

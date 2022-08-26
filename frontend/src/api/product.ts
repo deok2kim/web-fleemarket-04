@@ -23,6 +23,10 @@ export interface IProductStatusUpdateParams {
   productStatusId: number;
 }
 
+export interface IProductUpdateParams extends IProductParams {
+  productId: number;
+}
+
 /**
  * 상품 상세 정보 API
  * @description 해당 상품의 상세 정보를 불러옵니다.
@@ -88,5 +92,20 @@ export const updateProductStatus = async (productStatusUpdateData: IProductStatu
   const { productId, productStatusId } = productStatusUpdateData;
   await axios.put(`products/${productId}/status`, {
     productStatus: productStatusId,
+  });
+};
+
+/**
+ * 상품 변경 API
+ * @description 상품 정보를 수정합니다.
+ **/
+export const updateProduct = async (productUpdateData: IProductUpdateParams) => {
+  const { productId, title, price, content, images, categoryId } = productUpdateData;
+  await axios.put(`products/${productId}`, {
+    title,
+    price,
+    content,
+    images,
+    categoryId,
   });
 };

@@ -6,6 +6,7 @@ import {
   getProductById,
   getProductPagination,
   likeProduct,
+  updateProduct,
   updateProductStatus,
 } from 'src/api/product';
 import { IServerError, IServerResponse } from 'src/types/api';
@@ -43,7 +44,7 @@ export const useLikeProduct = (productId: number, category?: number) => {
   return useMutation(() => likeProduct(productId), {
     onSuccess: () => {
       if (category) {
-        queryClient.invalidateQueries(PRODUCT.PRODUCT_CATEGORY_PAGE(category));
+        queryClient.removeQueries(PRODUCT.PRODUCT_CATEGORY_PAGE(category));
       } else {
         queryClient.invalidateQueries(PRODUCT.PRODUCT_DETAIL(productId));
       }
@@ -56,7 +57,7 @@ export const useDisLikeProduct = (productId: number, category?: number) => {
   return useMutation(() => dislikeProduct(productId), {
     onSuccess: () => {
       if (category) {
-        queryClient.invalidateQueries(PRODUCT.PRODUCT_CATEGORY_PAGE(category));
+        queryClient.removeQueries(PRODUCT.PRODUCT_CATEGORY_PAGE(category));
       } else {
         queryClient.invalidateQueries(PRODUCT.PRODUCT_DETAIL(productId));
       }
@@ -78,6 +79,16 @@ export const useUpdateProductStatusMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation(updateProductStatus, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(PRODUCT.ALL);
+    },
+  });
+};
+
+export const useUpdateProductMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(updateProduct, {
     onSuccess: () => {
       queryClient.invalidateQueries(PRODUCT.ALL);
     },

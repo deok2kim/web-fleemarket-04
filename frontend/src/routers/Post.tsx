@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Categories from 'src/components/Category/Categories';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
 import ImageUpload from 'src/components/Post/ImageUpload';
 import { HOUR_SECOND } from 'src/constants/time';
+import { useToast } from 'src/contexts/ToastContext';
 import withAuth from 'src/hocs/withAuth';
-import { useAddProductMutation, useProductDetail } from 'src/queries/product';
-import styled, { css } from 'styled-components';
+import { useAddProductMutation, useProductDetail, useUpdateProductMutation } from 'src/queries/product';
+import styled from 'styled-components';
 
 interface IFormData {
   title: string;
@@ -17,15 +18,18 @@ interface IFormData {
   urls: string[];
 }
 
+const MAX_PRICE = 10 ** 8;
+
 function Post() {
   const productId = useParams<{ id: string }>().id as string;
-  const { data: productDetail } = useProductDetail(+productId, {
+  const { data: productDetail, isLoading: productDetailLoading } = useProductDetail(+productId, {
     enabled: !!productId,
     staleTime: HOUR_SECOND,
   });
   const addProductMutation = useAddProductMutation();
+  const updateProductMutation = useUpdateProductMutation();
   const navigate = useNavigate();
-  const [isVisibleCategory, setIsVisibleCategory] = useState(false);
+  const toast = useToast();
   const [formData, setFormData] = useState<IFormData>({
     title: '',
     category: 0,
@@ -34,29 +38,34 @@ function Post() {
     urls: [],
   });
   const isInputPrice = !!formData.price;
-  const isSubmittable = formData.title && formData.category && formData.content && formData.urls.length ? true : false;
+  const isSubmittable = !!formData.title && !!formData.category && !!formData.content && !!formData.urls.length;
+  const isEditMode = !!productId;
 
   const onClickBack = () => {
     navigate(-1);
   };
 
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
+    const { value: titleValue } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      title: value,
+      title: titleValue,
     }));
   };
 
   const onChangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
+    const { value: priceValue } = e.target;
 
-    if (isNaN(+value)) return;
+    if (isNaN(+priceValue)) return;
+
+    if (+priceValue > MAX_PRICE) {
+      return;
+    }
 
     setFormData((prev) => ({
       ...prev,
-      price: value,
+      price: priceValue,
     }));
   };
 
@@ -68,21 +77,12 @@ function Post() {
   };
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { value } = e.target;
+    const { value: contentValue } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      content: value,
+      content: contentValue,
     }));
-  };
-
-  const onFocusOutTitle = () => {
-    if (formData.title) {
-      setIsVisibleCategory(true);
-      return;
-    }
-
-    setIsVisibleCategory(false);
   };
 
   const addUrls = (newUrls: string[]) => {
@@ -99,10 +99,9 @@ function Post() {
     }));
   };
 
-  const onSubmitPost = () => {
-    if (!isSubmittable) return;
-
+  const saveProduct = () => {
     const { title, urls, price, category, content } = formData;
+
     addProductMutation.mutate(
       {
         title,
@@ -115,10 +114,68 @@ function Post() {
         onSuccess: (addProductResponse) => {
           const productId = addProductResponse.data.id;
           navigate(`/products/${productId}`);
+          toast.success('상품이 등록되었습니다. 😄');
         },
       },
     );
   };
+
+  const updateProduct = () => {
+    if (!productId) return;
+
+    const { title, urls, price, category, content } = formData;
+
+    updateProductMutation.mutate(
+      {
+        productId: +productId,
+        title,
+        content,
+        price: +price,
+        images: urls,
+        categoryId: category,
+      },
+      {
+        onSuccess: () => {
+          navigate(`/products/${productId}`);
+          toast.success('상품이 수정되었습니다. 😄');
+        },
+      },
+    );
+  };
+
+  const onSubmitPost = () => {
+    if (!isSubmittable) return;
+
+    if (isEditMode) {
+      updateProduct();
+      return;
+    }
+
+    saveProduct();
+  };
+
+  const setDefaultDataInEditMode = () => {
+    const title = productDetail?.data.product.title || '';
+    const price = productDetail?.data.product.price?.toString() || '';
+    const content = productDetail?.data.product.content || '';
+    const category = productDetail?.data.product.categoryId || 0;
+    const imageUrls = productDetail?.data.product.images.map((image) => image.url) || [];
+
+    setFormData({
+      title,
+      price,
+      content,
+      category,
+      urls: imageUrls,
+    });
+  };
+
+  useEffect(() => {
+    if (productDetailLoading) return;
+    setDefaultDataInEditMode();
+  }, [productDetailLoading]);
+
+  if (productDetailLoading) return null;
 
   return (
     <>
@@ -134,19 +191,11 @@ function Post() {
       />
       <Container>
         <ImageUpload urls={formData.urls} addUrls={addUrls} removeUrl={removeUrl} />
-        <Input
-          type="text"
-          placeholder="글 제목"
-          value={formData.title}
-          onChange={onChangeTitle}
-          onBlur={onFocusOutTitle}
-        />
-        {isVisibleCategory && (
-          <CategoryWrapper>
-            <p>(필수) 카테고리를 선택해주세요</p>
-            <Categories selectedCategory={formData.category} onChangeCategory={onChangeCategory} isPost={true} />
-          </CategoryWrapper>
-        )}
+        <Input type="text" placeholder="글 제목" value={formData.title} onChange={onChangeTitle} />
+        <CategoryWrapper>
+          <p>(필수) 카테고리를 선택해주세요</p>
+          <Categories selectedCategory={formData.category} onChangeCategory={onChangeCategory} isPost={true} />
+        </CategoryWrapper>
         <PriceWrapper isInput={isInputPrice}>
           <Input
             isPrice={true}
@@ -196,6 +245,7 @@ const TextArea = styled.textarea`
   width: 100%;
   padding: 24px 0;
   border: none;
+  resize: none;
 
   &::placeholder {
     color: ${({ theme }) => theme.color.grey100};

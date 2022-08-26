@@ -62,24 +62,6 @@ export class ProductsController {
     );
   }
 
-  @Put()
-  @UseGuards(JwtAuthGuard)
-  async updateProduct(@Req() req, @Body() updateProductDto: UpdateProductDto) {}
-
-  @Put('/:productId/status')
-  @UseGuards(JwtAuthGuard)
-  async updateProductStatus(
-    @Param('productId') productId: number,
-    @Req() req,
-    @Body() updateProductStatusDto: UpdateProductStatusDto,
-  ) {
-    return await this.productsService.updateProductStatus(
-      req.user.id,
-      productId,
-      updateProductStatusDto,
-    );
-  }
-
   @Get('/:productId')
   async findProductById(
     @Req() req: Request,
@@ -94,6 +76,34 @@ export class ProductsController {
       userId = id;
     }
     return this.productsService.findProductById(productId, userId);
+  }
+
+  @Put('/:productId')
+  @UseGuards(JwtAuthGuard)
+  async updateProduct(
+    @Param('productId') productId: number,
+    @Req() req,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
+    return await this.productsService.updateProduct(
+      req.user.id,
+      productId,
+      updateProductDto,
+    );
+  }
+
+  @Put('/:productId/status')
+  @UseGuards(JwtAuthGuard)
+  async updateProductStatus(
+    @Param('productId') productId: number,
+    @Req() req,
+    @Body() updateProductStatusDto: UpdateProductStatusDto,
+  ) {
+    return await this.productsService.updateProductStatus(
+      req.user.id,
+      productId,
+      updateProductStatusDto,
+    );
   }
 
   @Post()

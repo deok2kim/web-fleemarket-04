@@ -91,4 +91,5 @@ const Wrapper = styled.div<Pick<Props, 'width' | 'height' | 'borderRadius' | 'bo
 const ImageComponent = styled.img<Pick<Props, 'borderRadius'>>`
   z-index: -1;
   border-radius: ${({ borderRadius }) => `${borderRadius}px`};
+  object-fit: contain;
 `;
