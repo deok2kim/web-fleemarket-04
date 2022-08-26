@@ -16,10 +16,16 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ImageModule } from './images/images.module';
 import { ChatRoomsModule } from './chat-rooms/chat-rooms.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot(config),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), '..', 'frontend', 'build'),
+      exclude: ['/api*'],
+    }),
     TypeOrmModule.forRootAsync({
       imports: [MySqlConfigModule],
       useClass: MySqlConfigService,
