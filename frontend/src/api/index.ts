@@ -24,7 +24,7 @@ export const initAxiosConfig = () => {
         await refreshAccessToken();
         const newAccessToken = getCookie('accessToken');
         if (newAccessToken) {
-          originalReq.headers.Authentication = newAccessToken;
+          originalReq.headers.Authorization = newAccessToken;
           axios.defaults.headers.common['Authorization'] = newAccessToken;
           return axios(originalReq);
         }

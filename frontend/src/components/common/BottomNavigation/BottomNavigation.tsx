@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { ROUTE } from 'src/constants/route';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Icon from '../Icon/Icon';
 
 function BottomNavigation() {
@@ -13,21 +13,21 @@ function BottomNavigation() {
 
   return (
     <Container>
-      <Menu to={ROUTE.HOME}>
+      <Menu to={ROUTE.HOME} isActive={isHome}>
         <Icon name={isHome ? 'iconHomeFill' : 'iconHomeLine'} />홈
       </Menu>
-      <Menu to={ROUTE.LIKE}>
+      <Menu to={ROUTE.LIKE} isActive={isLike}>
         <Icon name={isLike ? 'iconHeartFill' : 'iconHeartLine'} />찜
       </Menu>
-      <Menu to={ROUTE.SOLD}>
+      <Menu to={ROUTE.SOLD} isActive={isSold}>
         <Icon name={isSold ? 'iconCalculatorFill' : 'iconCalculatorLine'} />
         판매목록
       </Menu>
-      <Menu to={ROUTE.CHAT}>
+      <Menu to={ROUTE.CHAT} isActive={isChat}>
         <Icon name={isChat ? 'iconChatFill' : 'iconChatLine'} />
         채팅
       </Menu>
-      <Menu to={ROUTE.MY}>
+      <Menu to={ROUTE.MY} isActive={isMy}>
         <Icon name={isMy ? 'iconUserFill' : 'iconUserLine'} />
         나의공간
       </Menu>
@@ -52,7 +52,7 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.color.white};
 `;
 
-const Menu = styled(Link)`
+const Menu = styled(Link)<{ isActive: boolean }>`
   ${({ theme }) => theme.fonts.linkSmall}
 
   display: flex;
@@ -60,4 +60,13 @@ const Menu = styled(Link)`
   align-items: center;
 
   flex: 1;
+
+  ${({ isActive, theme }) =>
+    isActive &&
+    css`
+      svg path {
+        fill: ${theme.color.primary200};
+      }
+      color: ${theme.color.primary200};
+    `}
 `;

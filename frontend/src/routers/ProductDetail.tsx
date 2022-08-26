@@ -61,7 +61,6 @@ export default ProductDetail;
 const Container = styled.div`
   height: 100%;
   position: relative;
-  animation: ${({ theme }) => theme.animation.slideInFromRightToLeft} 0.5s;
 `;
 
 const Wrapper = styled.div`
