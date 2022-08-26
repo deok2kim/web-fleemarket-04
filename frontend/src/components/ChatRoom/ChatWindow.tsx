@@ -3,6 +3,7 @@ import { TColorToken } from 'src/styles/theme';
 import { IMessage, IUserForChat } from 'src/types/chatRoom';
 import { useEffect, useRef } from 'react';
 import useScrollToBottomChat from 'src/hooks/useScrollToBottomChat';
+import { useUserInfo } from 'src/queries/user';
 
 interface ITextStyles {
   backgroundColor: TColorToken;
@@ -13,15 +14,16 @@ interface ITextStyles {
 
 interface Props {
   messages: IMessage[];
-  partner: IUserForChat;
   newChatLog: IMessage[];
 }
 
-function ChatWindow({ messages, partner, newChatLog }: Props) {
+function ChatWindow({ messages, newChatLog }: Props) {
   const lastMessageTarget = useRef<HTMLDivElement>(null);
+  const { data: userInfo } = useUserInfo();
   useScrollToBottomChat(lastMessageTarget, !!messages, newChatLog);
+
   if (!messages) return null;
-  const isMine = (senderId: number) => partner.id != senderId;
+  const isMine = (senderId: number) => senderId === userInfo?.data.id;
 
   return (
     <Container>

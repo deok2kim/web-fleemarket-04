@@ -53,25 +53,25 @@ function Chat() {
     });
     setMessage('');
   };
-  if (!chatRoom) return null;
-
   if (isLoading) return null;
-
+  if (!chatRoom) return null;
+  const {
+    product,
+    messages,
+    partner: { nickname },
+  } = chatRoom.data.chatRoom;
   return (
     <>
       <Header
         headerTheme="white"
         left={<Icon name="iconChevronLeft" strokeColor="black" onClick={onClickBack} />}
-        center={<p>{'유저아이디'}</p>}
+        center={<p>{nickname}</p>}
         right={<Icon name="iconOut" strokeColor="red" />}
       />
-      <ChatProduct product={chatRoom.data.chatRoom.product} />
 
-      <ChatWindow
-        messages={chatRoom.data.chatRoom.messages}
-        partner={chatRoom.data.chatRoom.partner}
-        newChatLog={newChatLog}
-      />
+      <ChatProduct product={product} />
+
+      <ChatWindow messages={messages} newChatLog={newChatLog} />
 
       <ChatInput message={message} onChangeMessage={onChangeMessage} onClickSubmit={onClickSubmit} />
     </>

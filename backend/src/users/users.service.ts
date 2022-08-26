@@ -39,13 +39,13 @@ export class UsersService {
       .leftJoin('regions.region', 'regionNames')
       .where('user.id = :userId', { userId: id })
       .getOne();
-
     const newRegions = userInfo.userRegions.map(
       (userRegion) => userRegion.region,
     );
 
     const result = {
       nickname: userInfo.nickname,
+      id,
       regions: newRegions,
     };
 
