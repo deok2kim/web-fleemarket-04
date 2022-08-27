@@ -14,6 +14,8 @@ export class Like extends CoreEntity {
   @ManyToOne(() => User, (user) => user.likes)
   user: User;
 
-  @ManyToOne(() => Product, (product) => product.likes)
+  @ManyToOne(() => Product, (product) => product.likes, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 }

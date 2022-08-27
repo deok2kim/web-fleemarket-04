@@ -10,6 +10,8 @@ export default class Image extends CoreEntity {
   @Column()
   productId: number;
 
-  @ManyToOne(() => Product, (product) => product.images)
+  @ManyToOne(() => Product, (product) => product.images, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 }

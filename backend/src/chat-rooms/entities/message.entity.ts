@@ -29,7 +29,9 @@ export default class Message extends BaseEntity {
   @Column({ type: 'boolean' })
   isRead: boolean;
 
-  @ManyToOne(() => ChatRoom, (chatRoom) => chatRoom.messages)
+  @ManyToOne(() => ChatRoom, (chatRoom) => chatRoom.messages, {
+    onDelete: 'CASCADE',
+  })
   chatRoom: ChatRoom;
 
   @Column()

@@ -19,7 +19,9 @@ export default class ChatRoom extends BaseEntity {
   @OneToMany(() => Message, (message) => message.chatRoom, { cascade: true })
   messages: Message[];
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
   @Column()

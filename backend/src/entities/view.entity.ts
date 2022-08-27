@@ -14,6 +14,8 @@ export class View extends CoreEntity {
   @ManyToOne(() => User, (user) => user.views)
   user: User;
 
-  @ManyToOne(() => Product, (product) => product.views)
+  @ManyToOne(() => Product, (product) => product.views, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 }

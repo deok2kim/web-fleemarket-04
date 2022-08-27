@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import {
   addProduct,
+  deleteProduct,
   dislikeProduct,
   getProductById,
   getProductPagination,
@@ -89,6 +90,16 @@ export const useUpdateProductMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation(updateProduct, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(PRODUCT.ALL);
+    },
+  });
+};
+
+export const useDeleteProductMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(deleteProduct, {
     onSuccess: () => {
       queryClient.invalidateQueries(PRODUCT.ALL);
     },

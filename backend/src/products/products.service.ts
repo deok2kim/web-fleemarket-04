@@ -150,11 +150,21 @@ export class ProductsService {
   }
 
   async findById(productId: number) {
-    return await this.productRepository.findOne({
+    const product = await this.productRepository.findOne({
       where: {
         id: productId,
       },
     });
+
+    if (!product) {
+      throw new ErrorException(
+        ERROR_MESSAGE.NOT_FOUND_PRODUCT,
+        ERROR_CODE.NOT_FOUND_PRODUCT,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return product;
   }
 
   async findProductById(productId: number, userId?: number) {
@@ -273,11 +283,7 @@ export class ProductsService {
   ) {
     const { title, price, content, categoryId, images } = productData;
 
-    const product = await this.productRepository.findOne({
-      where: {
-        id: productId,
-      },
-    });
+    const product = await this.findById(productId);
 
     if (product.userId !== userId) {
       throw new ErrorException(
@@ -327,11 +333,7 @@ export class ProductsService {
     productId: number,
     productStatusDto: UpdateProductStatusDto,
   ) {
-    const product = await this.productRepository.findOne({
-      where: {
-        id: productId,
-      },
-    });
+    const product = await this.findById(productId);
 
     if (product.userId !== userId) {
       throw new ErrorException(
@@ -430,5 +432,27 @@ export class ProductsService {
       .leftJoinAndSelect('product.chatRooms', 'chatRooms', '')
       .getMany();
     return chatRooms;
+  }
+
+  async deleteProduct(userId: number, productId: number) {
+    const product = await this.findById(productId);
+
+    if (product.userId !== userId) {
+      throw new ErrorException(
+        ERROR_MESSAGE.ONLY_DELETE_OWNER,
+        ERROR_CODE.ONLY_DELETE_OWNER,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.productRepository
+      .createQueryBuilder('product')
+      .delete()
+      .where('id = :productId', {
+        productId,
+      })
+      .execute();
+
+    return;
   }
 }

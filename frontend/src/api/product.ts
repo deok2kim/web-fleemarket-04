@@ -111,6 +111,14 @@ export const updateProduct = async (productUpdateData: IProductUpdateParams) => 
 };
 
 /**
+ * 상품 삭제 API
+ * @description 해당 상품을 삭제합니다.
+ **/
+export const deleteProduct = async (productId: number) => {
+  await axios.delete(`products/${productId}`);
+};
+
+/**
  * 상품 채팅 조회 API
  * @description 내가 판매중인 특정 상품의 채팅 목록을 불러옵니다.
  **/

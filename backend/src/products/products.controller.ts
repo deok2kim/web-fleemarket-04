@@ -150,4 +150,11 @@ export class ProductsController {
       req.user.id,
     );
   }
+
+  @Delete('/:productId')
+  @UseGuards(JwtAuthGuard)
+  async deleteProduct(@Req() req, @Param('productId') productId: number) {
+    await this.productsService.deleteProduct(req.user.id, productId);
+    return;
+  }
 }

@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { useToast } from 'src/contexts/ToastContext';
+import { useDeleteProductMutation } from 'src/queries/product';
 import { IProduct } from 'src/types/product.type';
 import styled from 'styled-components';
 import Dropdown from '../../common/Dropdown/Dropdown';
@@ -9,10 +11,21 @@ interface Props {
 }
 
 function ProductEditDropdown({ product }: Props) {
+  const deleteProductMutation = useDeleteProductMutation();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const onClickEditButton = () => {
     navigate(`/post/products/${product.id}`);
+  };
+
+  const onClickDeleteButton = () => {
+    deleteProductMutation.mutate(product.id, {
+      onSuccess: () => {
+        navigate('/');
+        toast.success('해당 상품이 삭제되었습니다.');
+      },
+    });
   };
 
   return (
@@ -23,7 +36,7 @@ function ProductEditDropdown({ product }: Props) {
 
       <Dropdown.List position="right">
         <Dropdown.Item onClick={onClickEditButton}>수정하기</Dropdown.Item>
-        <Dropdown.Item>
+        <Dropdown.Item onClick={onClickDeleteButton}>
           <DeleteText>삭제하기</DeleteText>
         </Dropdown.Item>
       </Dropdown.List>
