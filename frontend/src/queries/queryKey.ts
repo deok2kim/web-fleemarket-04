@@ -6,12 +6,17 @@ export const CATEGORY = {
   CATEGORIES: ['categories'],
 } as const;
 
+interface IProductListPage {
+  category: number;
+  like?: boolean;
+  sell?: boolean;
+}
+
 export const PRODUCT = {
   ALL: ['product'],
-  PRODUCT_USER_LIKE_PAGE: () => [...PRODUCT.ALL, 'like'],
-  PRODUCT_CATEGORY_PAGE: (category: number | undefined, like?: number) => [...PRODUCT.ALL, category, like],
+  PRODUCT_CATEGORY_PAGE: ({ category, like, sell }: IProductListPage) => [...PRODUCT.ALL, category, like, sell],
   PRODUCT_DETAIL: (productId: number) => [...PRODUCT.ALL, productId],
-  PRODUCT_CHATROOMS: (productId: number) => [...PRODUCT.ALL, productId, 'chatRooms'],
+  PRODUCT_CHATROOMS: (productId: number) => [...PRODUCT.PRODUCT_DETAIL(productId), 'chatRooms'],
 } as const;
 
 export const REGION = {

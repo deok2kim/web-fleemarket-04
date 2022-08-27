@@ -13,8 +13,8 @@ export const ERROR_MESSAGE = {
   ONLY_EDITABLE_OWNER: '상품 주인만 수정이 가능합니다.',
   NOT_FOUND_USER: '존재하지 않는 사용자입니다.',
   CANNOT_REMOVE_ONE_REGION: '최소 1개의 지역을 등록해야합니다.',
-  ONLY_DELETE_OWNER: '상품 주인만 삭제가 가능합니다.',
   ALREADY_PRIMARY_REGION: '이미 선택한 지역입니다.',
+  ONLY_DELETE_OWNER: '상품 주인만 삭제가 가능합니다.',
 } as const;
 
 export const ERROR_CODE = {
@@ -28,6 +28,7 @@ export const ERROR_CODE = {
   ONLY_EDITABLE_OWNER: 1007,
   NOT_FOUND_USER: 1008,
   CANNOT_REMOVE_ONE_REGION: 1009,
-  ONLY_DELETE_OWNER: 1011,
   ALREADY_PRIMARY_REGION: 1010,
+  ONLY_DELETE_OWNER: 1011,
 } as const;
+

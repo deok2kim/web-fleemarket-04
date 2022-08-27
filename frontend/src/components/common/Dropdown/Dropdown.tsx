@@ -104,6 +104,8 @@ const DropdownContainer = styled.div`
   -ms-user-select: none;
   user-select: none;
 
+  z-index: 1;
+
   &:hover {
     cursor: pointer;
   }

@@ -23,7 +23,7 @@ function Location() {
   if (isLoading) return null;
   if (!userInfo) return null;
 
-  const onClickMyRegion = (region: IRegion) => {
+  const onClickRegion = (region: IRegion) => {
     if (region.isPrimary) {
       return;
     }
@@ -61,7 +61,7 @@ function Location() {
             key={region.id}
             title={getTownName(region.name)}
             status={region.isPrimary ? 'active' : 'inactive'}
-            onClick={() => onClickMyRegion(region)}
+            onClick={() => onClickRegion(region)}
             onRemove={() => onClickRemoveIcon(region)}
           />
         ))}

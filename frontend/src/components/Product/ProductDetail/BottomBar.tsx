@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE } from 'src/constants/route';
+import { useDebouncedCallback } from 'src/hooks/useDebounceCallback';
 import { useDisLikeProduct, useLikeProduct } from 'src/queries/product';
 import { useUserInfo } from 'src/queries/user';
 import { IProductDetail } from 'src/types/product.type';
@@ -20,6 +21,7 @@ function BottomBar({ productDetail }: Props) {
   const [like, setLike] = useState(productDetail.isLiked);
   const likeMutation = useLikeProduct(productDetail.product.id);
   const dislikeMutation = useDisLikeProduct(productDetail.product.id);
+  const debounceLikeMutate = useDebouncedCallback(like ? dislikeMutation.mutate : likeMutation.mutate, 1000);
   const priceKr = productDetail.product.price ? `${formatPrice(productDetail.product.price)}원` : '가격미정';
   const chatText = productDetail.isSeller
     ? `채팅 목록 보기${productDetail.product.chatRooms > 0 ? `(${productDetail.product.chatRooms})` : ''}`
@@ -28,12 +30,11 @@ function BottomBar({ productDetail }: Props) {
   const buttonDisabled = productDetail.isSeller ? !productDetail.product.chatRooms : false;
   const onClickHeart = () => {
     if (like) {
-      dislikeMutation.mutate();
       setLike(false);
-      return;
+    } else {
+      setLike(true);
     }
-    likeMutation.mutate();
-    setLike(true);
+    debounceLikeMutate();
   };
 
   const onClickChatRoom = () => {

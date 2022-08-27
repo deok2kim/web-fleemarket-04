@@ -5,7 +5,7 @@ import { logout } from 'src/api/auth';
 import { addUserRegion, changeUserPrimaryRegion, getUserInfo, removeUserRegion } from 'src/api/user';
 import { IServerError, IServerResponse } from 'src/types/api';
 import { IUserInfo } from 'src/types/user.type';
-import { USER } from './queryKey';
+import { PRODUCT, USER } from './queryKey';
 
 export const useUserInfo = (enabled = true) =>
   useQuery<IServerResponse<IUserInfo>, AxiosError<IServerError>>(USER.USER_INFO, getUserInfo, {
@@ -47,6 +47,7 @@ export const useChangePrimaryRegionMutation = () => {
   return useMutation((regionId: number) => changeUserPrimaryRegion(regionId), {
     onSuccess: () => {
       queryClient.invalidateQueries(USER.USER_INFO);
+      queryClient.invalidateQueries(PRODUCT.ALL);
     },
   });
 };

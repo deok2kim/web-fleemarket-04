@@ -7,6 +7,7 @@ import { useDisLikeProduct, useLikeProduct } from 'src/queries/product';
 import { useUserInfo } from 'src/queries/user';
 import { IProductPreview } from 'src/types/product.type';
 import timeForToday from 'src/utils/ago';
+import { useDebouncedCallback } from 'src/hooks/useDebounceCallback';
 import { formatPrice } from 'src/utils/formatPrice';
 import styled from 'styled-components';
 import Icon from '../../common/Icon/Icon';
@@ -24,6 +25,7 @@ function Product({ category, product }: Props, ref: React.ForwardedRef<HTMLLIEle
   const [likeCount, setLikeCount] = useState(product.likes);
   const likeMutation = useLikeProduct(product.id, category);
   const dislikeMutation = useDisLikeProduct(product.id, category);
+  const debounceLikeMutate = useDebouncedCallback(like ? dislikeMutation.mutate : likeMutation.mutate, 1000);
   const isExistence = (count: number): boolean => count > 0;
   const navigate = useNavigate();
   const toast = useToast();
@@ -48,15 +50,13 @@ function Product({ category, product }: Props, ref: React.ForwardedRef<HTMLLIEle
     }
 
     if (like) {
-      dislikeMutation.mutate();
       setLike(false);
       setLikeCount((count) => count - 1);
-      return;
+    } else {
+      setLike(true);
+      setLikeCount((count) => count + 1);
     }
-
-    likeMutation.mutate();
-    setLike(true);
-    setLikeCount((count) => count + 1);
+    debounceLikeMutate();
   };
 
   return (

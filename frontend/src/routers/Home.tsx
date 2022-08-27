@@ -3,7 +3,7 @@ import Categories from 'src/components/Category/Categories';
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
 import FAB from 'src/components/common/Button/FAB';
 import Header from 'src/components/common/Header/Header';
-import Icon from 'src/components/common/Icon/Icon';
+import SelectRegionDropdown from 'src/components/Location/SelectRegionDropdown';
 import Products from 'src/components/Product/ProductList/Products';
 import { ROUTE } from 'src/constants/route';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
@@ -11,13 +11,11 @@ import { useModalContext } from 'src/contexts/ModalContext';
 import { useCategory } from 'src/hooks/useCategory';
 import { useProductPagination } from 'src/queries/product';
 import { useUserInfo } from 'src/queries/user';
-import { getTownName } from 'src/utils/region';
 import styled from 'styled-components';
 
 function Home() {
   const { isLoggedIn } = useLoggedIn();
   const { data: userInfo } = useUserInfo(isLoggedIn);
-  const location = getTownName(userInfo?.data.regions.find((region) => region.isPrimary)?.name) || '전체';
   const { category, onChangeCategory } = useCategory();
   const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination({ category });
   const navigate = useNavigate();
@@ -28,15 +26,7 @@ function Home() {
   return (
     <>
       <FAB onClick={onClickFAB} />
-      <Header
-        headerTheme="primary"
-        center={
-          <Center>
-            <Icon name="iconMapPin" strokeColor="white" />
-            <p>{location}</p>
-          </Center>
-        }
-      />
+      <Header headerTheme="primary" center={<SelectRegionDropdown regions={userInfo?.data.regions} />} />
       <Categories selectedCategory={category} onChangeCategory={onChangeCategory} />
       <Products
         category={category}

@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient, UseQueryOptions } from 'react-query';
+import { Updater } from 'react-query/types/core/utils';
 import {
   addProduct,
   deleteProduct,
@@ -33,7 +34,7 @@ export const useProductDetail = (
 
 export const useProductPagination = ({ category, like, sell }: IProductParams) =>
   useInfiniteQuery<IServerResponse<IPaginationResponse<IProductPreview>>, AxiosError<IServerError>>(
-    PRODUCT.PRODUCT_CATEGORY_PAGE(category),
+    PRODUCT.PRODUCT_CATEGORY_PAGE({ category, like, sell }),
     ({ pageParam = 1 }) => getProductPagination({ page: pageParam, category, like, sell }),
     {
       getNextPageParam: (lastPage) => lastPage.data.nextPage || undefined,
@@ -45,7 +46,7 @@ export const useLikeProduct = (productId: number, category?: number) => {
   return useMutation(() => likeProduct(productId), {
     onSuccess: () => {
       if (category) {
-        queryClient.removeQueries(PRODUCT.PRODUCT_CATEGORY_PAGE(category));
+        queryClient.removeQueries(PRODUCT.PRODUCT_CATEGORY_PAGE({ category }));
       } else {
         queryClient.invalidateQueries(PRODUCT.PRODUCT_DETAIL(productId));
       }
@@ -58,7 +59,7 @@ export const useDisLikeProduct = (productId: number, category?: number) => {
   return useMutation(() => dislikeProduct(productId), {
     onSuccess: () => {
       if (category) {
-        queryClient.removeQueries(PRODUCT.PRODUCT_CATEGORY_PAGE(category));
+        queryClient.removeQueries(PRODUCT.PRODUCT_CATEGORY_PAGE({ category }));
       } else {
         queryClient.invalidateQueries(PRODUCT.PRODUCT_DETAIL(productId));
       }
@@ -105,3 +106,34 @@ export const useDeleteProductMutation = () => {
     },
   });
 };
+
+/*
+
+onMutate: async (newTodo) => {
+      await queryClient.cancelQueries(
+        category ? PRODUCT.PRODUCT_CATEGORY_PAGE({ category }) : PRODUCT.PRODUCT_DETAIL(productId),
+      );
+
+      let previousTodo: unknown;
+      if (category) {
+        previousTodo = queryClient.getQueryData(PRODUCT.PRODUCT_CATEGORY_PAGE({ category }));
+        queryClient.setQueryData(PRODUCT.PRODUCT_CATEGORY_PAGE({ category }), (old: any) => [...old, newTodo]);
+      } else {
+        previousTodo = queryClient.getQueryData(PRODUCT.PRODUCT_DETAIL(productId));
+        queryClient.setQueryData(PRODUCT.PRODUCT_DETAIL(productId), newTodo);
+      }
+
+      return { previousTodo };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData(
+        category ? PRODUCT.PRODUCT_CATEGORY_PAGE({ category }) : PRODUCT.PRODUCT_DETAIL(productId),
+        context?.previousTodo,
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(
+        category ? PRODUCT.PRODUCT_CATEGORY_PAGE({ category }) : PRODUCT.PRODUCT_DETAIL(productId),
+      );
+    },
+*/
