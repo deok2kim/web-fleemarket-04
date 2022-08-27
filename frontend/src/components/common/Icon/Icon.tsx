@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 import * as icons from 'src/components/common/Icon/iconPath';
 import { TColorToken } from 'src/styles/theme';
+import React from 'react';
 
 export interface Props {
   name: keyof typeof icons;
@@ -13,7 +14,7 @@ export interface Props {
   opacity?: string;
   className?: string;
 
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 function Icon({ name, size, rotate, fillColor, strokeColor, opacity, className, onClick }: Props) {

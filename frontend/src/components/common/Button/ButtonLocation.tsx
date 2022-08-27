@@ -1,3 +1,4 @@
+import React from 'react';
 import { theme } from 'src/styles/theme';
 import styled from 'styled-components';
 import Icon from '../Icon/Icon';
@@ -6,7 +7,8 @@ interface Props {
   title?: string;
   status: TStatus;
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
+  onRemove?: () => void;
 }
 
 type TStatus = 'add' | 'active' | 'inactive';
@@ -27,8 +29,15 @@ const statusList: Record<TStatus, Record<TStatusDetail, string>> = {
   },
 };
 
-function ButtonLocation({ title, className, status, onClick }: Props) {
+function ButtonLocation({ title, className, status, onClick, onRemove }: Props) {
   const isAdd = status === 'add';
+
+  const onClickRemoveIcon = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
+    if (onRemove) onRemove();
+  };
+
   return (
     <ButtonElement onClick={onClick} status={status}>
       {isAdd ? (
@@ -36,7 +45,7 @@ function ButtonLocation({ title, className, status, onClick }: Props) {
       ) : (
         <>
           <Title>{title}</Title>
-          <Icon name="iconClose" strokeColor="primary100" className={className} />
+          <Icon name="iconClose" strokeColor="primary100" className={className} onClick={onClickRemoveIcon} />
         </>
       )}
     </ButtonElement>

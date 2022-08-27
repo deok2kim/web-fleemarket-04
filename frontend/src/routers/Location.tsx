@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import ButtonLocation from 'src/components/common/Button/ButtonLocation';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
+import { useToast } from 'src/contexts/ToastContext';
 import withAuth from 'src/hocs/withAuth';
 import { useRemoveRegionMutation, useUserInfo } from 'src/queries/user';
 import { getTownName } from 'src/utils/region';
@@ -11,6 +12,7 @@ function Location() {
   const { data, isLoading } = useUserInfo();
   const removeRegionMutation = useRemoveRegionMutation();
   const navigate = useNavigate();
+  const toast = useToast();
   const handleClickAddRegion = () => navigate('search');
   const handleClickBack = () => navigate('/');
 
@@ -19,11 +21,16 @@ function Location() {
   if (isLoading) return null;
   if (!data) return null;
 
-  const onClickMyRegion = (regionId: number) => {
-    // TODO: 모달 적용하기
-    if (countMyRegion === 1) return alert('최소 1개의 지역을 등록해야합니다.');
+  const onClickMyRegion = (regionId: number) => {};
+
+  const onClickRemoveIcon = (regionId: number) => {
+    if (countMyRegion === 1) {
+      toast.error('최소 1개의 지역을 등록해야합니다.');
+      return;
+    }
     removeRegionMutation.mutate(regionId);
   };
+
   return (
     <Container>
       <Header
@@ -43,6 +50,7 @@ function Location() {
             title={getTownName(name)}
             status={index === 0 ? 'active' : 'inactive'}
             onClick={() => onClickMyRegion(id)}
+            onRemove={() => onClickRemoveIcon(id)}
           />
         ))}
         {countMyRegion === 1 && <ButtonLocation status="add" onClick={handleClickAddRegion} />}

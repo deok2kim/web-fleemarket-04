@@ -11,6 +11,9 @@ export class UserRegion extends CoreEntity {
   @Column()
   regionId: number;
 
+  @Column({ default: false })
+  isPrimary: boolean;
+
   @ManyToOne(() => User, (user) => user.userRegions)
   user: User;
 

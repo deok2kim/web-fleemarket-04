@@ -22,6 +22,8 @@ function CustomQueryClientProvider({ children }: PropsWithChildren) {
         switch (code) {
           case 1000:
           case 1001:
+            toast.error(message);
+            break;
           case 1002:
           case 1003:
           case 1004:

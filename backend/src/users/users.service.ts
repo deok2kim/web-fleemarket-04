@@ -7,7 +7,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserRegion } from 'src/entities/user-region.entity';
 import { ErrorException } from 'src/common/exception/error.exception';
 import { ERROR_CODE, ERROR_MESSAGE } from 'src/common/constant/error-message';
-import Product from 'src/products/entities/product.entity';
 
 @Injectable()
 export class UsersService {
@@ -17,9 +16,6 @@ export class UsersService {
 
     @InjectRepository(UserRegion)
     private userRegionRepository: Repository<UserRegion>,
-
-    @InjectRepository(Product)
-    private productRepository: Repository<Product>,
   ) {}
 
   async findUserById(id: number) {
@@ -34,14 +30,21 @@ export class UsersService {
   async findUserInfoById(id: number) {
     const userInfo: any = await this.userRepository
       .createQueryBuilder('user')
-      .select(['user.nickname', 'regions.id', 'regionNames', 'user.id'])
+      .select([
+        'user.nickname',
+        'regions.id',
+        'regions.isPrimary',
+        'regionNames',
+        'user.id',
+      ])
       .leftJoin('user.userRegions', 'regions')
       .leftJoin('regions.region', 'regionNames')
       .where('user.id = :userId', { userId: id })
       .getOne();
-    const newRegions = userInfo.userRegions.map(
-      (userRegion) => userRegion.region,
-    );
+    const newRegions = userInfo.userRegions.map((userRegion) => ({
+      ...userRegion.region,
+      isPrimary: userRegion.isPrimary,
+    }));
 
     const result = {
       nickname: userInfo.nickname,
@@ -98,9 +101,18 @@ export class UsersService {
       );
     }
 
+    if (!exRegionData.length) {
+      return this.userRegionRepository.save({
+        userId,
+        regionId,
+        isPrimary: true,
+      });
+    }
+
     return this.userRegionRepository.save({
       userId,
       regionId,
+      isPrimary: false,
     });
   }
 
@@ -119,11 +131,29 @@ export class UsersService {
       );
     }
 
+    if (exRegionData.length === 1) {
+      throw new ErrorException(
+        ERROR_MESSAGE.CANNOT_REMOVE_ONE_REGION,
+        ERROR_CODE.CANNOT_REMOVE_ONE_REGION,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (exRegionData.find((a) => a.regionId === regionId)) {
-      return this.userRegionRepository.delete({
+      await this.userRegionRepository.delete({
         userId,
         regionId,
       });
+      await this.userRegionRepository
+        .createQueryBuilder('userRegion')
+        .update(UserRegion)
+        .set({
+          isPrimary: true,
+        })
+        .where('userId = :userId', { userId })
+        .execute();
+
+      return;
     }
 
     throw new ErrorException(

@@ -26,7 +26,6 @@ function SearchedRegions({ keyword }: Props) {
   const onClickRegion = (regionId: number) => {
     addUserRegionMutation.mutate(regionId);
     navigate(ROUTE.LOCATION);
-    return null;
   };
 
   return (
