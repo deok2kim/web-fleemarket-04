@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { InfiniteData } from 'react-query';
+import Spinner from 'src/components/common/Loading/Spinner';
 import Empty from 'src/components/common/Error/Empty';
 import { useInfiniteScroll } from 'src/hooks/useInfiniteScroll';
 import { IServerResponse } from 'src/types/api';
@@ -39,7 +40,7 @@ function Products({ category, productList, isFetching, fetchNextPage, hasNextPag
           <Product key={product.id} ref={observerTarget} category={category} product={product} />
         )),
       )}
-      {isFetching && <p>데이터 로딩중...</p>}
+      {isFetching && <Spinner />}
     </Container>
   );
 }

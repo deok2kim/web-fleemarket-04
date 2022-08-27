@@ -52,4 +52,10 @@ export const GlobalStyle = createGlobalStyle`
     height: 100%;
     overflow: hidden;
   }
+
+  .skeleton {
+    background: linear-gradient(90deg, hsl(210, 15%, 88%), hsl(210, 15%, 95%), hsl(210, 15%, 88%));
+    background-size: 200%;
+    animation: ${({ theme }) => theme.animation.skeletonLoading} 1s infinite reverse;
+  }
 `;

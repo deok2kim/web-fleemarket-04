@@ -5,6 +5,7 @@ import { useAddRegionMutation } from 'src/queries/user';
 import styled from 'styled-components';
 import { ROUTE } from 'src/constants/route';
 import { useInfiniteScroll } from 'src/hooks/useInfiniteScroll';
+import Spinner from '../common/Loading/Spinner';
 
 interface Props {
   keyword: string;
@@ -37,7 +38,7 @@ function SearchedRegions({ keyword }: Props) {
           </Region>
         )),
       )}
-      {isFetching && <p>데이터 로딩중...</p>}
+      {isFetching && <Spinner />}
     </Container>
   );
 }

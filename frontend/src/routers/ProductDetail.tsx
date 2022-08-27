@@ -11,11 +11,12 @@ import Icon from 'src/components/common/Icon/Icon';
 import ProductEditDropdown from 'src/components/Product/ProductDetail/ProductEditDropdown';
 import { ROUTE } from 'src/constants/route';
 import { HOUR_SECOND } from 'src/constants/time';
+import ProductDetailSkeleton from 'src/components/common/Loading/Skeleton/ProductDetailSkeleton';
 
 function ProductDetail() {
   const navigate = useNavigate();
   const productId = useParams<{ id: string }>().id as string;
-  const { data: productDetail } = useProductDetail(+productId, {
+  const { data: productDetail, isLoading } = useProductDetail(+productId, {
     enabled: !!productId,
     staleTime: HOUR_SECOND,
   });
@@ -26,7 +27,13 @@ function ProductDetail() {
     navigate(ROUTE.HOME);
   };
 
-  if (!productDetail) return <></>;
+  if (isLoading) {
+    return <ProductDetailSkeleton />;
+  }
+
+  if (!productDetail) {
+    return <ProductDetailSkeleton />;
+  }
 
   return (
     <Container>
@@ -51,7 +58,7 @@ function ProductDetail() {
         <Spacing size={16} />
         <ProductContent productDetail={productDetail?.data} />
       </Wrapper>
-      <BottomBar productDetail={productDetail?.data} />
+      <BottomBar productDetail={productDetail.data} />
     </Container>
   );
 }
@@ -61,6 +68,8 @@ export default ProductDetail;
 const Container = styled.div`
   height: 100%;
   position: relative;
+
+  animation: ${({ theme }) => theme.animation.fadeIn} 0.3s;
 `;
 
 const Wrapper = styled.div`

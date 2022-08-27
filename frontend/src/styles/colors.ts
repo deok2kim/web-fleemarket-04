@@ -11,4 +11,5 @@ export const colors = {
   primary300: '#219A95',
   red: '#F45452',
   transparent: 'transparent',
+  skeleton: '#e6e6e6',
 };

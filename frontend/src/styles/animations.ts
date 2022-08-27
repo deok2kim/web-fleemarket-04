@@ -24,4 +24,12 @@ export const animations = {
     transform: translateX(0);
   }
 `,
+  skeletonLoading: keyframes`
+  from {
+      background-position: -100% 0;
+    }
+    to {
+      background-position: 100% 0;
+    }
+`,
 };
