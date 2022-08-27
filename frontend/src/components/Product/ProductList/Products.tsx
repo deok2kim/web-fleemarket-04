@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { InfiniteData } from 'react-query';
+import Empty from 'src/components/common/Error/Empty';
 import { useInfiniteScroll } from 'src/hooks/useInfiniteScroll';
 import { IServerResponse } from 'src/types/api';
 import { IPaginationResponse } from 'src/types/pagination.type';
@@ -24,6 +25,12 @@ function Products({ category, productList, isFetching, fetchNextPage, hasNextPag
     loadMore: fetchNextPage,
     hasNextPage: hasNextPage ?? false,
   });
+
+  if (isFetching) return <></>;
+
+  if (!productList?.pages[0].data.total) {
+    return <Empty />;
+  }
 
   return (
     <Container>
