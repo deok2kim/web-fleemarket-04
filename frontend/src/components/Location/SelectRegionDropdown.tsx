@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTE } from 'src/constants/route';
+import { useLoggedIn } from 'src/contexts/LoggedInContext';
 import { useChangePrimaryRegionMutation } from 'src/queries/user';
 import { IRegion } from 'src/types/region.type';
 import { getTownName } from 'src/utils/region';
@@ -12,6 +13,7 @@ interface Props {
 }
 
 function SelectRegionDropdown({ regions }: Props) {
+  const { isLoggedIn } = useLoggedIn();
   const location = getTownName(regions?.find((region) => region.isPrimary)?.name) || '전체';
   const changePrimaryRegionMutation = useChangePrimaryRegionMutation();
 
@@ -31,19 +33,20 @@ function SelectRegionDropdown({ regions }: Props) {
           <p>{location}</p>
         </IconWrapper>
       </Dropdown.Toggle>
-
-      <Dropdown.List position="center">
-        {regions?.map((region) => (
-          <Dropdown.Item key={region.id} onClick={() => onClickRegion(region)}>
-            <DropdownText isPrimary={region.isPrimary}>{getTownName(region.name)}</DropdownText>
+      {isLoggedIn && (
+        <Dropdown.List position="center">
+          {regions?.map((region) => (
+            <Dropdown.Item key={region.id} onClick={() => onClickRegion(region)}>
+              <DropdownText isPrimary={region.isPrimary}>{getTownName(region.name)}</DropdownText>
+            </Dropdown.Item>
+          ))}
+          <Dropdown.Item>
+            <Link to={ROUTE.LOCATION}>
+              <DropdownText>내 동네 설정하기</DropdownText>
+            </Link>
           </Dropdown.Item>
-        ))}
-        <Dropdown.Item>
-          <Link to={ROUTE.LOCATION}>
-            <DropdownText>내 동네 설정하기</DropdownText>
-          </Link>
-        </Dropdown.Item>
-      </Dropdown.List>
+        </Dropdown.List>
+      )}
     </Dropdown>
   );
 }

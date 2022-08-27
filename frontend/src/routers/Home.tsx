@@ -25,7 +25,7 @@ function Home() {
 
   return (
     <>
-      <FAB onClick={onClickFAB} />
+      {isLoggedIn && <FAB onClick={onClickFAB} />}
       <Header headerTheme="primary" center={<SelectRegionDropdown regions={userInfo?.data.regions} />} />
       <Categories selectedCategory={category} onChangeCategory={onChangeCategory} />
       <Products
