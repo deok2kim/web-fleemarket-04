@@ -24,7 +24,7 @@ function ProductDetail() {
   const isSeller = productDetail?.data.isSeller;
 
   const onClickBackIcon = () => {
-    navigate(ROUTE.HOME);
+    navigate(-1);
   };
 
   if (isLoading) {

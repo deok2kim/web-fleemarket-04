@@ -22,7 +22,6 @@ function ChatWindow({ messages, newChatLog }: Props) {
   const { data: userInfo } = useUserInfo();
   useScrollToBottomChat(lastMessageTarget, !!messages, newChatLog);
 
-  if (!messages) return null;
   const isMine = (senderId: number) => senderId === userInfo?.data.id;
 
   return (

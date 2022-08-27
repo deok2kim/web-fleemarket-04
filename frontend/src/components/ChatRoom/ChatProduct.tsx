@@ -2,22 +2,31 @@ import styled from 'styled-components';
 import Image from 'src/components/common/Image/Image';
 import { formatPrice } from 'src/utils/formatPrice';
 import { IProductPreviewForChat } from 'src/types/chatRoom';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE } from 'src/constants/route';
 
 interface Props {
   product: IProductPreviewForChat;
 }
 
 function ChatProduct({ product }: Props) {
-  if (!product) return null;
+  const navigate = useNavigate();
+
   const {
+    id,
     thumbnail: { url },
     title,
     price,
     productStatus,
   } = product;
+
+  const onClickProduct = () => {
+    navigate(`${ROUTE.PRODUCTS}/${id}`);
+  };
+
   return (
     <Wrapper>
-      <InfoWrapper>
+      <InfoWrapper onClick={onClickProduct}>
         <Image src={url} box="sm" />
         <TitleAndPriceWrapper>
           <Title>{title}</Title>
@@ -47,6 +56,8 @@ const InfoWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  cursor: pointer;
 `;
 
 const Status = styled.div`
