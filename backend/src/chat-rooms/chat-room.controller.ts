@@ -1,6 +1,6 @@
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { ChatRoomService } from './chat-room.service';
 
 @Controller('chatRoom')
@@ -31,10 +31,16 @@ export class ChatRoomController {
   }
 
   // 채팅 룸 하나 찾기 + 메시지도 같이 줘야됨!
-  @Get('/:id')
+  @Get('/:chatRoomId')
   @UseGuards(JwtAuthGuard)
-  findChatRoom(@Req() req, @Param('id') id: string) {
+  findChatRoom(@Req() req, @Param('chatRoomId') chatRoomId: string) {
     // TODO: seller 나 buyer 둘 중 하나가 로그인한 유저
-    return this.chatRoomService.findChatRoom(id, req.user.id);
+    return this.chatRoomService.findChatRoom(chatRoomId, req.user.id);
+  }
+
+  @Delete('/:chatRoomId')
+  @UseGuards(JwtAuthGuard)
+  deleteChatRoom(@Req() req, @Param('chatRoomId') chatRoomId: string) {
+    return this.chatRoomService.deleteChatRoom(chatRoomId, req.user.id);
   }
 }

@@ -4,17 +4,22 @@ import ChatWindow from 'src/components/ChatRoom/ChatWindow';
 import ChatInput from 'src/components/ChatRoom/ChatInput';
 import ChatProduct from 'src/components/ChatRoom/ChatProduct';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useChatRoomQuery } from 'src/queries/chatRoom';
+import { useChatRoomQuery, useDeleteChatRoomMutation } from 'src/queries/chatRoom';
 import withAuth from 'src/hocs/withAuth';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
 import { useEffect, useState } from 'react';
 import { useSocket } from 'src/hooks/useSocket';
 import { IMessage } from 'src/types/chatRoom';
 import { useUserInfo } from 'src/queries/user';
+import { useModalContext } from 'src/contexts/ModalContext';
+import { useToast } from 'src/contexts/ToastContext';
 
 function Chat() {
   const { isLoggedIn } = useLoggedIn();
   const { data: userInfo } = useUserInfo();
+
+  const modal = useModalContext();
+
   const chatRoomId = useParams<{ chatRoomId: string }>().chatRoomId as string;
   const { data: chatRoom, isLoading } = useChatRoomQuery(chatRoomId, {
     enabled: isLoggedIn && !!chatRoomId,
@@ -24,7 +29,10 @@ function Chat() {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const { socket, sendMessage, disconnectSocket } = useSocket(chatRoomId);
+  const deleteChatRoomMutation = useDeleteChatRoomMutation();
+  const toast = useToast();
+
+  const { socket, sendMessage } = useSocket(chatRoomId);
   useEffect(() => {
     if (!chatRoomId) return;
 
@@ -37,6 +45,19 @@ function Chat() {
       });
     };
   }, [socket, chatRoomId]);
+
+  useEffect(() => {
+    modal.setTitle('채팅방을 나가면 채팅 목록 및 대화 내용이 삭제 되고 복구할 수 없어요. 😂 채팅방에서 나가시겠어요? ');
+    modal.setOnOk(() => {
+      deleteChatRoomMutation.mutate(chatRoomId, {
+        onSuccess: () => {
+          navigate(-1);
+          toast.success('해당 채팅방이 삭제되었습니다.');
+        },
+      });
+      modal.onClose();
+    });
+  }, []);
 
   const onClickBack = () => navigate(-1);
 
@@ -66,7 +87,7 @@ function Chat() {
         headerTheme="white"
         left={<Icon name="iconChevronLeft" strokeColor="black" onClick={onClickBack} />}
         center={<p>{nickname}</p>}
-        right={<Icon name="iconOut" strokeColor="red" />}
+        right={<Icon name="iconOut" strokeColor="red" onClick={modal.onOpen} />}
       />
 
       <ChatProduct product={product} />

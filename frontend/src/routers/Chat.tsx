@@ -8,8 +8,6 @@ import timeForToday from 'src/utils/ago';
 import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
 import { useNavigate } from 'react-router-dom';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
-import { useQueryClient } from 'react-query';
-import { useEffect } from 'react';
 
 function ChatRoom() {
   // TODO: 채팅 전체 목록과 상품 채팅 목록을 따로 처리하기

@@ -130,9 +130,13 @@ export class ChatRoomService {
       .leftJoinAndSelect('product.images', 'images')
       .leftJoinAndSelect('chatRoom.seller', 'seller')
       .leftJoinAndSelect('chatRoom.buyer', 'buyer')
-      .where('chatRoom.sellerId = :userId OR chatRoom.buyerId = :userId', {
-        userId,
-      })
+      .where(
+        '(chatRoom.sellerId = :userId OR chatRoom.buyerId = :userId) and chatRoom.deleteUserId != :userId ',
+        {
+          userId,
+        },
+      )
+      // .andWhere('chatRoom.deleteUserId != :userId', { userId })
       .getMany();
 
     let thumbnail;
@@ -205,6 +209,33 @@ export class ChatRoomService {
   // 채팅 하나 입력
   async createMessage(createMessageDto: CreateMessageDto) {
     return await this.messageRepository.save(createMessageDto);
+  }
+
+  // 채팅방 삭제
+  async deleteChatRoom(chatRoomId: string, userId: number) {
+    // 1. 채팅 방 찾기
+    const chatRoomData = await this.chatRoomRepository
+      .createQueryBuilder('chatRoom')
+      .select(['chatRoom'])
+      .where('chatRoom.id = :chatRoomId', { chatRoomId })
+      .getOne();
+
+    // 2. 상대가 이미 지웠으면? 완전 삭제
+    if (chatRoomData.deleteUserId) {
+      return await this.chatRoomRepository
+        .createQueryBuilder('chatRoom')
+        .delete()
+        .where('id = :chatRoomId', { chatRoomId })
+        .execute();
+    }
+
+    // 3. 상대가 안지웠으면? deleteUserId 컬럼에 나를 추가
+    return await this.chatRoomRepository
+      .createQueryBuilder('chatRoom')
+      .update('chat_room') // chatRoom 안됨 -> 진짜 테이블이름을 써야 되는거 같네요!
+      .set({ deleteUserId: userId })
+      .where('id = :chatRoomId', { chatRoomId })
+      .execute();
   }
 }
 

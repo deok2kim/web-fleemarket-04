@@ -1,8 +1,8 @@
 import { AxiosError } from 'axios';
-import { useQuery, UseQueryOptions } from 'react-query';
-import { getChatRoom, getChatRooms } from 'src/api/chatRoom';
+import { useQuery, UseQueryOptions, useQueryClient, useMutation } from 'react-query';
+import { deleteChatRoom, getChatRoom, getChatRooms } from 'src/api/chatRoom';
 import { IServerResponse, IServerError } from 'src/types/api';
-import { IChatRoom, IChatRoomRes, IChatRooms } from 'src/types/chatRoom';
+import { IChatRoomRes, IChatRooms } from 'src/types/chatRoom';
 import { CHAT } from './queryKey';
 
 export const useChatRooms = (options?: UseQueryOptions<IServerResponse<IChatRooms>, AxiosError<IServerError>>) =>
@@ -17,4 +17,14 @@ export const useChatRoomQuery = (
     () => getChatRoom(chatRoomId),
     options,
   );
+};
+
+export const useDeleteChatRoomMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(deleteChatRoom, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(CHAT.CHATROOMS);
+    },
+  });
 };

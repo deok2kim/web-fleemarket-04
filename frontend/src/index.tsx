@@ -9,6 +9,8 @@ import Toast from './components/common/Toast/Toast';
 import LoggedInProvider from './contexts/LoggedInContext';
 import CustomQueryClientProvider from './components/CustomQueryClientProvider';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import ModalProvider from './contexts/ModalContext';
+import Modal from './components/common/Modal/Modal';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -16,11 +18,14 @@ root.render(
     <ToastProvider>
       <CustomQueryClientProvider>
         <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          <LoggedInProvider>
-            <App />
-            <Toast />
-          </LoggedInProvider>
+          <ModalProvider>
+            <GlobalStyle />
+            <LoggedInProvider>
+              <App />
+              <Toast />
+              <Modal />
+            </LoggedInProvider>
+          </ModalProvider>
         </ThemeProvider>
         <ReactQueryDevtools />
       </CustomQueryClientProvider>

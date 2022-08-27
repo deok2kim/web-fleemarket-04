@@ -7,6 +7,7 @@ import Icon from 'src/components/common/Icon/Icon';
 import Products from 'src/components/Product/ProductList/Products';
 import { ROUTE } from 'src/constants/route';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
+import { useModalContext } from 'src/contexts/ModalContext';
 import { useCategory } from 'src/hooks/useCategory';
 import { useProductPagination } from 'src/queries/product';
 import { useUserInfo } from 'src/queries/user';
@@ -20,7 +21,6 @@ function Home() {
   const { category, onChangeCategory } = useCategory();
   const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination({ category });
   const navigate = useNavigate();
-
   const onClickFAB = () => {
     navigate(ROUTE.PRODUCTS_POST);
   };
