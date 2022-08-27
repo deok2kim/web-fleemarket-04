@@ -39,7 +39,8 @@ const RightWrapper = styled.div`
   min-width: 24px;
 `;
 
-const CenterWrapper = styled.button`
+const CenterWrapper = styled.div`
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;

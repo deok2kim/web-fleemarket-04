@@ -162,4 +162,52 @@ export class UsersService {
       HttpStatus.BAD_REQUEST,
     );
   }
+
+  async changeUserPrimaryRegion(userId: number, regionId: number) {
+    const exRegionData = await this.userRegionRepository.find({
+      where: {
+        userId,
+      },
+    });
+
+    const selectRegion = exRegionData.find((a) => a.regionId === regionId);
+
+    if (selectRegion) {
+      if (selectRegion.regionId === regionId) {
+        if (selectRegion.isPrimary) {
+          throw new ErrorException(
+            ERROR_MESSAGE.ALREADY_PRIMARY_REGION,
+            ERROR_CODE.ALREADY_PRIMARY_REGION,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        await this.userRegionRepository
+          .createQueryBuilder('userRegion')
+          .update(UserRegion)
+          .set({
+            isPrimary: true,
+          })
+          .where('userId = :userId', { userId })
+          .andWhere('regionId = :regionId', { regionId })
+          .execute();
+
+        await this.userRegionRepository
+          .createQueryBuilder('userRegion')
+          .update(UserRegion)
+          .set({
+            isPrimary: false,
+          })
+          .where('userId = :userId', { userId })
+          .andWhere('regionId != :regionId', { regionId })
+          .execute();
+      }
+      return;
+    }
+
+    throw new ErrorException(
+      ERROR_MESSAGE.NOT_APPLIED_REGION,
+      ERROR_CODE.NOT_APPLIED_REGION,
+      HttpStatus.BAD_REQUEST,
+    );
+  }
 }

@@ -17,6 +17,7 @@ import {
   UpdateProductStatusDto,
 } from './dto/update-product.dto';
 import ProductStatus from './entities/product-status.entity';
+import { UserRegion } from 'src/entities/user-region.entity';
 
 const DEFAULT_PRODUCT_STATUS_ID = 1; /* 1: 'sale' */
 
@@ -40,6 +41,9 @@ export class ProductsService {
 
     @InjectRepository(View)
     private viewRepository: Repository<View>,
+
+    @InjectRepository(UserRegion)
+    private userRegionRepository: Repository<UserRegion>,
   ) {}
 
   async findAllCategory() {
@@ -52,6 +56,18 @@ export class ProductsService {
     const take = limit || DEFAULT_LIMIT;
     const skip = (page - 1) * take;
 
+    let primaryRegionId;
+    if (userId) {
+      const primaryRegion = await this.userRegionRepository.findOne({
+        where: {
+          userId: userId,
+          isPrimary: true,
+        },
+      });
+
+      primaryRegionId = primaryRegion.regionId;
+    }
+
     let query = this.productRepository
       .createQueryBuilder('product')
       .select([
@@ -60,8 +76,8 @@ export class ProductsService {
         'product.price',
         'product.createdAt',
         'user.id',
-        'regions.id',
-        'regionNames.name',
+        'userRegions.id',
+        'region.name',
       ])
       .leftJoinAndSelect('product.images', 'image')
       .innerJoinAndSelect('product.productStatus', 'productStatus')
@@ -69,9 +85,15 @@ export class ProductsService {
       .leftJoinAndSelect('product.views', 'product.views')
       .leftJoinAndSelect('product.likes', 'product.likes')
       .leftJoin('product.user', 'user')
-      .leftJoin('user.userRegions', 'regions')
-      .leftJoin('regions.region', 'regionNames')
+      .leftJoin('user.userRegions', 'userRegions')
+      .leftJoin('userRegions.region', 'region')
       .where(`product.id is not null`);
+
+    if (primaryRegionId) {
+      query = query.andWhere(`userRegions.regionId = :regionId`, {
+        regionId: primaryRegionId,
+      });
+    }
 
     if (categoryId) {
       query = query.andWhere('product.categoryId = :categoryId', {

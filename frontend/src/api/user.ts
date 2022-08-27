@@ -29,3 +29,13 @@ export const addUserRegion = async (regionId: number) => {
 export const removeUserRegion = async (regionId: number) => {
   await axios.delete(`users/region/${regionId}`);
 };
+
+/**
+ * 유저 주요 동네 선택 API
+ * @description 상품을 볼 주요 동네를 선택합니다.
+ **/
+export const changeUserPrimaryRegion = async (regionId: number) => {
+  await axios.post(`users/region/primary`, {
+    regionId,
+  });
+};

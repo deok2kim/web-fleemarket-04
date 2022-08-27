@@ -16,7 +16,7 @@ import styled from 'styled-components';
 function Home() {
   const { isLoggedIn } = useLoggedIn();
   const { data: userInfo } = useUserInfo(isLoggedIn);
-  const location = getTownName(userInfo?.data.regions[0].name) || '전체';
+  const location = getTownName(userInfo?.data.regions.find((region) => region.isPrimary)?.name) || '전체';
   const { category, onChangeCategory } = useCategory();
   const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination({ category });
   const navigate = useNavigate();

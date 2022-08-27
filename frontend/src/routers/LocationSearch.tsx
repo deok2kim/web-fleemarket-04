@@ -26,7 +26,7 @@ function LocationSearch() {
     <Container>
       <Header
         headerTheme="offWhite"
-        left={!state?.isInitUser && <Icon onClick={onClickBack} name="iconChevronLeft" strokeColor="black" />}
+        left={!state?.isInitUser && <Icon onClick={onClickBack} name="iconChevronLeft" strokeColor="grey100" />}
         center={
           <Center>
             <Icon name="iconSearchMini" strokeColor="grey100" />
@@ -62,10 +62,14 @@ const SearchBUtton = styled.div`
 `;
 
 const Center = styled.div`
+  width: 100%;
+
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 4px;
+
+  margin-left: 4px;
   padding-bottom: 4px;
 
   color: ${({ theme }) => theme.color.grey100};
@@ -76,7 +80,8 @@ const Center = styled.div`
 `;
 
 const Input = styled.input`
-  width: 260px;
+  ${({ theme }) => theme.fonts.textSmall}
+  flex: 1;
 
   border: none;
 

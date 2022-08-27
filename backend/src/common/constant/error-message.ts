@@ -6,13 +6,14 @@ export const ERROR_MESSAGE = {
   EXCEED_REGIONS: '등록할 수 있는 동네 수를 초과했습니다.',
   DUPLICATE_REGION: '이미 등록된 동네입니다.',
   NOT_FOUND_REGION: '등록된 동네가 없습니다.',
-  NOT_APPLIED_REGION: '등록되지 않은 동네는 삭제하실 수 없습니다.',
+  NOT_APPLIED_REGION: '등록되지 않은 동네입니다.',
   ALREADY_LIKE: '이미 찜한 상품입니다.',
   NOT_LIKED: '찜하지 않은 상품은 취소할 수 없습니다.',
   NOT_FOUND_PRODUCT: '등록되지 않은 상품입니다',
   ONLY_EDITABLE_OWNER: '상품 주인만 수정이 가능합니다.',
   NOT_FOUND_USER: '존재하지 않는 사용자입니다.',
   CANNOT_REMOVE_ONE_REGION: '최소 1개의 지역을 등록해야합니다.',
+  ALREADY_PRIMARY_REGION: '이미 선택한 지역입니다.',
 } as const;
 
 export const ERROR_CODE = {
@@ -26,4 +27,5 @@ export const ERROR_CODE = {
   ONLY_EDITABLE_OWNER: 1007,
   NOT_FOUND_USER: 1008,
   CANNOT_REMOVE_ONE_REGION: 1009,
+  ALREADY_PRIMARY_REGION: 1010,
 } as const;

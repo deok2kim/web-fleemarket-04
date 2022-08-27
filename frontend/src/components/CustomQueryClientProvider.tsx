@@ -21,16 +21,31 @@ function CustomQueryClientProvider({ children }: PropsWithChildren) {
 
         switch (code) {
           case 1000:
+            break;
           case 1001:
             toast.error(message);
             break;
           case 1002:
+            break;
           case 1003:
+            toast.error(message);
+            break;
           case 1004:
+            break;
           case 1005:
+            break;
           case 1006:
             toast.error(message);
             navigate('/');
+            break;
+          case 1007:
+            break;
+          case 1008:
+            break;
+          case 1009:
+            break;
+          case 1010:
+            toast.error(message);
             break;
           default:
             break;

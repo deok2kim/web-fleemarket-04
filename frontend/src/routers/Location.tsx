@@ -4,31 +4,43 @@ import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
 import { useToast } from 'src/contexts/ToastContext';
 import withAuth from 'src/hocs/withAuth';
-import { useRemoveRegionMutation, useUserInfo } from 'src/queries/user';
+import { useChangePrimaryRegionMutation, useRemoveRegionMutation, useUserInfo } from 'src/queries/user';
+import { IRegion } from 'src/types/region.type';
 import { getTownName } from 'src/utils/region';
 import styled from 'styled-components';
 
 function Location() {
-  const { data, isLoading } = useUserInfo();
+  const { data: userInfo, isLoading } = useUserInfo();
   const removeRegionMutation = useRemoveRegionMutation();
+  const changePrimaryRegionMutation = useChangePrimaryRegionMutation();
   const navigate = useNavigate();
   const toast = useToast();
   const handleClickAddRegion = () => navigate('search');
   const handleClickBack = () => navigate('/');
 
-  const countMyRegion = data?.data.regions.length;
+  const countMyRegion = userInfo?.data.regions.length;
 
   if (isLoading) return null;
-  if (!data) return null;
+  if (!userInfo) return null;
 
-  const onClickMyRegion = (regionId: number) => {};
+  const onClickMyRegion = (region: IRegion) => {
+    if (region.isPrimary) {
+      return;
+    }
 
-  const onClickRemoveIcon = (regionId: number) => {
+    changePrimaryRegionMutation.mutate(region.id, {
+      onSuccess: () => {
+        navigate('/');
+      },
+    });
+  };
+
+  const onClickRemoveIcon = (region: IRegion) => {
     if (countMyRegion === 1) {
       toast.error('최소 1개의 지역을 등록해야합니다.');
       return;
     }
-    removeRegionMutation.mutate(regionId);
+    removeRegionMutation.mutate(region.id);
   };
 
   return (
@@ -44,13 +56,13 @@ function Location() {
         <Content>최대 2개까지 설정 가능해요. </Content>
       </Info>
       <MyRegions>
-        {data?.data.regions.map(({ id, name }, index) => (
+        {userInfo?.data.regions.map((region) => (
           <ButtonLocation
-            key={id}
-            title={getTownName(name)}
-            status={index === 0 ? 'active' : 'inactive'}
-            onClick={() => onClickMyRegion(id)}
-            onRemove={() => onClickRemoveIcon(id)}
+            key={region.id}
+            title={getTownName(region.name)}
+            status={region.isPrimary ? 'active' : 'inactive'}
+            onClick={() => onClickMyRegion(region)}
+            onRemove={() => onClickRemoveIcon(region)}
           />
         ))}
         {countMyRegion === 1 && <ButtonLocation status="add" onClick={handleClickAddRegion} />}
