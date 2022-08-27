@@ -11,6 +11,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { AddUserRegionDto } from './dto/add-user-region.dto';
 import { ChangeUserPrimaryRegionDto } from './dto/change-user-primary-region.dto';
+import { ChangeNicknameDto } from './dto/change-nickname.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -31,6 +32,18 @@ export class UsersController {
       addUserRegionDto.regionId,
     );
     return;
+  }
+
+  @Post('/change/nickname')
+  @UseGuards(JwtAuthGuard)
+  async checkDuplicateNickname(
+    @Req() req,
+    @Body() changeNicknameDto: ChangeNicknameDto,
+  ) {
+    return this.usersService.changeNickname(
+      req.user.id,
+      changeNicknameDto.nickname,
+    );
   }
 
   @Delete('/region/:id')

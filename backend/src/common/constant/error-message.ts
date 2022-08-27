@@ -15,6 +15,8 @@ export const ERROR_MESSAGE = {
   CANNOT_REMOVE_ONE_REGION: '최소 1개의 지역을 등록해야합니다.',
   ALREADY_PRIMARY_REGION: '이미 선택한 지역입니다.',
   ONLY_DELETE_OWNER: '상품 주인만 삭제가 가능합니다.',
+  DUPLICATE_NICKNAME: '사용중인 닉네임입니다.',
+  TOO_SHORT_NICKNAME: '닉네임은 2자 이상 입력해주세요.',
 } as const;
 
 export const ERROR_CODE = {
@@ -30,5 +32,6 @@ export const ERROR_CODE = {
   CANNOT_REMOVE_ONE_REGION: 1009,
   ALREADY_PRIMARY_REGION: 1010,
   ONLY_DELETE_OWNER: 1011,
+  DUPLICATE_NICKNAME: 1012,
+  TOO_SHORT_NICKNAME: 1013,
 } as const;
-

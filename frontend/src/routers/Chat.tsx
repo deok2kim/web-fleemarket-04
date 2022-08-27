@@ -28,11 +28,7 @@ function ChatRoom() {
 
   return (
     <>
-      <Header
-        headerTheme="offWhite"
-        left={<Icon name="iconChevronLeft" strokeColor="black" onClick={onClickBack} />}
-        center={<p>채팅</p>}
-      />
+      <Header headerTheme="offWhite" center={<p>채팅</p>} />
       {chatRoomList?.data.chatRooms.map(({ id, partner, unreadCount, product, messages }) => {
         const lastMessage = messages[0];
         return (

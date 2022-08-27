@@ -63,6 +63,40 @@ export class UsersService {
     });
   }
 
+  async changeNickname(userId: number, nickname: string) {
+    const NICKNAME_MIN_LENGTH = 2;
+    if (nickname.length < NICKNAME_MIN_LENGTH) {
+      throw new ErrorException(
+        ERROR_MESSAGE.TOO_SHORT_NICKNAME,
+        ERROR_CODE.TOO_SHORT_NICKNAME,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const exUser = await this.findUserByNickname(nickname);
+
+    if (exUser) {
+      throw new ErrorException(
+        ERROR_MESSAGE.DUPLICATE_NICKNAME,
+        ERROR_CODE.DUPLICATE_NICKNAME,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.userRepository
+      .createQueryBuilder('user')
+      .update(User)
+      .set({
+        nickname,
+      })
+      .where({
+        id: userId,
+      })
+      .execute();
+
+    return;
+  }
+
   async findUserBySnsIdAndProvider(
     provider: OAuthProviderEnum,
     snsId: string,

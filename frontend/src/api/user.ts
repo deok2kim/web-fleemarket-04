@@ -13,6 +13,16 @@ export const getUserInfo = async (): Promise<IServerResponse<IUserInfo>> => {
 };
 
 /**
+ * 유저 닉네임 변경 API
+ * @description 유저의 닉네임을 변경합니다.
+ **/
+export const changeNickname = async (nickname: string) => {
+  await axios.post('/users/change/nickname', {
+    nickname,
+  });
+};
+
+/**
  * 유저 동네 등록 API
  * @description 유저의 동네를 등록합니다.
  **/
