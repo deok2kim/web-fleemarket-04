@@ -28,8 +28,9 @@ function Login() {
 export default Login;
 
 const Container = styled.div`
-  margin-top: 84px;
-  padding: 0 16px;
+  height: 100%;
+  overflow-y: auto;
+  padding: 84px 16px;
 
   display: flex;
   flex-direction: column;
