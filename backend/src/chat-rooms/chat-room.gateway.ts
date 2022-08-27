@@ -17,7 +17,7 @@ interface IChatRoom {
   chatRoomId: string;
 }
 
-@WebSocketGateway(80, {
+@WebSocketGateway(4300, {
   namespace: 'woowatechcamp',
   cors: true,
 })
