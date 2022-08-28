@@ -33,18 +33,12 @@ function Chat() {
   const toast = useToast();
 
   const { socket, sendMessage } = useSocket(chatRoomId);
-  useEffect(() => {
-    if (!chatRoomId) return;
 
-    socket.on(chatRoomId, (res) => {
+  useEffect(() => {
+    socket?.on(chatRoomId, (res) => {
       setNewChatLog((prev) => [...prev, res]);
     });
-    return () => {
-      socket.on('disconnect', () => {
-        console.log(socket.disconnected);
-      });
-    };
-  }, [socket, chatRoomId]);
+  }, [socket]);
 
   useEffect(() => {
     modal.setTitle('채팅방을 나가면 채팅 목록 및 대화 내용이 삭제 되고 복구할 수 없어요. 😂 채팅방에서 나가시겠어요? ');

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { TColorToken } from 'src/styles/theme';
-import { IMessage, IUserForChat } from 'src/types/chatRoom';
-import { useEffect, useRef } from 'react';
+import { IMessage } from 'src/types/chatRoom';
+import { useRef } from 'react';
 import useScrollToBottomChat from 'src/hooks/useScrollToBottomChat';
 import { useUserInfo } from 'src/queries/user';
 
@@ -28,11 +28,13 @@ function ChatWindow({ messages, newChatLog }: Props) {
     <Container>
       {messages.map(({ id, senderId, isRead, content }) => (
         <SpeechBubble key={id} isMine={isMine(senderId)}>
+          {isMine(senderId) && !isRead && <UnreadMark>1</UnreadMark>}
           <Text isMine={isMine(senderId)}>{content}</Text>
         </SpeechBubble>
       ))}
       {newChatLog.map(({ id, senderId, isRead, content }) => (
         <SpeechBubble key={id} isMine={isMine(senderId)}>
+          {isMine(senderId) && !isRead && <UnreadMark>1</UnreadMark>}
           <Text isMine={isMine(senderId)}>{content}</Text>
         </SpeechBubble>
       ))}
@@ -74,7 +76,7 @@ const SpeechBubble = styled.div<{ isMine: boolean }>`
   margin: 16px;
 
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: ${({ isMine }) => (isMine ? 'end' : 'start')};
 `;
 
@@ -95,4 +97,14 @@ const Text = styled.p<{ isMine: boolean }>`
     `;
   }};
   ${({ theme }) => theme.fonts.linkSmall};
+`;
+
+const UnreadMark = styled.p`
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding: 2px;
+
+  color: ${({ theme }) => theme.color.primary200};
+  ${({ theme }) => theme.fonts.textXSmall};
 `;

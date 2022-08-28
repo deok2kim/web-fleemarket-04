@@ -33,7 +33,7 @@ export class ChatRoomService {
       .createQueryBuilder('message')
       .update(Message)
       .set({ isRead: true })
-      .where('chatRoomId=:chatRoomId and senderId=:userId', {
+      .where('chatRoomId=:chatRoomId and senderId !=:userId and isRead=false', {
         chatRoomId,
         userId,
       })
@@ -41,6 +41,7 @@ export class ChatRoomService {
   }
   // 채팅 방 하나 찾기
   async findChatRoom(chatRoomId: string, userId: number) {
+    await this.updateReadChatMessage(chatRoomId, userId);
     let chatRoomData = await this.chatRoomRepository
       .createQueryBuilder('chatRoom')
       .where('chatRoom.id =:chatRoomId', { chatRoomId })
@@ -136,14 +137,13 @@ export class ChatRoomService {
           userId,
         },
       )
-      // .andWhere('chatRoom.deleteUserId != :userId', { userId })
       .getMany();
 
     let thumbnail;
     let partner;
     const chatRooms = chatRoomData
       .filter((chatRoomOne) => chatRoomOne.messages.length)
-      .map(addUnreadMessageCount)
+      .map((chatRoomOne) => addUnreadMessageCount(chatRoomOne, userId))
       .map((chatRoomOne) => {
         thumbnail = getThumbnail(chatRoomOne.product.images);
         partner = chatRoomOne[getPartner(chatRoomOne.buyerId, userId)];
@@ -184,7 +184,7 @@ export class ChatRoomService {
       .filter((chatRoomOne) => chatRoomOne.messages.length)
       .map((chatRoomOne) => ({
         ...chatRoomOne,
-        unreadCount: calcUnreadMessageCount(chatRoomOne.messages),
+        unreadCount: calcUnreadMessageCount(chatRoomOne.messages, userId),
       }))
       .map((chatRoomOne) => {
         thumbnail = getThumbnail(chatRoomOne.product.images);
@@ -239,8 +239,14 @@ export class ChatRoomService {
   }
 }
 
-export const calcUnreadMessageCount = (messages) =>
-  messages.filter((message) => !message.isRead).length;
+export const calcUnreadMessageCount = (messages, userId: number) => {
+  let count = 0;
+  [...messages].reverse().some((message) => {
+    if (message.senderId === userId || message.isRead) return true;
+    if (!message.isRead) count++;
+  });
+  return count;
+};
 
 export const getLastMessage = (messages) => [messages[messages.length - 1]];
 
@@ -251,9 +257,9 @@ export const getPartner = (buyerId, myId) =>
 
 export const getProductStatus = (product) => product.productStatus.name;
 
-export const addUnreadMessageCount = (chatRoom) => ({
+export const addUnreadMessageCount = (chatRoom, userId: number) => ({
   ...chatRoom,
-  unreadCount: calcUnreadMessageCount(chatRoom.messages),
+  unreadCount: calcUnreadMessageCount(chatRoom.messages, userId),
 });
 
 export const deleteRestInfo = (chatRoom, partner) => {

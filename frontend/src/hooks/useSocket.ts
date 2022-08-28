@@ -1,18 +1,30 @@
-import io from 'socket.io-client';
+import { useEffect, useRef } from 'react';
+import { io, Socket } from 'socket.io-client';
 
-const socket = io(process.env.REACT_APP_API_WS_URL + '/woowatechcamp', { transports: ['websocket'] });
-export const useSocket = (roomId: string, eventName?: string) => {
+export const useSocket = (chatRoomId: string) => {
+  const socketRef = useRef<Socket>();
+
   const disconnectSocket = () => {
-    socket.disconnect();
+    socketRef.current?.disconnect();
   };
 
   const sendMessage = <T extends {}>(message: T) => {
-    socket.emit('woowa', message);
+    socketRef.current?.emit('woowa', message);
   };
 
   const connectSocket = () => {
-    socket.connect();
+    socketRef.current?.connect();
   };
 
-  return { socket, sendMessage, disconnectSocket, connectSocket };
+  useEffect(() => {
+    if (socketRef.current) return;
+    socketRef.current = io(process.env.REACT_APP_API_WS_URL + '/woowatechcamp', {
+      transports: ['websocket'],
+      query: { chatRoomId },
+    });
+
+    return () => disconnectSocket();
+  }, []);
+
+  return { socket: socketRef.current, sendMessage, disconnectSocket, connectSocket };
 };
