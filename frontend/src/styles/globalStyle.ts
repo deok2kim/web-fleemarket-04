@@ -2,10 +2,6 @@ import { createGlobalStyle, css } from 'styled-components';
 import reset from 'styled-reset';
 
 const bodyStyle = css`
-  :root {
-    --vh: 100%;
-  }
-
   body {
     font-family: 'Noto Sans KR', sans-serif;
 
@@ -13,8 +9,7 @@ const bodyStyle = css`
     margin: 0 auto;
 
     max-width: 768px;
-    min-height: 100vh; /* fallback */
-    min-height: calc(var(--vh) * 100);
+    height: 100vh;
 
     -ms-overflow-style: none;
     scrollbar-width: none;

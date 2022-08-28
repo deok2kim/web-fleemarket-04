@@ -64,6 +64,8 @@ const Container = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  animation: ${({ theme }) => theme.animation.fadeIn} 0.3s ease-in;
 `;
 
 const SpeechBubble = styled.div<{ isMine: boolean }>`

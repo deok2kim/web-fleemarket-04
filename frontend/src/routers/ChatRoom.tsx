@@ -33,26 +33,28 @@ function ChatRoom() {
       {isLoading ? (
         <ChatRoomListSkeleton />
       ) : chatRoomList?.data.chatRooms.length ? (
-        chatRoomList?.data.chatRooms.map(({ id, partner, unreadCount, product, messages }) => {
-          const lastMessage = messages[0];
-          return (
-            <ChatItem key={id} onClick={() => onClickChatRoom(id)}>
-              <UserAndContentWrapper>
-                <User>{partner.nickname}</User>
-                <Content>{lastMessage.content}</Content>
-              </UserAndContentWrapper>
-              <TimeAndThumbnailAndUnreadWrapper>
-                <TimeAndUnreadWrapper>
-                  <Time>{timeForToday(lastMessage.createdAt)}</Time>
-                  {hasUnreadMessage(lastMessage.senderId, partner.id, unreadCount || 0) && (
-                    <Unread>{unreadCount}</Unread>
-                  )}
-                </TimeAndUnreadWrapper>
-                <Image src={product.thumbnail.url} box="sm" />
-              </TimeAndThumbnailAndUnreadWrapper>
-            </ChatItem>
-          );
-        })
+        <Container>
+          {chatRoomList?.data.chatRooms.map(({ id, partner, unreadCount, product, messages }) => {
+            const lastMessage = messages[0];
+            return (
+              <ChatItem key={id} onClick={() => onClickChatRoom(id)}>
+                <UserAndContentWrapper>
+                  <User>{partner.nickname}</User>
+                  <Content>{lastMessage.content}</Content>
+                </UserAndContentWrapper>
+                <TimeAndThumbnailAndUnreadWrapper>
+                  <TimeAndUnreadWrapper>
+                    <Time>{timeForToday(lastMessage.createdAt)}</Time>
+                    {hasUnreadMessage(lastMessage.senderId, partner.id, unreadCount || 0) && (
+                      <Unread>{unreadCount}</Unread>
+                    )}
+                  </TimeAndUnreadWrapper>
+                  <Image src={product.thumbnail.url} box="sm" />
+                </TimeAndThumbnailAndUnreadWrapper>
+              </ChatItem>
+            );
+          })}
+        </Container>
       ) : (
         <NoData message="채팅이 없습니다." iconName="iconSpeechDoubleBubble" />
       )}
@@ -63,6 +65,11 @@ function ChatRoom() {
 }
 
 export default withAuth(ChatRoom);
+
+const Container = styled.div`
+  height: calc(100vh - 130px);
+  animation: ${({ theme }) => theme.animation.fadeIn} 0.3s ease-in;
+`;
 
 const ChatItem = styled.div`
   height: 72px;
