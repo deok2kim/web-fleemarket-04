@@ -34,9 +34,7 @@ function LocationSearch() {
           </Center>
         }
       />
-      <SearchBUtton>
-        <Button onClick={() => {}} size="full" title="현재 위치로 찾기" />
-      </SearchBUtton>
+
       <Title>검색 결과</Title>
       <SearchedRegions keyword={input} />
     </Container>
@@ -47,18 +45,6 @@ export default withAuth(LocationSearch);
 
 const Container = styled.div`
   animation: ${({ theme }) => theme.animation.fadeIn} 0.5s;
-`;
-
-const SearchBUtton = styled.div`
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0 16px;
-  margin: 24px auto;
 `;
 
 const Center = styled.div`
@@ -93,6 +79,7 @@ const Input = styled.input`
 `;
 
 const Title = styled.p`
+  margin-top: 20px;
   margin-left: 18px;
   padding: 0 10px 10px 10px;
 

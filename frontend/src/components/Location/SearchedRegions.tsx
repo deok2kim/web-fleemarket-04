@@ -46,7 +46,7 @@ function SearchedRegions({ keyword }: Props) {
 export default SearchedRegions;
 
 const Container = styled.ul`
-  height: 80vh;
+  height: calc(100vh - 110px);
 
   display: flex;
   flex-direction: column;
