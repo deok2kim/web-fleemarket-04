@@ -1,9 +1,10 @@
 import { PropsWithChildren, useCallback, useRef } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from 'src/contexts/ToastContext';
 import { IServerError } from 'src/types/api';
+import { ERROR_CODE } from 'src/constants/error-code';
 
 function CustomQueryClientProvider({ children }: PropsWithChildren) {
   const toast = useToast();
@@ -14,38 +15,30 @@ function CustomQueryClientProvider({ children }: PropsWithChildren) {
       const status = error?.response?.status as number;
 
       if (400 <= status && status < 500) {
-        // TODO Type
         const errorResponse = error?.response?.data as IServerError;
         const code = errorResponse.code;
         const message = errorResponse.message;
 
         switch (code) {
-          case 1000:
+          case ERROR_CODE.ALREADY_LIKE:
+          case ERROR_CODE.NOT_LIKED:
             break;
-          case 1001:
+          case ERROR_CODE.EXCEED_REGIONS:
+          case ERROR_CODE.DUPLICATE_REGION:
+          case ERROR_CODE.NOT_FOUND_REGION:
+          case ERROR_CODE.NOT_APPLIED_REGION:
+          case ERROR_CODE.CANNOT_REMOVE_ONE_REGION:
+          case ERROR_CODE.ALREADY_PRIMARY_REGION:
+          case ERROR_CODE.ONLY_DELETE_OWNER:
+          case ERROR_CODE.DUPLICATE_NICKNAME:
+          case ERROR_CODE.TOO_SHORT_NICKNAME:
             toast.error(message);
             break;
-          case 1002:
-            break;
-          case 1003:
-            toast.error(message);
-            break;
-          case 1004:
-            break;
-          case 1005:
-            break;
-          case 1006:
+          case ERROR_CODE.NOT_FOUND_PRODUCT:
+          case ERROR_CODE.NOT_FOUND_USER:
+          case ERROR_CODE.ONLY_EDITABLE_OWNER:
             toast.error(message);
             navigate('/');
-            break;
-          case 1007:
-            break;
-          case 1008:
-            break;
-          case 1009:
-            break;
-          case 1010:
-            toast.error(message);
             break;
           default:
             break;
