@@ -118,6 +118,13 @@ export class ChatRoomService {
         messages: [],
         deleteUserId: 0,
         partner: seller,
+        product: {
+          id: product.id,
+          thumbnail: product.images[0],
+          title: product.title,
+          price: product.price,
+          productStatus: product.productStatus.name,
+        },
       },
     };
   }

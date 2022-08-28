@@ -26,12 +26,6 @@ function ChatWindow({ messages, newChatLog }: Props) {
 
   return (
     <Container>
-      {messages.map(({ id, senderId, isRead, content }) => (
-        <SpeechBubble key={id} isMine={isMine(senderId)}>
-          {isMine(senderId) && !isRead && <UnreadMark>1</UnreadMark>}
-          <Text isMine={isMine(senderId)}>{content}</Text>
-        </SpeechBubble>
-      ))}
       {newChatLog.map(({ id, senderId, isRead, content }) => (
         <SpeechBubble key={id} isMine={isMine(senderId)}>
           {isMine(senderId) && !isRead && <UnreadMark>1</UnreadMark>}

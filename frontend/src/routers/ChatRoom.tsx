@@ -41,15 +41,15 @@ function ChatRoom() {
                 <User>{partner.nickname}</User>
                 <Content>{lastMessage.content}</Content>
               </UserAndContentWrapper>
-              <TimeAndThumbnailAndunreadWrapper>
-                <TimeAndunreadWrapper>
+              <TimeAndThumbnailAndUnreadWrapper>
+                <TimeAndUnreadWrapper>
                   <Time>{timeForToday(lastMessage.createdAt)}</Time>
                   {hasUnreadMessage(lastMessage.senderId, partner.id, unreadCount || 0) && (
                     <Unread>{unreadCount}</Unread>
                   )}
-                </TimeAndunreadWrapper>
+                </TimeAndUnreadWrapper>
                 <Image src={product.thumbnail.url} box="sm" />
-              </TimeAndThumbnailAndunreadWrapper>
+              </TimeAndThumbnailAndUnreadWrapper>
             </ChatItem>
           );
         })
@@ -91,7 +91,7 @@ const Content = styled.p`
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
-const TimeAndThumbnailAndunreadWrapper = styled.div`
+const TimeAndThumbnailAndUnreadWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 16px;
@@ -118,7 +118,7 @@ const Unread = styled.p`
   ${({ theme }) => theme.fonts.textXSmall}
 `;
 
-const TimeAndunreadWrapper = styled.div`
+const TimeAndUnreadWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;

@@ -13,12 +13,9 @@ function ChatRoomListSkeleton() {
               <InfoSkeleton width={getRandomWidth()} className="skeleton" />
               <InfoSkeleton width={getRandomWidth()} className="skeleton" />
             </UserAndContentWrapper>
-            <TimeAndThumbnailAndunreadWrapper>
-              {/* <TimeAndunreadWrapper>
-                <InfoSkeleton width="30px" className="skeleton" />
-              </TimeAndunreadWrapper> */}
+            <TimeAndThumbnailAndUnreadWrapper>
               <ImageSkeleton className="skeleton" />
-            </TimeAndThumbnailAndunreadWrapper>
+            </TimeAndThumbnailAndUnreadWrapper>
           </Container>
         ))}
     </>
@@ -50,13 +47,13 @@ const UserAndContentWrapper = styled.div`
   gap: 2px;
 `;
 
-const TimeAndThumbnailAndunreadWrapper = styled.div`
+const TimeAndThumbnailAndUnreadWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 16px;
 `;
 
-const TimeAndunreadWrapper = styled.div`
+const TimeAndUnreadWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;

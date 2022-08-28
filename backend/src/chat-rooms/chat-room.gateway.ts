@@ -68,6 +68,8 @@ export class ChatRoomGateway
         this.roomState[chatRoomId.toString()]
       }`,
     );
+
+    this.server.emit(chatRoomId.toString(), { full: true });
   }
 
   handleDisconnect(@ConnectedSocket() socket: Socket) {

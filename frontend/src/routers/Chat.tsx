@@ -25,6 +25,9 @@ function Chat() {
   const { data: chatRoom, isLoading } = useChatRoomQuery(chatRoomId, {
     enabled: isLoggedIn && !!chatRoomId,
     cacheTime: 0,
+    onSuccess: (data) => {
+      setNewChatLog(data.data.chatRoom.messages);
+    },
   });
   const [newChatLog, setNewChatLog] = useState<IMessage[]>([]);
   const [message, setMessage] = useState('');
@@ -57,6 +60,10 @@ function Chat() {
 
   useEffect(() => {
     socket?.on(chatRoomId, (res) => {
+      if (res.full) {
+        setNewChatLog((prev) => prev.map((message) => ({ ...message, isRead: true })));
+        return;
+      }
       setNewChatLog((prev) => [...prev, res]);
     });
   }, [socket]);
