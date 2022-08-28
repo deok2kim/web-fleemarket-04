@@ -13,6 +13,7 @@ import { IMessage } from 'src/types/chatRoom';
 import { useUserInfo } from 'src/queries/user';
 import { useToast } from 'src/contexts/ToastContext';
 import { useModal } from 'src/contexts/ModalContext';
+import ChatRoomDetailSkeleton from 'src/components/common/Loading/Skeleton/ChatRommDetailSkeleton';
 
 function Chat() {
   const { isLoggedIn } = useLoggedIn();
@@ -75,13 +76,14 @@ function Chat() {
     });
     setMessage('');
   };
-  if (isLoading) return null;
+  if (isLoading) return <ChatRoomDetailSkeleton />;
   if (!chatRoom) return null;
   const {
     product,
     messages,
     partner: { nickname },
   } = chatRoom.data.chatRoom;
+
   return (
     <>
       <Header

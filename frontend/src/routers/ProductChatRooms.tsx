@@ -9,13 +9,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
 import { useProductChatRoomsQuery } from 'src/queries/product';
 import NoData from 'src/components/common/Error/NoData';
+import ChatRoomListSkeleton from 'src/components/common/Loading/Skeleton/ChatRoomListSkeleton';
 
 function ProductChatRooms() {
   const { isLoggedIn } = useLoggedIn();
 
   const productId = useParams<{ productId: string }>().productId as string;
   console.log(productId);
-  const { data: productInfo } = useProductChatRoomsQuery(+productId, {
+  const { data: productInfo, isLoading } = useProductChatRoomsQuery(+productId, {
     enabled: isLoggedIn,
   });
 
@@ -39,7 +40,9 @@ function ProductChatRooms() {
         left={<Icon name="iconChevronLeft" strokeColor="black" onClick={onClickBack} />}
         center={<p>채팅하기</p>}
       />
-      {!!chatRooms.length ? (
+      {isLoading ? (
+        <ChatRoomListSkeleton />
+      ) : chatRooms.length ? (
         chatRooms.map(({ id, unreadCount, buyer, lastMessage }) => {
           return (
             <ChatItem key={id} onClick={() => onClickChatRoom(id)}>

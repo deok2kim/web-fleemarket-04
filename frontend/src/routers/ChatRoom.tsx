@@ -9,10 +9,11 @@ import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavig
 import { useNavigate } from 'react-router-dom';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
 import NoData from 'src/components/common/Error/NoData';
+import ChatRoomListSkeleton from 'src/components/common/Loading/Skeleton/ChatRoomListSkeleton';
 
 function ChatRoom() {
   const { isLoggedIn } = useLoggedIn();
-  const { data: chatRoomList } = useChatRooms({
+  const { data: chatRoomList, isLoading } = useChatRooms({
     enabled: isLoggedIn,
   });
   const navigate = useNavigate();
@@ -24,10 +25,14 @@ function ChatRoom() {
     navigate(`/chat/${id}`);
   };
 
+  // if (isLoading) return <ChatRoomListSkeleton />;
+
   return (
     <>
       <Header headerTheme="offWhite" center={<p>채팅</p>} />
-      {chatRoomList?.data.chatRooms.length ? (
+      {isLoading ? (
+        <ChatRoomListSkeleton />
+      ) : chatRoomList?.data.chatRooms.length ? (
         chatRoomList?.data.chatRooms.map(({ id, partner, unreadCount, product, messages }) => {
           const lastMessage = messages[0];
           return (
@@ -51,6 +56,7 @@ function ChatRoom() {
       ) : (
         <NoData message="채팅이 없습니다." iconName="iconSpeechDoubleBubble" />
       )}
+
       <BottomNavigation />
     </>
   );
