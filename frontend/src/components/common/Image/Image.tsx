@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 import * as images from 'src/components/common/Image/imagePath';
 import { TStyledTheme } from 'src/styles/theme';
+import { useIsImgLoaded } from 'src/hooks/useIsImgLoaded';
 
 export type TImageToken = keyof typeof images;
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   borderRadius?: number;
   alt?: string;
   onClick?: () => void;
+  lazy?: boolean;
 }
 
 type TImageBox = 'sm' | 'md' | 'lg' | 'gradient';
@@ -61,16 +63,24 @@ const setImageBox = (box: TImageBox, theme: TStyledTheme) => {
   `;
 };
 
-function Image({ name, src, width, height, box, borderRadius, alt, onClick }: Props) {
+function Image({ name, src, width, height, box, borderRadius, alt, lazy, onClick }: Props) {
   const imgSrc = name ? images[name] : src;
 
   const _width = box ? boxSize[box].width : width;
   const _height = box ? boxSize[box].height : height;
   const _borderRadius = box ? boxBorderRadius[box] : borderRadius;
 
+  const { elementRef, isLoaded } = useIsImgLoaded(lazy || false);
+
   return (
-    <Wrapper onClick={onClick} width={width} height={height} borderRadius={_borderRadius} box={box}>
-      <ImageComponent src={imgSrc ?? ''} width={_width} height={_height} borderRadius={_borderRadius} alt={alt ?? ''} />
+    <Wrapper ref={elementRef} onClick={onClick} width={width} height={height} borderRadius={_borderRadius} box={box}>
+      <ImageComponent
+        src={isLoaded ? imgSrc : images['imageDefaultPlaceHolder']}
+        width={_width}
+        height={_height}
+        borderRadius={_borderRadius}
+        alt={alt ?? ''}
+      />
     </Wrapper>
   );
 }

@@ -4,6 +4,7 @@ import Categories from 'src/components/Category/Categories';
 import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
 import ImageUpload from 'src/components/Post/ImageUpload';
+import { ROUTE } from 'src/constants/route';
 import { HOUR_SECOND } from 'src/constants/time';
 import { useToast } from 'src/contexts/ToastContext';
 import withAuth from 'src/hocs/withAuth';
@@ -113,7 +114,9 @@ function Post() {
       {
         onSuccess: (addProductResponse) => {
           const productId = addProductResponse.data.id;
-          navigate(`/products/${productId}`);
+          navigate(`${ROUTE.PRODUCTS}/${productId}`, {
+            replace: true,
+          });
           toast.success('상품이 등록되었습니다. 😄');
         },
       },

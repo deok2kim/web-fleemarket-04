@@ -64,12 +64,12 @@ function Product({ category, product, isSellPage }: Props, ref: React.ForwardedR
   return (
     <Container onClick={onClickProduct} ref={ref}>
       <InfoWrapper>
-        <Image src={product.thumbnail.url} box="lg" alt="product thumbnail image" />
+        <Image src={product.thumbnail.url} box="lg" alt={product.title} lazy />
         <InfoText>
           <Title>{product.title}</Title>
           <LocationAndTime>{timeForToday(product.createdAt)}</LocationAndTime>
           <Price>
-            {isReserved && <ProductStatus>{product.productStatus}</ProductStatus>}{' '}
+            {isReserved && <ProductStatus>{product.productStatus}</ProductStatus>}
             {isUndefinedPrice ? `${formatPrice(product.price)}원` : '가격미정'}
           </Price>
         </InfoText>
