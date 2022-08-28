@@ -27,6 +27,10 @@ function ProductDetail() {
     navigate(-1);
   };
 
+  const onClickAskButton = () => {
+    navigate('chat-rooms');
+  };
+
   if (isLoading) {
     return <ProductDetailSkeleton />;
   }

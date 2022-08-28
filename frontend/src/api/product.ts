@@ -123,6 +123,6 @@ export const deleteProduct = async (productId: number) => {
  * @description 내가 판매중인 특정 상품의 채팅 목록을 불러옵니다.
  **/
 export const getChatRoomsByProductId = async (productId: number) => {
-  const { data: chatRooms } = await axios.get(`products/${productId}/chat-rooms`);
-  return chatRooms;
+  const { data: productChatRooms } = await axios.get(`products/${productId}/chat-rooms`);
+  return productChatRooms;
 };

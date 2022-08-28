@@ -5,6 +5,7 @@ import {
   addProduct,
   deleteProduct,
   dislikeProduct,
+  getChatRoomsByProductId,
   getProductById,
   getProductPagination,
   likeProduct,
@@ -20,6 +21,42 @@ interface IProductParams {
   category: number;
   like?: boolean;
   sell?: boolean;
+}
+
+interface IUser {
+  id: number;
+  nickname: string;
+}
+
+interface IChatRoom {
+  id: string;
+  buyer: IUser;
+  lastMessage: ILastMessage;
+  unreadCount: number;
+}
+
+interface IThumbnail {
+  id: number;
+  url: string;
+  productId: number;
+}
+
+interface IProductChatRoom {
+  productChatRooms: {
+    id: number;
+    title: string;
+    chatRooms: IChatRoom[];
+    thumbnail: IThumbnail;
+  };
+}
+
+interface ILastMessage {
+  id: number;
+  createdAt: string;
+  senderId: number;
+  content: string;
+  isRead: boolean;
+  chatRoomId: string;
 }
 
 export const useProductDetail = (
@@ -107,33 +144,18 @@ export const useDeleteProductMutation = () => {
   });
 };
 
-/*
-
-onMutate: async (newTodo) => {
-      await queryClient.cancelQueries(
-        category ? PRODUCT.PRODUCT_CATEGORY_PAGE({ category }) : PRODUCT.PRODUCT_DETAIL(productId),
-      );
-
-      let previousTodo: unknown;
-      if (category) {
-        previousTodo = queryClient.getQueryData(PRODUCT.PRODUCT_CATEGORY_PAGE({ category }));
-        queryClient.setQueryData(PRODUCT.PRODUCT_CATEGORY_PAGE({ category }), (old: any) => [...old, newTodo]);
-      } else {
-        previousTodo = queryClient.getQueryData(PRODUCT.PRODUCT_DETAIL(productId));
-        queryClient.setQueryData(PRODUCT.PRODUCT_DETAIL(productId), newTodo);
-      }
-
-      return { previousTodo };
-    },
-    onError: (err, newTodo, context) => {
-      queryClient.setQueryData(
-        category ? PRODUCT.PRODUCT_CATEGORY_PAGE({ category }) : PRODUCT.PRODUCT_DETAIL(productId),
-        context?.previousTodo,
-      );
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(
-        category ? PRODUCT.PRODUCT_CATEGORY_PAGE({ category }) : PRODUCT.PRODUCT_DETAIL(productId),
-      );
-    },
-*/
+/**
+ * 해당 상품의 채팅방을 가져오는 쿼리
+ * @param productId
+ * @param options
+ * @returns
+ */
+export const useProductChatRoomsQuery = (
+  productId: number,
+  options?: UseQueryOptions<IServerResponse<IProductChatRoom>, AxiosError<IServerError>>,
+) =>
+  useQuery<IServerResponse<IProductChatRoom>, AxiosError<IServerError>>(
+    PRODUCT.PRODUCT_CHATROOMS(productId),
+    () => getChatRoomsByProductId(productId),
+    options,
+  );

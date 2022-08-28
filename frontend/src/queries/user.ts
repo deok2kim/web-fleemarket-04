@@ -61,6 +61,7 @@ export const useChangeNicknameMutation = () => {
   return useMutation((nickname: string) => changeNickname(nickname), {
     onSuccess: () => {
       queryClient.invalidateQueries(USER.USER_INFO);
+      queryClient.invalidateQueries(PRODUCT.ALL);
     },
   });
 };

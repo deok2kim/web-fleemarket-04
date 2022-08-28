@@ -35,9 +35,6 @@ export class ChatRoomGateway
     @ConnectedSocket() client: Socket,
   ) {
     const { content, senderId, chatRoomId } = payload;
-    console.log(
-      `채팅중: ${chatRoomId}에 현재 접속자: ${this.roomState[chatRoomId]}`,
-    );
 
     let isRead = false;
     if (this.roomState[chatRoomId] === 2) {
@@ -59,7 +56,6 @@ export class ChatRoomGateway
 
   handleConnection(@ConnectedSocket() socket: Socket) {
     const { chatRoomId } = socket.handshake.query;
-    console.log(`Client Connected : ${socket.id}`);
     socket.data = { chatRoomId };
 
     this.roomState[chatRoomId.toString()] = this.roomState[

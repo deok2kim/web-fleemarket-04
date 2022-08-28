@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Chat from './routers/Chat';
+import ChatRoom from './routers/ChatRoom';
 import Home from './routers/Home';
 import Like from './routers/Like';
 import Login from './routers/Login';
@@ -9,7 +9,7 @@ import Sold from './routers/Sold';
 import Location from './routers/Location';
 import LocationSearch from './routers/LocationSearch';
 import { ROUTE } from './constants/route';
-import ChatRoom from './routers/ChatRoom';
+import Chat from './routers/Chat';
 import LocationInit from './routers/LocationInit';
 import Post from './routers/Post';
 import ProductChatRooms from './routers/ProductChatRooms';
@@ -32,9 +32,9 @@ function Router() {
       <Route path={`${ROUTE.PRODUCTS_POST}/:id`} element={<Post />} />
 
       {/* 나의 채팅 목록  */}
-      <Route path={ROUTE.CHAT} element={<Chat />} />
+      <Route path={ROUTE.CHAT} element={<ChatRoom />} />
       {/* 채팅방 1개 - 실제 채팅을 하는곳 */}
-      <Route path={`${ROUTE.CHAT}/:chatRoomId`} element={<ChatRoom />} />
+      <Route path={`${ROUTE.CHAT}/:chatRoomId`} element={<Chat />} />
       {/* 내가 판매하는 해당 상품의 채팅 목록  */}
       <Route path={'/products/:productId/chat-rooms'} element={<ProductChatRooms />} />
 

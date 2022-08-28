@@ -38,7 +38,10 @@ function BottomBar({ productDetail }: Props) {
   };
 
   const onClickChatRoom = () => {
-    if (productDetail.isSeller) return null; // TODO: 나중에 목록 보기 할거임
+    if (productDetail.isSeller) {
+      navigate('chat-rooms');
+      return;
+    }
     const chatRoomId = `${productDetail.product.id}-${productDetail.product.user.id}-${userInfo.data?.data.id}`;
     navigate(`${ROUTE.CHAT}/${chatRoomId}`);
   };

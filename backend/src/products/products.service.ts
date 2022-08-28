@@ -18,6 +18,11 @@ import {
 } from './dto/update-product.dto';
 import ProductStatus from './entities/product-status.entity';
 import { UserRegion } from 'src/entities/user-region.entity';
+import {
+  addUnreadMessageCount,
+  getLastMessage,
+  getThumbnail,
+} from 'src/chat-rooms/chat-room.service';
 
 const DEFAULT_PRODUCT_STATUS_ID = 1; /* 1: 'sale' */
 
@@ -225,7 +230,12 @@ export class ProductsService {
       .leftJoinAndSelect('product.productStatus', 'productStatus')
       .loadRelationCountAndMap('product.views', 'product.views')
       .loadRelationCountAndMap('product.likes', 'product.likes')
-      .loadRelationCountAndMap('product.chatRooms', 'product.chatRooms')
+      .leftJoinAndSelect(
+        'product.chatRooms',
+        'chatRooms',
+        'chatRooms.deleteUserId = 0',
+      )
+      .leftJoinAndSelect('chatRooms.messages', 'messages')
       .leftJoin('product.user', 'user')
       .leftJoin('product.views', 'isView', 'user.id = isView.user_id')
       .leftJoin('user.userRegions', 'regions')
@@ -233,9 +243,14 @@ export class ProductsService {
       .where('product.id = :productId', { productId })
       .getOne();
 
+    const chatRoomCount = product.chatRooms.filter(
+      (chatRoom) => chatRoom?.messages.length,
+    ).length;
+    delete product.chatRooms;
     return {
       product: {
         ...product,
+        chatRooms: chatRoomCount,
         categoryId: product.category.id,
         category: product.category.name,
         productStatus: product.productStatus.name,
@@ -423,15 +438,52 @@ export class ProductsService {
   }
 
   async findChatRoomsByProductId(productId: number, userId: number) {
-    const chatRooms = await this.productRepository
+    const productChatRoomsData = await this.productRepository
       .createQueryBuilder('product')
-      .where('product.id= :productId and product.userId= :userId', {
+      .where('product.id= :productId', {
         productId,
-        userId,
       })
-      .leftJoinAndSelect('product.chatRooms', 'chatRooms', '')
-      .getMany();
-    return chatRooms;
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect(
+        'product.chatRooms',
+        'chatRooms',
+        'chatRooms.deleteUserId = 0',
+      )
+      .leftJoinAndSelect('chatRooms.buyer', 'buyer')
+      .leftJoinAndSelect('chatRooms.messages', 'messages')
+      .getOne();
+
+    const thumbnail = getThumbnail(productChatRoomsData.images);
+    delete productChatRoomsData.images;
+    const chatRooms = productChatRoomsData.chatRooms
+      .filter((chatRoomOne) => chatRoomOne.messages.length)
+      .map((chatRoomOne) => addUnreadMessageCount(chatRoomOne, userId))
+      .map((chatRoomOne) => {
+        delete chatRoomOne.deleteUserId;
+        delete chatRoomOne.productId;
+        delete chatRoomOne.sellerId;
+        delete chatRoomOne.buyerId;
+        delete chatRoomOne.buyer.provider;
+        delete chatRoomOne.buyer.snsId;
+        const lastMessage = getLastMessage(chatRoomOne.messages)[0];
+        delete chatRoomOne.messages;
+        return {
+          ...chatRoomOne,
+          lastMessage,
+        };
+      });
+    delete productChatRoomsData.price;
+    delete productChatRoomsData.content;
+    delete productChatRoomsData.categoryId;
+    delete productChatRoomsData.productStatusId;
+    delete productChatRoomsData.userId;
+    return {
+      productChatRooms: {
+        ...productChatRoomsData,
+        thumbnail,
+        chatRooms,
+      },
+    };
   }
 
   async deleteProduct(userId: number, productId: number) {

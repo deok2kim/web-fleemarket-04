@@ -31,3 +31,4 @@ export { ReactComponent as iconSend } from 'src/assets/icons/send.svg';
 export { ReactComponent as iconMap } from 'src/assets/icons/map.svg';
 
 export { ReactComponent as iconNewPost } from 'src/assets/icons/new-post.svg';
+export { ReactComponent as iconSpeechDoubleBubble } from 'src/assets/icons/speech-double-bubble.svg';

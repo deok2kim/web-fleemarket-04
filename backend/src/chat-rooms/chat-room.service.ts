@@ -132,7 +132,7 @@ export class ChatRoomService {
       .leftJoinAndSelect('chatRoom.seller', 'seller')
       .leftJoinAndSelect('chatRoom.buyer', 'buyer')
       .where(
-        '(chatRoom.sellerId = :userId OR chatRoom.buyerId = :userId) and chatRoom.deleteUserId != :userId ',
+        '(chatRoom.sellerId = :userId OR chatRoom.buyerId = :userId) and chatRoom.deleteUserId = 0',
         {
           userId,
         },
