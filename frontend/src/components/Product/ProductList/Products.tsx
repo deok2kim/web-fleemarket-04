@@ -64,4 +64,6 @@ const Container = styled.ul<{ isSellPage?: boolean }>`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  animation: ${({ theme }) => theme.animation.fadeIn} 0.3s ease-in;
 `;

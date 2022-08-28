@@ -2,13 +2,19 @@ import { createGlobalStyle, css } from 'styled-components';
 import reset from 'styled-reset';
 
 const bodyStyle = css`
+  :root {
+    --vh: 100%;
+  }
+
   body {
     font-family: 'Noto Sans KR', sans-serif;
 
     position: relative;
-    height: 100vh;
-    max-width: 768px;
     margin: 0 auto;
+
+    max-width: 768px;
+    min-height: 100vh; /* fallback */
+    min-height: calc(var(--vh) * 100);
 
     -ms-overflow-style: none;
     scrollbar-width: none;
