@@ -25,7 +25,7 @@ interface IReqUser {
   user: IAuth;
 }
 
-const CLIENT_URL = 'http://localhost:3000';
+const CLIENT_URL = 'https://baemin-market.com';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
