@@ -9,6 +9,7 @@ import { HOUR_SECOND } from 'src/constants/time';
 import { useToast } from 'src/contexts/ToastContext';
 import withAuth from 'src/hocs/withAuth';
 import { useAddProductMutation, useProductDetail, useUpdateProductMutation } from 'src/queries/product';
+import { deleteComma, setComma, setOnlyNumber } from 'src/utils/formatPrice';
 import styled from 'styled-components';
 
 interface IFormData {
@@ -58,15 +59,11 @@ function Post() {
   const onChangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value: priceValue } = e.target;
 
-    if (isNaN(+priceValue)) return;
-
-    if (+priceValue > MAX_PRICE) {
-      return;
-    }
+    if (+deleteComma(priceValue) > MAX_PRICE) return;
 
     setFormData((prev) => ({
       ...prev,
-      price: priceValue,
+      price: setComma(setOnlyNumber(priceValue)),
     }));
   };
 
