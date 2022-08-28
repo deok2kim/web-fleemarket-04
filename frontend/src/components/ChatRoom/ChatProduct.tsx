@@ -25,8 +25,8 @@ function ChatProduct({ product }: Props) {
   };
 
   return (
-    <Wrapper>
-      <InfoWrapper onClick={onClickProduct}>
+    <Wrapper onClick={onClickProduct}>
+      <InfoWrapper>
         <Image src={url} box="sm" />
         <TitleAndPriceWrapper>
           <Title>{title}</Title>
