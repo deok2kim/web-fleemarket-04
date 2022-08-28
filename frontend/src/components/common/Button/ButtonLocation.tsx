@@ -55,8 +55,8 @@ function ButtonLocation({ title, className, status, onClick, onRemove }: Props) 
 export default ButtonLocation;
 
 const ButtonElement = styled.button<Pick<Props, 'status'>>`
-  width: 136px;
-  height: 36px;
+  width: 160px;
+  height: 42px;
 
   padding: 6px 16px;
 
