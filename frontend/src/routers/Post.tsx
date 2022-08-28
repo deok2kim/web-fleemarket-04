@@ -247,6 +247,8 @@ const Input = styled.input<{ isPrice?: boolean }>`
 const TextArea = styled.textarea`
   width: 100%;
   padding: 24px 0;
+  min-height: 300px;
+  height: 100%;
   border: none;
   resize: none;
 

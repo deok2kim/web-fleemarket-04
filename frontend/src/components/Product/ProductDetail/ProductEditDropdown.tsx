@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { ROUTE } from 'src/constants/route';
+import { useModal } from 'src/contexts/ModalContext';
 import { useToast } from 'src/contexts/ToastContext';
 import { useDeleteProductMutation } from 'src/queries/product';
 import styled from 'styled-components';
@@ -13,16 +15,28 @@ function ProductEditDropdown({ productId }: Props) {
   const deleteProductMutation = useDeleteProductMutation();
   const navigate = useNavigate();
   const toast = useToast();
+  const { confirmModal } = useModal();
 
   const onClickEditButton = () => {
     navigate(`/post/products/${productId}`);
   };
 
   const onClickDeleteButton = () => {
-    deleteProductMutation.mutate(productId, {
-      onSuccess: () => {
-        navigate('/');
-        toast.success('해당 상품이 삭제되었습니다.');
+    confirmModal({
+      title: '채팅이 있는 게시글을 삭제하면 거래 상대방이 당황할 수 있어요\n게시글을 정말 삭제하시겠어요?',
+      cancelOption: {
+        label: '취소',
+      },
+      submitOption: {
+        label: '삭제',
+        onClick: () => {
+          deleteProductMutation.mutate(productId, {
+            onSuccess: () => {
+              navigate(ROUTE.SOLD);
+              toast.success('해당 상품이 삭제되었습니다.');
+            },
+          });
+        },
       },
     });
   };

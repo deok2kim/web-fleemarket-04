@@ -41,7 +41,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  ${({ theme }) => theme.zIndex.modal};
+  z-index: ${({ theme }) => theme.zIndex.modal};
 `;
 
 const Background = styled.div`

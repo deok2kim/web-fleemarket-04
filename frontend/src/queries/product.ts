@@ -139,7 +139,8 @@ export const useDeleteProductMutation = () => {
 
   return useMutation(deleteProduct, {
     onSuccess: () => {
-      queryClient.invalidateQueries(PRODUCT.ALL);
+      queryClient.invalidateQueries(PRODUCT.PRODUCT_CATEGORY_PAGE({ category: 0 }));
+      queryClient.invalidateQueries(PRODUCT.PRODUCT_CATEGORY_PAGE({ category: 0, sell: true }));
     },
   });
 };
