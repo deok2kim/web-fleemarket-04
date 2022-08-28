@@ -40,7 +40,7 @@ export class ChatRoomController {
 
   @Delete('/:chatRoomId')
   @UseGuards(JwtAuthGuard)
-  deleteChatRoom(@Req() req, @Param('chatRoomId') chatRoomId: string) {
-    return this.chatRoomService.deleteChatRoom(chatRoomId, req.user.id);
+  deleteChatRoom(@Param('chatRoomId') chatRoomId: string) {
+    return this.chatRoomService.deleteChatRoom(chatRoomId);
   }
 }

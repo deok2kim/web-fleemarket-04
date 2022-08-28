@@ -78,7 +78,7 @@ export class ChatRoomService {
         },
       };
     }
-    // TODO: 에러 핸들링, 없는 유저일 때? 없는 상품일 떄?
+
     const [productId, sellerId, buyerId] = chatRoomId.split('-').map((v) => +v);
     const seller = await this.userRepository.findOne({
       where: { id: sellerId },
@@ -219,28 +219,10 @@ export class ChatRoomService {
   }
 
   // 채팅방 삭제
-  async deleteChatRoom(chatRoomId: string, userId: number) {
-    // 1. 채팅 방 찾기
-    const chatRoomData = await this.chatRoomRepository
-      .createQueryBuilder('chatRoom')
-      .select(['chatRoom'])
-      .where('chatRoom.id = :chatRoomId', { chatRoomId })
-      .getOne();
-
-    // 2. 상대가 이미 지웠으면? 완전 삭제
-    if (chatRoomData.deleteUserId) {
-      return await this.chatRoomRepository
-        .createQueryBuilder('chatRoom')
-        .delete()
-        .where('id = :chatRoomId', { chatRoomId })
-        .execute();
-    }
-
-    // 3. 상대가 안지웠으면? deleteUserId 컬럼에 나를 추가
+  async deleteChatRoom(chatRoomId: string) {
     return await this.chatRoomRepository
       .createQueryBuilder('chatRoom')
-      .update('chat_room') // chatRoom 안됨 -> 진짜 테이블이름을 써야 되는거 같네요!
-      .set({ deleteUserId: userId })
+      .delete()
       .where('id = :chatRoomId', { chatRoomId })
       .execute();
   }
