@@ -104,7 +104,7 @@ function Post() {
       {
         title,
         content,
-        price: +price,
+        price: +deleteComma(price),
         images: urls,
         categoryId: category,
       },
