@@ -8,13 +8,20 @@ import { useProductPagination } from 'src/queries/product';
 
 function Like() {
   const { category, onChangeCategory } = useCategory();
-  const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination({ category, like: true });
+  const {
+    data: productList,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+  } = useProductPagination({ category, like: true });
 
   return (
     <>
       <Header headerTheme="offWhite" center={<p>찜목록</p>} />
       <Categories selectedCategory={category} onChangeCategory={onChangeCategory} />
       <Products
+        isLoading={isLoading}
         category={category}
         productList={productList}
         isFetching={isFetching}

@@ -17,7 +17,7 @@ function Home() {
   const { isLoggedIn } = useLoggedIn();
   const { data: userInfo } = useUserInfo(isLoggedIn);
   const { category, onChangeCategory } = useCategory();
-  const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination({ category });
+  const { data: productList, isFetching, isLoading, fetchNextPage, hasNextPage } = useProductPagination({ category });
   const navigate = useNavigate();
   const onClickFAB = () => {
     navigate(ROUTE.PRODUCTS_POST);
@@ -34,6 +34,7 @@ function Home() {
         isFetching={isFetching}
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage}
+        isLoading={isLoading}
       />
       <BottomNavigation />
     </>

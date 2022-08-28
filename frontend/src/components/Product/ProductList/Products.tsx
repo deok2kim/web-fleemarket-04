@@ -8,16 +8,18 @@ import { IPaginationResponse } from 'src/types/pagination.type';
 import { IProductPreview } from 'src/types/product.type';
 import styled from 'styled-components';
 import Product from './Product';
+import ProductListSkeleton from 'src/components/common/Loading/Skeleton/ProductListSkeleton';
 
 interface Props {
   category: number;
   productList: InfiniteData<IServerResponse<IPaginationResponse<IProductPreview>>> | undefined;
   isFetching: boolean;
+  isLoading: boolean;
   hasNextPage: boolean | undefined;
   fetchNextPage: () => Promise<any>;
 }
 
-function Products({ category, productList, isFetching, fetchNextPage, hasNextPage }: Props) {
+function Products({ category, productList, isFetching, fetchNextPage, hasNextPage, isLoading }: Props) {
   const observerTarget = useRef<HTMLLIElement>(null);
 
   useInfiniteScroll({
@@ -27,7 +29,7 @@ function Products({ category, productList, isFetching, fetchNextPage, hasNextPag
     hasNextPage: hasNextPage ?? false,
   });
 
-  if (isFetching) return <></>;
+  if (isLoading) return <ProductListSkeleton />;
 
   if (!productList?.pages[0].data.total) {
     return <Empty />;

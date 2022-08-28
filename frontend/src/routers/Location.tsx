@@ -92,6 +92,7 @@ const Content = styled.p`
 const MyRegions = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 20px;
 `;
 const MyRegionMap = styled.div``;

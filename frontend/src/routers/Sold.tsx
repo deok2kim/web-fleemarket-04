@@ -8,13 +8,20 @@ import { useProductPagination } from 'src/queries/product';
 
 function Sold() {
   const { category, onChangeCategory } = useCategory();
-  const { data: productList, isFetching, fetchNextPage, hasNextPage } = useProductPagination({ category, sell: true });
+  const {
+    data: productList,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+  } = useProductPagination({ category, sell: true });
 
   return (
     <>
       <Header headerTheme="offWhite" center={<p>판매목록</p>} />
       <Categories selectedCategory={category} onChangeCategory={onChangeCategory} />
       <Products
+        isLoading={isLoading}
         category={category}
         productList={productList}
         isFetching={isFetching}
