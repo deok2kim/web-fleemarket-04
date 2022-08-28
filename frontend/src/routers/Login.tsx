@@ -8,15 +8,15 @@ function Login() {
       <Image name="imageLogo" width={185} />
       <Image name="imageBaedal" />
       <ButtonWrapper>
-        <SocialButton className="kakao" href="http://localhost:4000/api/v1/auth/login/kakao">
+        <SocialButton className="kakao" href="https://baemin-market.com/api/v1/auth/login/kakao">
           <Icon className="icon" name="iconKakao" />
           카카오로 계속하기
         </SocialButton>
-        <SocialButton className="github" href="http://localhost:4000/api/v1/auth/login/github">
+        <SocialButton className="github" href="https://baemin-market.com/api/v1/auth/login/github">
           <Icon className="icon" name="iconGithub" />
           깃허브로 계속하기
         </SocialButton>
-        <SocialButton className="google" href="http://localhost:4000/api/v1/auth/login/google">
+        <SocialButton className="google" href="https://baemin-market.com/api/v1/auth/login/google">
           <Icon className="icon" name="iconGoogle" />
           구글로 계속하기
         </SocialButton>
