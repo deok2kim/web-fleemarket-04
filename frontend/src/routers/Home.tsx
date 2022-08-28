@@ -7,7 +7,6 @@ import SelectRegionDropdown from 'src/components/Location/SelectRegionDropdown';
 import Products from 'src/components/Product/ProductList/Products';
 import { ROUTE } from 'src/constants/route';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
-import { useModalContext } from 'src/contexts/ModalContext';
 import { useCategory } from 'src/hooks/useCategory';
 import { useProductPagination } from 'src/queries/product';
 import { useUserInfo } from 'src/queries/user';
@@ -40,12 +39,5 @@ function Home() {
     </>
   );
 }
-
-const Center = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-`;
 
 export default Home;

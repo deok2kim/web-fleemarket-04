@@ -11,14 +11,14 @@ import { useEffect, useState } from 'react';
 import { useSocket } from 'src/hooks/useSocket';
 import { IMessage } from 'src/types/chatRoom';
 import { useUserInfo } from 'src/queries/user';
-import { useModalContext } from 'src/contexts/ModalContext';
 import { useToast } from 'src/contexts/ToastContext';
+import { useModal } from 'src/contexts/ModalContext';
 
 function Chat() {
   const { isLoggedIn } = useLoggedIn();
   const { data: userInfo } = useUserInfo();
 
-  const modal = useModalContext();
+  const { confirmModal } = useModal();
 
   const chatRoomId = useParams<{ chatRoomId: string }>().chatRoomId as string;
   const { data: chatRoom, isLoading } = useChatRoomQuery(chatRoomId, {
@@ -34,24 +34,31 @@ function Chat() {
 
   const { socket, sendMessage } = useSocket(chatRoomId);
 
+  const leaveChatRoom = () => {
+    confirmModal({
+      title: '채팅방을 나가면 채팅 목록 및 대화 내용이 삭제 되고 복구할 수 없어요. 😂\n채팅방에서 나가시겠어요?',
+      cancelOption: {
+        label: '아니요',
+      },
+      submitOption: {
+        label: '네, 떠날래요',
+        onClick: () => {
+          deleteChatRoomMutation.mutate(chatRoomId, {
+            onSuccess: () => {
+              navigate(-1);
+              toast.success('해당 채팅방이 삭제되었습니다.');
+            },
+          });
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     socket?.on(chatRoomId, (res) => {
       setNewChatLog((prev) => [...prev, res]);
     });
   }, [socket]);
-
-  useEffect(() => {
-    modal.setTitle('채팅방을 나가면 채팅 목록 및 대화 내용이 삭제 되고 복구할 수 없어요. 😂 채팅방에서 나가시겠어요? ');
-    modal.setOnOk(() => {
-      deleteChatRoomMutation.mutate(chatRoomId, {
-        onSuccess: () => {
-          navigate(-1);
-          toast.success('해당 채팅방이 삭제되었습니다.');
-        },
-      });
-      modal.onClose();
-    });
-  }, []);
 
   const onClickBack = () => navigate(-1);
 
@@ -81,7 +88,7 @@ function Chat() {
         headerTheme="white"
         left={<Icon name="iconChevronLeft" strokeColor="black" onClick={onClickBack} />}
         center={<p>{nickname}</p>}
-        right={<Icon name="iconOut" strokeColor="red" onClick={modal.onOpen} />}
+        right={<Icon name="iconOut" strokeColor="red" onClick={leaveChatRoom} />}
       />
 
       <ChatProduct product={product} />

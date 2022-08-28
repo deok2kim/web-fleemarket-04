@@ -1,66 +1,70 @@
-import { createContext, FC, PropsWithChildren, useContext, useState } from 'react';
+import { createContext, FC, PropsWithChildren, useContext, useRef, useState } from 'react';
+import ConfirmModal from 'src/components/common/Modal/Modal';
 
 interface IModalContextProps {
-  title: string;
-  isOpen: boolean;
-  onClose: () => void;
-  onOk: () => void;
+  confirmModal: (params: IConfirmModalParams) => void;
 }
 
-interface IModalActionContextProps {
-  setTitle: (title: string) => void;
-  onOpen: () => void;
-  onClose: () => void;
-  setOnOk: (cb: () => void) => void;
+interface IConfirmButtonParams {
+  label: string;
+  onClick?: () => void;
+}
+
+export interface IConfirmModalParams {
+  title: string;
+  cancelOption: IConfirmButtonParams;
+  submitOption: IConfirmButtonParams;
 }
 
 const ModalContext = createContext<IModalContextProps>({
-  title: '',
-  isOpen: false,
-  onClose: () => {},
-  onOk: () => {},
+  confirmModal: () => {},
 });
 
-const ModalActionContext = createContext<IModalActionContextProps>({
-  setTitle: (title: string) => {},
-  onOpen: () => {},
-  onClose: () => {},
-  setOnOk: (cb: () => void) => {},
-});
-
-// TODO: 화면을 클릭했을 때 모달 닫기
-const ModalProvider: FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
+function ModalProvider({ children }: PropsWithChildren) {
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState('😄테스트입니다');
-  const [onOk, setOnOk] = useState<() => void>(() => {});
+  const [title, setTitle] = useState('');
+
   const onClose = () => setIsOpen(false);
   const onOpen = () => setIsOpen(true);
+  const onChangeTitle = (newTitle: string) => setTitle(newTitle);
+  const cancelOptionRef = useRef<IConfirmButtonParams>({ label: '', onClick: () => {} });
+  const submitOptionRef = useRef<IConfirmButtonParams>({ label: '', onClick: () => {} });
 
-  const value = {
-    title,
-    isOpen,
-    onClose,
-    onOk,
-  };
+  const confirmModal = ({ title, cancelOption, submitOption }: IConfirmModalParams) => {
+    onChangeTitle(title);
+    cancelOptionRef.current = {
+      label: cancelOption.label,
+      onClick: () => {
+        if (cancelOption.onClick) cancelOption.onClick();
+        onClose();
+      },
+    };
+    submitOptionRef.current = {
+      label: submitOption.label,
+      onClick: () => {
+        if (submitOption.onClick) submitOption.onClick();
+        onClose();
+      },
+    };
 
-  const action = {
-    setTitle: (title: string) => setTitle(title),
-    onOpen,
-    onClose,
-    setOnOk: (cb: () => void) => setOnOk(() => cb),
+    onOpen();
   };
 
   return (
-    <ModalActionContext.Provider value={action}>
-      <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
-    </ModalActionContext.Provider>
+    <ModalContext.Provider value={{ confirmModal }}>
+      {children}
+      <ConfirmModal
+        isOpen={isOpen}
+        title={title}
+        cancelOption={cancelOptionRef.current}
+        submitOption={submitOptionRef.current}
+      />
+    </ModalContext.Provider>
   );
-};
+}
 
-export const useModalFactory = () => {
+export const useModal = () => {
   return useContext(ModalContext);
 };
-
-export const useModalContext = () => useContext(ModalActionContext);
 
 export default ModalProvider;

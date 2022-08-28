@@ -1,32 +1,51 @@
-import { useModalFactory } from 'src/contexts/ModalContext';
+import { IConfirmModalParams } from 'src/contexts/ModalContext';
 import styled, { css } from 'styled-components';
 import Button from '../Button/Button';
-import ButtonLocation from '../Button/ButtonLocation';
 
 import Portal from '../Portal/Portal';
 
-function Modal() {
-  const { title, isOpen, onClose, onOk } = useModalFactory();
+interface Props extends IConfirmModalParams {
+  isOpen: boolean;
+}
+
+function ConfirmModal({ isOpen, title, cancelOption, submitOption }: Props) {
+  if (!isOpen) return null;
 
   return (
     <Portal elementId="modal">
-      <Background isOpen={isOpen}>
-        <Container>
+      <Container>
+        <Background />
+        <Wrapper>
           <Title>{title}</Title>
           <ButtonWrapper>
-            <CancelButton size="md" title="취소" onClick={onClose} />
-            <Button size="md" title="네, 나갈래요" onClick={onOk} />
+            <CancelButton size="md" title={cancelOption.label} onClick={cancelOption.onClick} />
+            <SubmitButton size="md" title={submitOption.label} onClick={submitOption.onClick} />
           </ButtonWrapper>
-        </Container>
-      </Background>
+        </Wrapper>
+      </Container>
     </Portal>
   );
 }
 
-export default Modal;
+export default ConfirmModal;
 
-const Background = styled.div<{ isOpen: boolean }>`
-  position: absolute;
+const Container = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  ${({ theme }) => theme.zIndex.modal};
+`;
+
+const Background = styled.div`
+  position: fixed;
 
   top: 0;
   left: 0;
@@ -34,21 +53,10 @@ const Background = styled.div<{ isOpen: boolean }>`
   width: 100%;
   height: 100%;
 
-  background-color: rgba(0, 0, 0, 0.9);
-
-  ${({ isOpen }) =>
-    isOpen
-      ? css`
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        `
-      : css`
-          display: none;
-        `}
+  background-color: rgba(0, 0, 0, 0.6);
 `;
 
-const Container = styled.div`
+const Wrapper = styled.div`
   width: 330px;
 
   display: flex;
@@ -57,13 +65,15 @@ const Container = styled.div`
 
   padding: 24px;
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.color.black};
 
   background-color: ${({ theme }) => theme.color.white};
+  z-index: ${({ theme }) => theme.zIndex.modalContent};
 `;
 
 const Title = styled.p`
-  ${({ theme }) => theme.fonts.textMedium}
+  ${({ theme }) => theme.fonts.textMedium};
+
+  white-space: pre-line;
 `;
 
 const ButtonWrapper = styled.div`
@@ -73,8 +83,16 @@ const ButtonWrapper = styled.div`
   gap: 10px;
 `;
 
-const CancelButton = styled(Button)`
-  background-color: inherit;
+const SubmitButton = styled(Button)`
+  height: 42px;
+`;
+
+const CancelButton = styled(SubmitButton)`
+  background-color: ${({ theme }) => theme.color.white};
   border: 1px solid ${({ theme }) => theme.color.grey100};
   color: ${({ theme }) => theme.color.black};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.color.grey300};
+  }
 `;

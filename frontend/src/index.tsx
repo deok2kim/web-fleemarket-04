@@ -10,7 +10,6 @@ import LoggedInProvider from './contexts/LoggedInContext';
 import CustomQueryClientProvider from './components/CustomQueryClientProvider';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import ModalProvider from './contexts/ModalContext';
-import Modal from './components/common/Modal/Modal';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -23,7 +22,6 @@ root.render(
             <LoggedInProvider>
               <App />
               <Toast />
-              <Modal />
             </LoggedInProvider>
           </ModalProvider>
         </ThemeProvider>
