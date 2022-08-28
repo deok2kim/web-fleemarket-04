@@ -14,9 +14,9 @@ function ChatRoomListSkeleton() {
               <InfoSkeleton width={getRandomWidth()} className="skeleton" />
             </UserAndContentWrapper>
             <TimeAndThumbnailAndunreadWrapper>
-              <TimeAndunreadWrapper>
+              {/* <TimeAndunreadWrapper>
                 <InfoSkeleton width="30px" className="skeleton" />
-              </TimeAndunreadWrapper>
+              </TimeAndunreadWrapper> */}
               <ImageSkeleton className="skeleton" />
             </TimeAndThumbnailAndunreadWrapper>
           </Container>
@@ -68,6 +68,7 @@ const TimeAndunreadWrapper = styled.div`
 const InfoSkeleton = styled.div<{ width: string }>`
   height: 19px;
   width: ${({ width }) => width};
+  border-radius: 6px;
 `;
 
 const ImageSkeleton = styled.div`

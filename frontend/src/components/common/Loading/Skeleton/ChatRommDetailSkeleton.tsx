@@ -9,22 +9,6 @@ function ChatRoomDetailSkeleton() {
   const getRandomBoolean = () => Math.random() * 10 > 5;
   return (
     <>
-      {/* {Array(CHAT_COUNT)
-        .fill(0)
-        .map((_, idx1) => (
-          <Container key={idx1}>
-            <UserAndContentWrapper>
-              <InfoSkeleton width={getRandomWidth()} className="skeleton" />
-              <InfoSkeleton width={getRandomWidth()} className="skeleton" />
-            </UserAndContentWrapper>
-            <TimeAndThumbnailAndunreadWrapper>
-              <TimeAndunreadWrapper>
-                <InfoSkeleton width="30px" className="skeleton" />
-              </TimeAndunreadWrapper>
-              <ImageSkeleton className="skeleton" />
-            </TimeAndThumbnailAndunreadWrapper>
-          </Container>
-        ))} */}
       <Header
         headerTheme="white"
         left={<Icon name="iconChevronLeft" strokeColor="black" />}
@@ -46,11 +30,18 @@ function ChatRoomDetailSkeleton() {
         {Array(CHAT_COUNT)
           .fill(0)
           .map((_, idx1) => (
-            <SpeechBubbleSkeleton isMine={getRandomBoolean()} key={idx1}>
+            <SpeechBubble isMine={getRandomBoolean()} key={idx1}>
               <TextSkeleton className="skeleton" width={`${getRandomWidth()}%`} />
-            </SpeechBubbleSkeleton>
+            </SpeechBubble>
           ))}
       </Container>
+
+      <ContaineChat>
+        <Input placeholder="메세지를 입력하세요." />
+        <button>
+          <Icon name="iconSend" strokeColor="grey100" />
+        </button>
+      </ContaineChat>
     </>
   );
 }
@@ -60,10 +51,12 @@ export default ChatRoomDetailSkeleton;
 const InfoSkeleton = styled.div<{ width: string }>`
   height: 20px;
   width: ${({ width }) => width};
+  border-radius: 6px;
 `;
 
 const InfoSkeletonSm = styled(InfoSkeleton)`
   height: 18px;
+  border-radius: 6px;
 `;
 
 const ImageSkeleton = styled.div`
@@ -124,7 +117,7 @@ const Container = styled.div`
   }
 `;
 
-const SpeechBubbleSkeleton = styled.div<{ isMine: boolean }>`
+const SpeechBubble = styled.div<{ isMine: boolean }>`
   margin: 16px;
 
   display: flex;
@@ -142,4 +135,40 @@ const TextSkeleton = styled.p<{ width: string }>`
   border-radius: 10px;
 
   width: ${({ width }) => width};
+`;
+
+const ContaineChat = styled.form`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+
+  height: 52px;
+
+  background-color: ${({ theme }) => theme.color.offWhite};
+
+  border-top: 1px solid ${({ theme }) => theme.color.grey300};
+  border-bottom: 1px solid ${({ theme }) => theme.color.grey300};
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding: 14px;
+
+  form {
+    width: 100%;
+  }
+`;
+
+const Input = styled.input`
+  width: 100%;
+  height: 36px;
+  border-radius: 8px;
+  outline: none;
+  border: 1px solid ${({ theme }) => theme.color.grey300};
+
+  padding-left: 8px;
 `;
