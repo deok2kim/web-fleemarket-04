@@ -17,9 +17,10 @@ interface Props {
   isLoading: boolean;
   hasNextPage: boolean | undefined;
   fetchNextPage: () => Promise<any>;
+  isSellPage?: boolean;
 }
 
-function Products({ category, productList, isFetching, fetchNextPage, hasNextPage, isLoading }: Props) {
+function Products({ category, productList, isFetching, fetchNextPage, hasNextPage, isLoading, isSellPage }: Props) {
   const observerTarget = useRef<HTMLLIElement>(null);
 
   useInfiniteScroll({
@@ -36,10 +37,16 @@ function Products({ category, productList, isFetching, fetchNextPage, hasNextPag
   }
 
   return (
-    <Container>
+    <Container isSellPage={isSellPage}>
       {productList?.pages.map((pages) =>
         pages.data.paginationResult.map((product) => (
-          <Product key={product.id} ref={observerTarget} category={category} product={product} />
+          <Product
+            key={product.id}
+            ref={observerTarget}
+            category={category}
+            product={product}
+            isSellPage={isSellPage}
+          />
         )),
       )}
       {isFetching && <Spinner />}
@@ -49,8 +56,8 @@ function Products({ category, productList, isFetching, fetchNextPage, hasNextPag
 
 export default Products;
 
-const Container = styled.ul`
-  height: calc(100vh - 190px);
+const Container = styled.ul<{ isSellPage?: boolean }>`
+  height: ${({ isSellPage }) => (isSellPage ? 'calc(100vh - 130px)' : 'calc(100vh - 180px)')};
   overflow-y: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;

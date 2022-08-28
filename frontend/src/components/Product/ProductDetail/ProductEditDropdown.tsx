@@ -1,26 +1,25 @@
 import { useNavigate } from 'react-router-dom';
 import { useToast } from 'src/contexts/ToastContext';
 import { useDeleteProductMutation } from 'src/queries/product';
-import { IProduct } from 'src/types/product.type';
 import styled from 'styled-components';
 import Dropdown from '../../common/Dropdown/Dropdown';
 import Icon from '../../common/Icon/Icon';
 
 interface Props {
-  product: IProduct;
+  productId: number;
 }
 
-function ProductEditDropdown({ product }: Props) {
+function ProductEditDropdown({ productId }: Props) {
   const deleteProductMutation = useDeleteProductMutation();
   const navigate = useNavigate();
   const toast = useToast();
 
   const onClickEditButton = () => {
-    navigate(`/post/products/${product.id}`);
+    navigate(`/post/products/${productId}`);
   };
 
   const onClickDeleteButton = () => {
-    deleteProductMutation.mutate(product.id, {
+    deleteProductMutation.mutate(productId, {
       onSuccess: () => {
         navigate('/');
         toast.success('해당 상품이 삭제되었습니다.');
@@ -31,10 +30,10 @@ function ProductEditDropdown({ product }: Props) {
   return (
     <Dropdown>
       <Dropdown.Toggle>
-        <Icon name="iconKebab" strokeColor="white" />
+        <Icon name="iconKebab" strokeColor="grey200" />
       </Dropdown.Toggle>
 
-      <Dropdown.List position="right">
+      <Dropdown.List position="right" top={24}>
         <Dropdown.Item onClick={onClickEditButton}>수정하기</Dropdown.Item>
         <Dropdown.Item onClick={onClickDeleteButton}>
           <DeleteText>삭제하기</DeleteText>

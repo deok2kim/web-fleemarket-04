@@ -12,13 +12,15 @@ import { formatPrice } from 'src/utils/formatPrice';
 import styled from 'styled-components';
 import Icon from '../../common/Icon/Icon';
 import Image from '../../common/Image/Image';
+import ProductEditDropdown from '../ProductDetail/ProductEditDropdown';
 
 interface Props {
   product: IProductPreview;
   category: number;
+  isSellPage?: boolean;
 }
 
-function Product({ category, product }: Props, ref: React.ForwardedRef<HTMLLIElement>) {
+function Product({ category, product, isSellPage }: Props, ref: React.ForwardedRef<HTMLLIElement>) {
   const { isLoggedIn } = useLoggedIn();
   const { data: userInfo } = useUserInfo(isLoggedIn);
   const [like, setLike] = useState(product.isLiked);
@@ -91,13 +93,19 @@ function Product({ category, product }: Props, ref: React.ForwardedRef<HTMLLIEle
           </div>
         )}
       </InfoIconWrapper>
-      <HeartIcon onClick={onClickHeart}>
-        <Icon
-          name="iconHeart"
-          strokeColor={like ? 'primary200' : 'grey100'}
-          fillColor={like ? 'primary200' : 'transparent'}
-        />
-      </HeartIcon>
+      {isSellPage ? (
+        <DropDownWrapper>
+          <ProductEditDropdown productId={product.id} />
+        </DropDownWrapper>
+      ) : (
+        <HeartIcon onClick={onClickHeart}>
+          <Icon
+            name="iconHeart"
+            strokeColor={like ? 'primary200' : 'grey100'}
+            fillColor={like ? 'primary200' : 'transparent'}
+          />
+        </HeartIcon>
+      )}
     </Container>
   );
 }
@@ -197,4 +205,10 @@ const ProductStatus = styled.span`
 const LocationAndTime = styled.p`
   color: ${({ theme }) => theme.color.grey100};
   ${({ theme }) => theme.fonts.textSmall};
+`;
+
+const DropDownWrapper = styled.div`
+  position: absolute;
+  top: 16px;
+  right: 16px;
 `;

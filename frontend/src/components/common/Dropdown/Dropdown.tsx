@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 const DropdownContext = createContext({
@@ -39,23 +39,33 @@ export function Dropdown({ children }: PropsWithChildren) {
 function Toggle({ children }: PropsWithChildren) {
   const { toggle } = useContext(DropdownContext);
 
-  return <div onClick={toggle}>{children}</div>;
+  const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    toggle();
+  };
+
+  return <div onClick={onClick}>{children}</div>;
 }
 
 type TPosition = 'left' | 'right' | 'center';
 
 interface ListProps {
   position: TPosition;
+  top?: number;
 }
 
-function List({ position, children }: PropsWithChildren<ListProps>) {
+function List({ position, top, children }: PropsWithChildren<ListProps>) {
   const { open } = useContext(DropdownContext);
 
   if (!open) {
     return null;
   }
 
-  return <ListContainer position={position}>{children}</ListContainer>;
+  return (
+    <ListContainer position={position} top={top}>
+      {children}
+    </ListContainer>
+  );
 }
 
 interface ItemProps {
@@ -65,9 +75,10 @@ interface ItemProps {
 function Item({ onClick, children }: PropsWithChildren<ItemProps>) {
   const { toggle } = useContext(DropdownContext);
 
-  const onClickItem = () => {
-    toggle();
+  const onClickItem = (e: React.MouseEvent<HTMLLIElement>) => {
+    e.stopPropagation();
     if (onClick) onClick();
+    toggle();
   };
   return <LiWrapper onClick={onClickItem}>{children}</LiWrapper>;
 }
@@ -111,12 +122,12 @@ const DropdownContainer = styled.div`
   }
 `;
 
-const ListContainer = styled.ul<{ position: TPosition }>`
+const ListContainer = styled.ul<{ position: TPosition; top?: number }>`
   width: 165px;
 
   box-shadow: 0px 0px 4px rgba(204, 204, 204, 0.5), 0px 2px 4px rgba(0, 0, 0, 0.25);
   position: absolute;
-  top: 48px;
+  top: ${({ top }) => `${top}px` ?? '48px'};
 
   ${({ position }) => setPosition(position)};
 

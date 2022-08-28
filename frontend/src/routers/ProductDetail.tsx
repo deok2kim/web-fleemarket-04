@@ -43,8 +43,8 @@ function ProductDetail() {
     <Container>
       <ProductHeader
         headerTheme="transparent"
-        left={<Icon onClick={onClickBackIcon} name="iconChevronLeft" strokeColor="white" />}
-        right={isSeller && <ProductEditDropdown product={productDetail.data.product} />}
+        left={<Icon onClick={onClickBackIcon} name="iconChevronLeft" strokeColor="grey200" />}
+        right={isSeller && <ProductEditDropdown productId={productDetail.data.product.id} />}
       />
       <Carousel>
         {productImages?.map((image) => (
