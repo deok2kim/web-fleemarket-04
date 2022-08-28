@@ -59,6 +59,7 @@ export default Products;
 const Container = styled.ul<{ isSellPage?: boolean }>`
   height: ${({ isSellPage }) => (isSellPage ? 'calc(100vh - 130px)' : 'calc(100vh - 180px)')};
   overflow-y: scroll;
+  overflow-x: hidden;
   -ms-overflow-style: none;
   scrollbar-width: none;
   &::-webkit-scrollbar {

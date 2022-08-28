@@ -25,8 +25,6 @@ function ChatRoom() {
     navigate(`/chat/${id}`);
   };
 
-  // if (isLoading) return <ChatRoomListSkeleton />;
-
   return (
     <>
       <Header headerTheme="offWhite" center={<p>채팅</p>} />

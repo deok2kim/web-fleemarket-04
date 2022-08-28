@@ -182,7 +182,7 @@ const InfoIconCount = styled.div`
 `;
 
 const Title = styled.p`
-  max-width: 80%;
+  max-width: 60%;
 
   ${({ theme }) => theme.fonts.linkMedium};
 
