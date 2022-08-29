@@ -2,13 +2,13 @@
   <p align="center">
     <img width="185" alt="baemin-market" src="https://user-images.githubusercontent.com/60956392/187142708-1cc22b34-dc71-4559-8848-5b93d890050f.png">
   </p>
-  <span>
+  <p align="center">
     <a href="https://baemin-market.com">Demo</a>
     |
     <a href="https://github.com/woowa-techcamp-2022/web-fleemarket-04/wiki/">Wiki</a>
     |
     <a href="https://drive.google.com/file/d/1-mz_EyvUKrQPTggFQL54CnSXXplBCkSo/view?usp=sharing">Presentation</a>
-  </span>
+  </p>
 </div>
 
 <div style="height: 500px;">
