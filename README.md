@@ -54,13 +54,13 @@
 
 ## 실행 방법
 
-### Prerequisites
+### 전제 조건
 
 ```
 npm install npm@latest -g
 ```
 
-### Installation
+### 설치
 
 Clone the repo
 
@@ -79,7 +79,7 @@ cd server
 npm install
 ```
 
-### Environment variable
+### 환경 변수 설정
 
 frontend
 
@@ -92,3 +92,4 @@ backend
 ```
 /backend/.env.sample
 ```
+
