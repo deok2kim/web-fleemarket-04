@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE } from 'src/constants/route';
+import { useLoggedIn } from 'src/contexts/LoggedInContext';
+import { useToast } from 'src/contexts/ToastContext';
 import { useDebouncedCallback } from 'src/hooks/useDebounceCallback';
 import { useDisLikeProduct, useLikeProduct } from 'src/queries/product';
 import { useUserInfo } from 'src/queries/user';
@@ -16,8 +18,10 @@ interface Props {
 }
 
 function BottomBar({ productDetail }: Props) {
+  const { isLoggedIn } = useLoggedIn();
   const navigate = useNavigate();
   const userInfo = useUserInfo();
+  const toast = useToast();
   const [like, setLike] = useState(productDetail.isLiked);
   const likeMutation = useLikeProduct(productDetail.product.id);
   const dislikeMutation = useDisLikeProduct(productDetail.product.id);
@@ -29,6 +33,15 @@ function BottomBar({ productDetail }: Props) {
 
   const buttonDisabled = productDetail.isSeller ? !productDetail.product.chatRooms : false;
   const onClickHeart = () => {
+    if (!isLoggedIn) {
+      toast.error('찜은 로그인 후 가능합니다 :)', {
+        onClick: () => {
+          navigate(ROUTE.LOGIN);
+        },
+      });
+      return;
+    }
+
     if (like) {
       setLike(false);
     } else {

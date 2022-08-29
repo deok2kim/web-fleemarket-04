@@ -22,7 +22,6 @@ interface Props {
 
 function Product({ category, product, isSellPage }: Props, ref: React.ForwardedRef<HTMLLIElement>) {
   const { isLoggedIn } = useLoggedIn();
-  const { data: userInfo } = useUserInfo(isLoggedIn);
   const [like, setLike] = useState(product.isLiked);
   const [likeCount, setLikeCount] = useState(product.likes);
   const likeMutation = useLikeProduct(product.id, category);
@@ -42,7 +41,7 @@ function Product({ category, product, isSellPage }: Props, ref: React.ForwardedR
   const onClickHeart = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
-    if (!userInfo) {
+    if (!isLoggedIn) {
       toast.error('찜은 로그인 후 가능합니다 :)', {
         onClick: () => {
           navigate(ROUTE.LOGIN);
