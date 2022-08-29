@@ -54,6 +54,8 @@ const Content = styled.p`
   ${({ theme }) => theme.fonts.textMedium};
 
   color: ${({ theme }) => theme.color.titleActive};
+
+  white-space: pre-line;
 `;
 
 const SellerWrapper = styled.div`
