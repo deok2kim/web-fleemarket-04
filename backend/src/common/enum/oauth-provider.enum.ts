@@ -1,5 +1,5 @@
 export enum OAuthProviderEnum {
   KAKAO = 'kakao',
-  NAVER = 'naver',
+  GITHUB = 'github',
   GOOGLE = 'google',
 }
