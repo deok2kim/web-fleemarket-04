@@ -1,18 +1,18 @@
-import Header from 'src/components/common/Header/Header';
-import Image from 'src/components/common/Image/Image';
-import withAuth from 'src/hocs/withAuth';
-import { useChatRooms } from 'src/queries/chatRoom';
 import styled from 'styled-components';
-import timeForToday from 'src/utils/ago';
-import BottomNavigation from 'src/components/common/BottomNavigation/BottomNavigation';
+
+import withAuth from 'src/hocs/withAuth';
+
+import { useChatRooms } from 'src/queries/chatRoom';
 import { useNavigate } from 'react-router-dom';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
+import timeForToday from 'src/utils/ago';
+
+import Image from 'src/components/common/Image/Image';
 import NoData from 'src/components/common/Error/NoData';
-import ChatRoomListSkeleton from 'src/components/common/Loading/Skeleton/ChatRoomListSkeleton';
 
 function ChatRoomList() {
   const { isLoggedIn } = useLoggedIn();
-  const { data: chatRoomList, isLoading } = useChatRooms({
+  const { data: chatRoomList } = useChatRooms({
     enabled: isLoggedIn,
     suspense: true,
   });
@@ -25,37 +25,30 @@ function ChatRoomList() {
     navigate(`/chat/${id}`);
   };
 
+  if (!chatRoomList || chatRoomList.data.chatRooms.length === 0)
+    return <NoData message="채팅이 없습니다." iconName="iconSpeechDoubleBubble" />;
+
   return (
-    <>
-      {isLoading ? (
-        <ChatRoomListSkeleton />
-      ) : chatRoomList?.data.chatRooms.length ? (
-        <Container>
-          {chatRoomList?.data.chatRooms.map(({ id, partner, unreadCount, product, messages }) => {
-            const lastMessage = messages[0];
-            return (
-              <ChatItem key={id} onClick={() => onClickChatRoom(id)}>
-                <UserAndContentWrapper>
-                  <User>{partner.nickname}</User>
-                  <Content>{lastMessage.content}</Content>
-                </UserAndContentWrapper>
-                <TimeAndThumbnailAndUnreadWrapper>
-                  <TimeAndUnreadWrapper>
-                    <Time>{timeForToday(lastMessage.createdAt)}</Time>
-                    {hasUnreadMessage(lastMessage.senderId, partner.id, unreadCount || 0) && (
-                      <Unread>{unreadCount}</Unread>
-                    )}
-                  </TimeAndUnreadWrapper>
-                  <Image src={product.thumbnail.url} box="sm" />
-                </TimeAndThumbnailAndUnreadWrapper>
-              </ChatItem>
-            );
-          })}
-        </Container>
-      ) : (
-        <NoData message="채팅이 없습니다." iconName="iconSpeechDoubleBubble" />
-      )}
-    </>
+    <Container>
+      {chatRoomList.data.chatRooms.map(({ id, partner, unreadCount, product, messages }) => {
+        const lastMessage = messages[0];
+        return (
+          <ChatItem key={id} onClick={() => onClickChatRoom(id)}>
+            <UserAndContentWrapper>
+              <User>{partner.nickname}</User>
+              <Content>{lastMessage.content}</Content>
+            </UserAndContentWrapper>
+            <TimeAndThumbnailAndUnreadWrapper>
+              <TimeAndUnreadWrapper>
+                <Time>{timeForToday(lastMessage.createdAt)}</Time>
+                {hasUnreadMessage(lastMessage.senderId, partner.id, unreadCount || 0) && <Unread>{unreadCount}</Unread>}
+              </TimeAndUnreadWrapper>
+              <Image src={product.thumbnail.url} box="sm" />
+            </TimeAndThumbnailAndUnreadWrapper>
+          </ChatItem>
+        );
+      })}
+    </Container>
   );
 }
 
