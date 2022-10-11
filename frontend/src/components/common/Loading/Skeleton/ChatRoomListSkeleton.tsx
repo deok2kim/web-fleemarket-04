@@ -1,6 +1,11 @@
 import styled from 'styled-components';
+import { useDelay } from 'src/hooks/useDelay';
 
 function ChatRoomListSkeleton() {
+  const isDelay = useDelay();
+
+  if (isDelay) return null;
+
   const CHAT_COUNT = 10;
   const getRandomWidth = () => `${Math.ceil(30 + Math.random() * 50)}%`;
   return (

@@ -13,7 +13,6 @@ import { IMessage } from 'src/types/chatRoom';
 import { useUserInfo } from 'src/queries/user';
 import { useToast } from 'src/contexts/ToastContext';
 import { useModal } from 'src/contexts/ModalContext';
-import ChatRoomDetailSkeleton from 'src/components/common/Loading/Skeleton/ChatRommDetailSkeleton';
 
 function Chat() {
   const { isLoggedIn } = useLoggedIn();
@@ -22,14 +21,18 @@ function Chat() {
   const { confirmModal } = useModal();
 
   const chatRoomId = useParams<{ chatRoomId: string }>().chatRoomId as string;
-  const { data: chatRoom, isLoading } = useChatRoomQuery(chatRoomId, {
+  const [newChatLog, setNewChatLog] = useState<IMessage[]>([]);
+  const { data: chatRoom } = useChatRoomQuery(chatRoomId, {
     enabled: isLoggedIn && !!chatRoomId,
     cacheTime: 0,
-    onSuccess: (data) => {
-      setNewChatLog(data.data.chatRoom.messages);
-    },
+    suspense: true,
   });
-  const [newChatLog, setNewChatLog] = useState<IMessage[]>([]);
+
+  useEffect(() => {
+    if (!chatRoom) return;
+    setNewChatLog(chatRoom.data.chatRoom.messages);
+  }, [chatRoom]);
+
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -60,6 +63,7 @@ function Chat() {
 
   useEffect(() => {
     socket?.on(chatRoomId, (res) => {
+      console.log('res', res);
       if (res.full) {
         setNewChatLog((prev) => prev.map((message) => ({ ...message, isRead: true })));
         return;
@@ -83,8 +87,8 @@ function Chat() {
     });
     setMessage('');
   };
-  if (isLoading) return <ChatRoomDetailSkeleton />;
   if (!chatRoom) return null;
+
   const {
     product,
     messages,

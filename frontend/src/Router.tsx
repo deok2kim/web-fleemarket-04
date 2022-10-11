@@ -14,6 +14,8 @@ import LocationInit from './routers/LocationInit';
 import Post from './routers/Post';
 import ProductChatRooms from './routers/ProductChatRooms';
 import Error404 from './routers/404';
+import { Suspense } from 'react';
+import ChatRoomDetailSkeleton from './components/common/Loading/Skeleton/ChatRommDetailSkeleton';
 
 function Router() {
   // TODO: 채팅 컴포넌트 이름 명확하게 수정하기 e.g 채팅목록은 chatRooms, 채팅방은 chatRoom
@@ -34,7 +36,14 @@ function Router() {
       {/* 나의 채팅 목록  */}
       <Route path={ROUTE.CHAT} element={<ChatRoom />} />
       {/* 채팅방 1개 - 실제 채팅을 하는곳 */}
-      <Route path={`${ROUTE.CHAT}/:chatRoomId`} element={<Chat />} />
+      <Route
+        path={`${ROUTE.CHAT}/:chatRoomId`}
+        element={
+          <Suspense fallback={<ChatRoomDetailSkeleton />}>
+            <Chat />
+          </Suspense>
+        }
+      />
       {/* 내가 판매하는 해당 상품의 채팅 목록  */}
       <Route path={'/products/:productId/chat-rooms'} element={<ProductChatRooms />} />
 
