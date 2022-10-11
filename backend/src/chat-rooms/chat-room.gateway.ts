@@ -63,13 +63,18 @@ export class ChatRoomGateway
     ]
       ? 2
       : 1;
+
     console.log(
       `연결: ${chatRoomId}에 현재 접속자: ${
         this.roomState[chatRoomId.toString()]
       }`,
     );
 
-    this.server.emit(chatRoomId.toString(), { full: true });
+    if (this.roomState[chatRoomId.toString()] === 2) {
+      this.server.emit(chatRoomId.toString(), {
+        full: true,
+      });
+    }
   }
 
   handleDisconnect(@ConnectedSocket() socket: Socket) {

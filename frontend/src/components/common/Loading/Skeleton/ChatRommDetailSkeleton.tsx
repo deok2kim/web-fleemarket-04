@@ -1,9 +1,13 @@
-import ChatInput from 'src/components/ChatRoom/ChatInput';
 import styled from 'styled-components';
+import { useDelay } from 'src/hooks/useDelay';
 import Header from '../../Header/Header';
 import Icon from '../../Icon/Icon';
 
 function ChatRoomDetailSkeleton() {
+  const isDelay = useDelay();
+
+  if (isDelay) return null;
+
   const CHAT_COUNT = 15;
   const getRandomWidth = () => Math.ceil(30 + Math.random() * 50);
   const getRandomBoolean = () => Math.random() * 10 > 5;
