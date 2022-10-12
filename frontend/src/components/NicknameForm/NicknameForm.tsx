@@ -1,46 +1,27 @@
+import styled from 'styled-components';
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
+
 import { useToast } from 'src/contexts/ToastContext';
+import { useForm } from 'src/hooks/useForm';
 import { useChangeNicknameMutation, useUserInfo } from 'src/queries/user';
 import { IServerError } from 'src/types/api';
-import styled from 'styled-components';
 
 const NICKNAME_MIN_LENGTH = 2;
 const NICKNAME_MAX_LENGTH = 20;
 
+interface User {
+  nickname: string;
+}
+
 function NicknameForm() {
   const { data: userInfo } = useUserInfo();
-  const [error, setError] = useState('');
   const initNickname = useRef<string>(userInfo?.data.nickname as string);
-  const [nickname, setNickname] = useState(initNickname.current || '');
   const changeNicknameMutation = useChangeNicknameMutation();
   const toast = useToast();
 
-  const notChanged = initNickname.current === nickname;
-
-  const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value: nicknameInputValue } = e.target;
-    if (nicknameInputValue.length > NICKNAME_MAX_LENGTH) return;
-
-    setNickname(nicknameInputValue);
-  };
-
-  const validateNickname = (nickname: string) => {
-    if (!nickname.length) {
-      setError('닉네임을 입력해주세요.');
-      return;
-    }
-
-    if (nickname.length < NICKNAME_MIN_LENGTH) {
-      setError('닉네임은 2자 이상 입력해주세요.');
-      return;
-    }
-
-    setError('');
-  };
-
   const onClickChangeButton = () => {
-    if (notChanged) return;
+    if (isChanged) return;
 
     changeNicknameMutation.mutate(nickname, {
       onSuccess: () => {
@@ -50,27 +31,52 @@ function NicknameForm() {
       onError: (error) => {
         if (axios.isAxiosError(error)) {
           const { message: errorMessage } = error?.response?.data as IServerError;
-          setError(errorMessage);
+          toast.error(errorMessage);
         }
       },
     });
   };
 
-  useEffect(() => {
-    if (!nickname) return;
-    validateNickname(nickname);
-  }, [nickname]);
+  const {
+    handleSubmit,
+    handleChange,
+    data: { nickname },
+    errors,
+  } = useForm<User>({
+    initialValues: { nickname: userInfo?.data.nickname },
+    validations: {
+      nickname: {
+        pattern: {
+          value: '^[a-zA-Z0-9가-힣]*$',
+          message: '특수문자는 포함할 수 없습니다.',
+        },
+        custom: {
+          isValid: (value) => value.length > NICKNAME_MIN_LENGTH && value.length <= NICKNAME_MAX_LENGTH,
+          message: '닉네임은 2자 이상 20자 이하로 입력해주세요.',
+        },
+      },
+    },
+    onSubmit: onClickChangeButton,
+  });
+
+  const isChanged = initNickname.current === nickname;
 
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <Label htmlFor="nickname-input">닉네임</Label>
       <InputWrapper>
-        <Input id="nickname-input" type="text" value={nickname} onChange={onChangeNickname} />
-        <NicknameButton type="button" onClick={onClickChangeButton} disabled={notChanged}>
+        <Input
+          id="nickname-input"
+          type="text"
+          placeholder="nickName"
+          value={nickname || ''}
+          onChange={handleChange('nickname')}
+        />
+        <NicknameButton type="submit" disabled={isChanged}>
           변경
         </NicknameButton>
       </InputWrapper>
-      <ErrorMessage>{error}</ErrorMessage>
+      <ErrorMessage>{errors.nickname}</ErrorMessage>
     </Form>
   );
 }
