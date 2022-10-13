@@ -14,16 +14,14 @@ import styled from 'styled-components';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-type Inputs = {
-  example: string;
-  exampleRequired: string;
-};
-
-interface IFormData {
+interface Inputs {
   title: string;
-  category: number;
   price: string;
   content: string;
+}
+
+interface IFormData {
+  category: number;
   urls: string[];
 }
 
@@ -39,65 +37,39 @@ function Post() {
   const updateProductMutation = useUpdateProductMutation();
   const navigate = useNavigate();
   const toast = useToast();
+
   const [formData, setFormData] = useState<IFormData>({
-    title: '',
     category: 0,
-    price: '',
-    content: '',
     urls: [],
   });
 
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+    getValues,
+    formState: { isValid },
+  } = useForm<Inputs>({ mode: 'onChange' });
 
-  console.log(watch('example'));
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    if (isEditMode) {
+      updateProduct({ ...data });
+      return;
+    }
+    saveProduct({ ...data });
+  };
 
-  const isInputPrice = !!formData.price;
-  const isSubmittable = !!formData.title && !!formData.category && !!formData.content && !!formData.urls.length;
+  const isInputPrice = !!getValues('price');
+  const isSubmittable = !!formData.category && !!formData.urls.length && isValid;
   const isEditMode = !!productId;
 
   const onClickBack = () => {
     navigate(-1);
   };
 
-  const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value: titleValue } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      title: titleValue,
-    }));
-  };
-
-  const onChangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value: priceValue } = e.target;
-
-    if (+deleteComma(priceValue) > MAX_PRICE) return;
-
-    setFormData((prev) => ({
-      ...prev,
-      price: setComma(setOnlyNumber(priceValue)),
-    }));
-  };
-
   const onChangeCategory = (categoryId: number) => {
     setFormData((prev) => ({
       ...prev,
       category: categoryId,
-    }));
-  };
-
-  const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { value: contentValue } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      content: contentValue,
     }));
   };
 
@@ -115,9 +87,8 @@ function Post() {
     }));
   };
 
-  const saveProduct = () => {
-    const { title, urls, price, category, content } = formData;
-
+  const saveProduct = ({ title, price, content }: { title: string; price: string; content: string }) => {
+    const { urls, category } = formData;
     addProductMutation.mutate(
       {
         title,
@@ -138,10 +109,10 @@ function Post() {
     );
   };
 
-  const updateProduct = () => {
+  const updateProduct = ({ title, price, content }: { title: string; price: string; content: string }) => {
     if (!productId) return;
 
-    const { title, urls, price, category, content } = formData;
+    const { urls, category } = formData;
 
     updateProductMutation.mutate(
       {
@@ -161,28 +132,11 @@ function Post() {
     );
   };
 
-  const onSubmitPost = () => {
-    if (!isSubmittable) return;
-
-    if (isEditMode) {
-      updateProduct();
-      return;
-    }
-
-    saveProduct();
-  };
-
   const setDefaultDataInEditMode = () => {
-    const title = productDetail?.data.product.title || '';
-    const price = productDetail?.data.product.price?.toString() || '';
-    const content = productDetail?.data.product.content || '';
     const category = productDetail?.data.product.categoryId || 0;
     const imageUrls = productDetail?.data.product.images.map((image) => image.url) || [];
 
     setFormData({
-      title,
-      price,
-      content,
       category,
       urls: imageUrls,
     });
@@ -202,47 +156,47 @@ function Post() {
         left={<Icon name="iconChevronLeft" onClick={onClickBack} />}
         center={<p>글쓰기</p>}
         right={
-          <SubmitText isSubmittable={isSubmittable} onClick={onSubmitPost}>
+          <SubmitText isSubmittable={isSubmittable} onClick={handleSubmit(onSubmit)} disabled={!isSubmittable}>
             완료
           </SubmitText>
         }
       />
-      <Container>
+      <Container onSubmit={handleSubmit(onSubmit)}>
         <ImageUpload urls={formData.urls} addUrls={addUrls} removeUrl={removeUrl} />
-        <Input type="text" placeholder="글 제목" value={formData.title} onChange={onChangeTitle} />
+        <Input
+          {...register('title', { required: true })}
+          placeholder="글 제목"
+          defaultValue={productDetail?.data.product.title}
+        />
         <CategoryWrapper>
           <p>(필수) 카테고리를 선택해주세요</p>
           <Categories selectedCategory={formData.category} onChangeCategory={onChangeCategory} isPost={true} />
         </CategoryWrapper>
         <PriceWrapper isInput={isInputPrice}>
           <Input
-            isPrice={true}
-            type="text"
+            {...register('price', { pattern: /^[0-9]+$/i })}
             placeholder="가격 (선택사항)"
-            value={formData.price}
-            onChange={onChangePrice}
+            defaultValue={productDetail?.data.product.price}
           />
           <p className="sign">₩</p>
         </PriceWrapper>
-        <TextArea placeholder="게시글 내용을 작성해주세요" value={formData.content} onChange={onChangeContent} />
+        <TextArea
+          {...register('content', { required: true })}
+          placeholder="게시글 내용을 작성해주세요"
+          value={productDetail?.data.product.content}
+        />
       </Container>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input defaultValue="test" {...register('example')} />
-        <input {...register('exampleRequired', { required: true })} />
-        {errors.exampleRequired && <span>This field is required</span>}
-        <input type="submit" />
-      </form>
     </>
   );
 }
 
 export default withAuth(Post);
 
-const Container = styled.div`
+const Container = styled.form`
   padding: 0 16px;
 `;
 
-const SubmitText = styled.p<{ isSubmittable: boolean }>`
+const SubmitText = styled.button<{ isSubmittable: boolean }>`
   color: ${({ theme, isSubmittable }) => (isSubmittable ? theme.color.primary200 : theme.color.grey300)};
 
   cursor: ${({ isSubmittable }) => (isSubmittable ? 'pointer' : 'default')};
