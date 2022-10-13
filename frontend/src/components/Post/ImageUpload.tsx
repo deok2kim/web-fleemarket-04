@@ -52,7 +52,7 @@ function ImageUpload({ urls, addUrls, removeUrl }: Props) {
     <Container>
       <ImageList>
         <input ref={inputRef} id="input-image" multiple accept="image/*" type="file" onChange={onChangeFile} hidden />
-        <NewPostButton onClick={onClickPostButton}>
+        <NewPostButton onClick={onClickPostButton} type="button">
           <Icon name="iconNewPost" />
           {fileCount} / 10
         </NewPostButton>
