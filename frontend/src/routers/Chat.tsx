@@ -22,15 +22,13 @@ function Chat() {
 
   const chatRoomId = useParams<{ chatRoomId: string }>().chatRoomId as string;
   const [newChatLog, setNewChatLog] = useState<IMessage[]>([]);
-  const { data: chatRoom } = useChatRoomQuery(chatRoomId, {
+  const { chatRoom } = useChatRoomQuery(chatRoomId, {
     enabled: isLoggedIn && !!chatRoomId,
     cacheTime: 0,
-    suspense: true,
   });
 
   useEffect(() => {
-    if (!chatRoom) return;
-    setNewChatLog(chatRoom.data.chatRoom.messages);
+    setNewChatLog(chatRoom.messages);
   }, [chatRoom]);
 
   const [message, setMessage] = useState('');
@@ -87,26 +85,19 @@ function Chat() {
     });
     setMessage('');
   };
-  if (!chatRoom) return null;
-
-  const {
-    product,
-    messages,
-    partner: { nickname },
-  } = chatRoom.data.chatRoom;
 
   return (
     <>
       <Header
         headerTheme="white"
         left={<Icon name="iconChevronLeft" strokeColor="black" onClick={onClickBack} />}
-        center={<p>{nickname}</p>}
+        center={<p>{chatRoom.partner.nickname}</p>}
         right={<Icon name="iconOut" strokeColor="red" onClick={leaveChatRoom} />}
       />
 
-      <ChatProduct product={product} />
+      <ChatProduct product={chatRoom.product} />
 
-      <ChatWindow messages={messages} newChatLog={newChatLog} />
+      <ChatWindow messages={chatRoom.messages} newChatLog={newChatLog} />
 
       <ChatInput message={message} onChangeMessage={onChangeMessage} onClickSubmit={onClickSubmit} />
     </>

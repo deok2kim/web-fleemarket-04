@@ -2,7 +2,7 @@ import Header from 'src/components/common/Header/Header';
 import Icon from 'src/components/common/Icon/Icon';
 import Image from 'src/components/common/Image/Image';
 import withAuth from 'src/hocs/withAuth';
-import { useChatRooms } from 'src/queries/chatRoom';
+import { useChatRoomsQuery } from 'src/queries/chatRoom';
 import styled from 'styled-components';
 import timeForToday from 'src/utils/ago';
 import { useNavigate, useParams } from 'react-router-dom';
