@@ -36,11 +36,11 @@ export interface IChatRoom {
   partner: IUserForChat;
 }
 
-export interface IChatRoomRes {
+export interface ChatRoomResult {
   chatRoom: IChatRoom;
 }
 
-export interface IChatRooms {
+export interface ChatRoomsResult {
   /** 채팅방 목록 (e.g. { "chatRooms": [ { "deleteUserId": 0, "productId": 46, "sellerId": 3, "buyerId": 1, "id": "46-3-1", "messages": [ { "id": 21, "createdAt": "2022-08-23T22:20:24.421Z", "senderId": 1, "content": "구매자님 죄송합니다만, 잠실역은 어려울것 같습니다.", "isRead": true, "chatRoomId": "46-3-1" } ], "product": { "id": 46, "title": "상품 등록 테스트 title1231235555", "price": 1500000, "productStatusId": 1, "thumbnail": { "id": 71, "url": "https://www.apple.com/v/airpods-max/e/images/overview/hero__gnfk5g59t0qe_xlarge.png", "productId": 46 } }, "unreadCount": 4 } ]) */
   chatRooms: IChatRoom[];
 }

@@ -1,22 +1,36 @@
 import { AxiosError } from 'axios';
-import { useQuery, UseQueryOptions, useQueryClient, useMutation } from 'react-query';
+import { UseQueryOptions, useQueryClient, useMutation } from 'react-query';
 import { deleteChatRoom, getChatRoom, getChatRooms } from 'src/api/chatRoom';
 import { IServerResponse, IServerError } from 'src/types/api';
-import { IChatRoomRes, IChatRooms } from 'src/types/chatRoom';
+import { ChatRoomResult, ChatRoomsResult } from 'src/types/chatRoom';
 import { CHAT } from './queryKey';
+import { useSuspendedQuery } from '@toss/react-query';
 
-export const useChatRooms = (options?: UseQueryOptions<IServerResponse<IChatRooms>, AxiosError<IServerError>>) =>
-  useQuery<IServerResponse<IChatRooms>, AxiosError<IServerError>>(CHAT.CHATROOMS, getChatRooms, options);
+export const useChatRoomsQuery = (
+  options?: UseQueryOptions<IServerResponse<ChatRoomsResult>, AxiosError<IServerError>>,
+) => {
+  const {
+    data: { data },
+  } = useSuspendedQuery<IServerResponse<ChatRoomsResult>, AxiosError<IServerError>>(
+    CHAT.CHATROOMS,
+    getChatRooms,
+    options,
+  );
+  return data;
+};
 
 export const useChatRoomQuery = (
   chatRoomId: string,
-  options?: UseQueryOptions<IServerResponse<IChatRoomRes>, AxiosError<IServerError>>,
+  options?: UseQueryOptions<IServerResponse<ChatRoomResult>, AxiosError<IServerError>>,
 ) => {
-  return useQuery<IServerResponse<IChatRoomRes>, AxiosError<IServerError>>(
+  const {
+    data: { data },
+  } = useSuspendedQuery<IServerResponse<ChatRoomResult>, AxiosError<IServerError>>(
     CHAT.CHATROOM(chatRoomId),
     () => getChatRoom(chatRoomId),
     options,
   );
+  return data;
 };
 
 export const useDeleteChatRoomMutation = () => {

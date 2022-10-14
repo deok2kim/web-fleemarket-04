@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import withAuth from 'src/hocs/withAuth';
 
-import { useChatRooms } from 'src/queries/chatRoom';
+import { useChatRoomsQuery } from 'src/queries/chatRoom';
 import { useNavigate } from 'react-router-dom';
 import { useLoggedIn } from 'src/contexts/LoggedInContext';
 import timeForToday from 'src/utils/ago';
@@ -12,7 +12,7 @@ import NoData from 'src/components/common/Error/NoData';
 
 function ChatRoomList() {
   const { isLoggedIn } = useLoggedIn();
-  const { data: chatRoomList } = useChatRooms({
+  const { chatRooms: chatRoomList } = useChatRoomsQuery({
     enabled: isLoggedIn,
     suspense: true,
   });
@@ -25,12 +25,11 @@ function ChatRoomList() {
     navigate(`/chat/${id}`);
   };
 
-  if (!chatRoomList || chatRoomList.data.chatRooms.length === 0)
-    return <NoData message="채팅이 없습니다." iconName="iconSpeechDoubleBubble" />;
+  if (chatRoomList.length === 0) return <NoData message="채팅이 없습니다." iconName="iconSpeechDoubleBubble" />;
 
   return (
     <Container>
-      {chatRoomList.data.chatRooms.map(({ id, partner, unreadCount, product, messages }) => {
+      {chatRoomList.map(({ id, partner, unreadCount, product, messages }) => {
         const lastMessage = messages[0];
         return (
           <ChatItem key={id} onClick={() => onClickChatRoom(id)}>
