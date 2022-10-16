@@ -1,18 +1,19 @@
-import { ReactElement } from 'react';
+import React, { Children, cloneElement, createContext, ReactElement } from 'react';
 
 interface Props {
-  children: ReactElement;
-  value: string;
-  name: string;
-  defaultChecked: boolean;
-  disabled: boolean;
+  children: ReactElement | ReactElement[];
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function Radio({ children, value, name, defaultChecked, disabled }: Props) {
+export default function Radio({ children, onChange }: Props) {
   return (
-    <label>
-      <input type="radio" value={value} name={name} defaultChecked={defaultChecked} disabled={disabled} />
-      {children}
-    </label>
+    <>
+      {Children.map(children, (child) => {
+        return cloneElement(child, {
+          name: child?.props.name,
+          onChange: onChange,
+        });
+      })}
+    </>
   );
 }

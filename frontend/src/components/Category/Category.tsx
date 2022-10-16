@@ -27,7 +27,7 @@ function Category({ selectedCategory, category, onChangeCategory }: Props) {
 
 export default Category;
 
-const Container = styled.li<IContainerProps>`
+const Container = styled.div<IContainerProps>`
   padding: 4px 16px;
 
   text-align: center;
